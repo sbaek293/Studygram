@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3550875df323c34481a7b05a5c1a289, type: 3}
+  m_Name: Q1_StudyTime
+  m_EditorClassIdentifier: 
+  questionText: When do you feel most productive when studying?
+  questionType: 0
+  answers:
+  - answerText: "Early morning (6-9 AM) \U0001F305"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 10
+      groupStudy: 5
+      seriousness: 7
+      talkative: 5
+      visual: 5
+      practical: 5
+      theoretical: 5
+  - answerText: "Mid-morning to afternoon (9 AM-5 PM) \u2600\uFE0F"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 7
+      groupStudy: 5
+      seriousness: 6
+      talkative: 5
+      visual: 5
+      practical: 5
+      theoretical: 5
+  - answerText: "Evening (5-10 PM) \U0001F306"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 4
+      groupStudy: 5
+      seriousness: 6
+      talkative: 5
+      visual: 5
+      practical: 5
+      theoretical: 5
+  - answerText: "Late night (10 PM-2 AM) \U0001F319"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 1
+      groupStudy: 5
+      seriousness: 5
+      talkative: 5
+      visual: 5
+      practical: 5
+      theoretical: 5
+  matchingWeight: 8

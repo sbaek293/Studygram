@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3550875df323c34481a7b05a5c1a289, type: 3}
+  m_Name: Q8_Breaks
+  m_EditorClassIdentifier: 
+  questionText: How do you handle study breaks?
+  questionType: 1
+  answers:
+  - answerText: "Power through! Minimal breaks \U0001F4AA"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 9
+      talkative: 5
+      visual: 5
+      practical: 7
+      theoretical: 5
+  - answerText: "Pomodoro technique (25 min work, 5 min break) \u23F1\uFE0F"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 7
+      talkative: 5
+      visual: 5
+      practical: 8
+      theoretical: 5
+  - answerText: "Flexible breaks when I need them \U0001F30A"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 5
+      talkative: 5
+      visual: 5
+      practical: 5
+      theoretical: 5
+  - answerText: "Frequent breaks to stay fresh \U0001F504"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 4
+      talkative: 6
+      visual: 5
+      practical: 5
+      theoretical: 5
+  matchingWeight: 5

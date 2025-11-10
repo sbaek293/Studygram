@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3550875df323c34481a7b05a5c1a289, type: 3}
+  m_Name: Q4_Goals
+  m_EditorClassIdentifier: 
+  questionText: What's your goal for this class?
+  questionType: 3
+  answers:
+  - answerText: "A+ or bust! Going for excellence \U0001F3C6"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 10
+      talkative: 5
+      visual: 5
+      practical: 7
+      theoretical: 5
+  - answerText: "Solid grade and actually understand the material \U0001F4DA"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 7
+      talkative: 5
+      visual: 5
+      practical: 5
+      theoretical: 7
+  - answerText: "Just pass and learn something useful \U0001F44D"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 5
+      talkative: 5
+      visual: 5
+      practical: 8
+      theoretical: 5
+  - answerText: "Pass the class, that's all I need \u2713"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 3
+      talkative: 5
+      visual: 5
+      practical: 6
+      theoretical: 5
+  matchingWeight: 9

@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3550875df323c34481a7b05a5c1a289, type: 3}
+  m_Name: Q6_LearningStyle
+  m_EditorClassIdentifier: 
+  questionText: How do you learn best?
+  questionType: 1
+  answers:
+  - answerText: "Visual aids, diagrams, and videos \U0001F441\uFE0F"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 5
+      talkative: 5
+      visual: 10
+      practical: 5
+      theoretical: 6
+  - answerText: "Hands-on practice and examples \U0001F6E0\uFE0F"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 5
+      talkative: 5
+      visual: 5
+      practical: 10
+      theoretical: 5
+  - answerText: "Reading and understanding concepts \U0001F4D6"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 5
+      seriousness: 5
+      talkative: 5
+      visual: 4
+      practical: 5
+      theoretical: 10
+  - answerText: "Discussion and explaining to others \U0001F5E3\uFE0F"
+    answerIcon: {fileID: 0}
+    profile:
+      morningPerson: 5
+      groupStudy: 9
+      seriousness: 5
+      talkative: 9
+      visual: 5
+      practical: 5
+      theoretical: 6
+  matchingWeight: 7
