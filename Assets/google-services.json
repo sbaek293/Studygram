@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "132104335869",
+    "firebase_url": "https://studygram-back-default-rtdb.firebaseio.com",
+    "project_id": "studygram-back",
+    "storage_bucket": "studygram-back.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132104335869:android:4ad58a679a5734d608a994",
+        "android_client_info": {
+          "package_name": "com.gamifylabs.studygram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr1_Ogk-xmruqZe1fZmYOd1qEw6usav3Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

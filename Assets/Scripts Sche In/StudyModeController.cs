@@ -7,6 +7,7 @@ public class StudyModeController : MonoBehaviour
     [Header("UI References")]
     public TMP_Text questionText;
     public TMP_Text answerText;
+    public TMP_Text feedbackText;
     public Button flipButton;
     public Button nextButton;
     public Button prevButton;
@@ -55,21 +56,23 @@ public class StudyModeController : MonoBehaviour
         questionText.text = card.question;
         answerText.text = "";
         answerText.gameObject.SetActive(false);
+        feedbackText.gameObject.SetActive(false);
+        questionText.gameObject.SetActive(true);
 
         // Hide/clear MCQ options
         foreach (Transform child in mcqParent)
             Destroy(child.gameObject);
         mcqParent.gameObject.SetActive(false);
-
+        Debug.Log(card.type);
         // For multiple-choice cards, populate options
-        if (card.type == "multiple_choice")
+        if (card.type == "multiple choice")
         {
             mcqParent.gameObject.SetActive(true);
             for (int i = 0; i < card.choices.Count; i++)
             {
                 int index = i; // local copy for closure
                 var go = Instantiate(mcqOptionPrefab, mcqParent);
-                go.GetComponentInChildren<Text>().text = card.choices[i];
+                go.GetComponentInChildren<TMP_Text>().text = card.choices[i];
                 go.GetComponent<Button>().onClick.AddListener(() => SelectAnswer(index));
             }
         }
@@ -87,6 +90,7 @@ public class StudyModeController : MonoBehaviour
 
         answerText.text = card.answer;
         answerText.gameObject.SetActive(!answerText.gameObject.activeSelf);
+        questionText.gameObject.SetActive(!questionText.gameObject.activeSelf);
     }
 
     // Handle multiple-choice selection
@@ -97,11 +101,11 @@ public class StudyModeController : MonoBehaviour
         string correctText = card.choices[card.correctChoiceIndex];
 
         if (correct)
-            answerText.text = "✅ Correct!";
+            feedbackText.text = "Correct!";
         else
-            answerText.text = $"❌ Incorrect!\nCorrect answer: {correctText}";
+            feedbackText.text = $"Incorrect!\nCorrect answer: {correctText}";
 
-        answerText.gameObject.SetActive(true);
+        feedbackText.gameObject.SetActive(true);
     }
 
     // Move between cards
