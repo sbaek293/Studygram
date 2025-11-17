@@ -2,20 +2,21 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Database;
+using Firebase.Extensions;
 
 public class SessionManager : MonoBehaviour
 {
     public static SessionManager Instance;
 
-    [Header("Session settings")]
+    [Header("Session Settings")]
     public string groupId = "groupA"; // set per your app/group
-    public string currentUserId; // set on start (or use Firebase Auth UID)
+    public string currentUserId;      // set on start (or use Firebase Auth UID)
 
-    [Header("Internal state")]
+    [Header("Internal State")]
     public string currentSessionId;
     public bool isHost = false;
 
-    // timer state
+    // Timer state
     private double elapsedSeconds = 0.0;
     private bool paused = false;
     private bool active = false;
@@ -23,13 +24,15 @@ public class SessionManager : MonoBehaviour
     // Firebase reference
     private DatabaseReference dbRoot;
 
-    // events
+    // Events for UI
     public event Action<double> OnTimerUpdated;
     public event Action<bool> OnPausedChanged;
     public event Action<bool> OnActiveChanged;
+    public event Action<bool> OnReadyToStartChanged;
     public event Action<Dictionary<string, object>> OnSessionDataChanged;
+    public event Action<List<string>> OnParticipantsChanged;
 
-    // throttle updates
+    // Timer throttling
     private float hostUpdateAccumulator = 0f;
     private const float hostUpdateInterval = 0.5f; // seconds
 
@@ -38,49 +41,54 @@ public class SessionManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // simple temporary user id if you don't use auth yet
         if (string.IsNullOrEmpty(currentUserId))
             currentUserId = "user_" + UnityEngine.Random.Range(1000, 9999);
 
         dbRoot = FirebaseDatabase.DefaultInstance.RootReference;
     }
 
-    // ========== Create session (host) ==========
+    // ================== Create Session (host) ==================
     public void CreateSession()
     {
         currentSessionId = "session_" + Guid.NewGuid().ToString("N").Substring(0, 6);
         isHost = true;
         elapsedSeconds = 0.0;
         paused = false;
-        active = true;
+        active = false; // timer doesn’t start automatically
 
         var sessionData = new Dictionary<string, object>()
         {
             { "groupId", groupId },
             { "hostId", currentUserId },
-            { "active", true },
+            { "active", false },
             { "paused", false },
+            { "readyToStart", false },
             { "elapsedSeconds", 0.0 },
             { "createdAt", ServerValue.Timestamp },
         };
 
-        // set session node with initial values and add participant
         var updates = new Dictionary<string, object>();
         updates[$"sessions/{currentSessionId}"] = sessionData;
         updates[$"sessions/{currentSessionId}/participants/{currentUserId}"] = true;
 
-        dbRoot.UpdateChildrenAsync(updates).ContinueWith(t =>
+        dbRoot.UpdateChildrenAsync(updates).ContinueWithOnMainThread(t =>
         {
-            if (t.IsFaulted) Debug.LogError("Failed to create session: " + t.Exception);
+            if (t.IsFaulted)
+            {
+                foreach (var ex in t.Exception.Flatten().InnerExceptions)
+                    Debug.LogWarning("Firebase write warning: " + ex.Message);
+            }
             else
             {
                 Debug.Log("Session created: " + currentSessionId);
-                StartListeningToSession();
             }
+
+            try { StartListeningToSession(); }
+            catch (Exception e) { Debug.LogWarning("StartListeningToSession warning: " + e.Message); }
         });
     }
 
-    // ========== Join existing session ==========
+    // ================== Join Existing Session ==================
     public void JoinSession(string sessionId)
     {
         if (string.IsNullOrEmpty(sessionId)) return;
@@ -88,59 +96,115 @@ public class SessionManager : MonoBehaviour
         currentSessionId = sessionId;
         isHost = false;
 
-        // add participant
         dbRoot.Child("sessions").Child(currentSessionId).Child("participants")
-            .Child(currentUserId).SetValueAsync(true).ContinueWith(t =>
+            .Child(currentUserId).SetValueAsync(true).ContinueWithOnMainThread(t =>
             {
-                if (t.IsFaulted) Debug.LogError("Failed to join session: " + t.Exception);
+                if (t.IsFaulted)
+                    Debug.LogError("Failed to join session: " + t.Exception);
                 else
-                {
                     Debug.Log("Joined session: " + currentSessionId);
-                    StartListeningToSession();
-                }
+
+                try { StartListeningToSession(); }
+                catch (Exception e) { Debug.LogWarning("StartListeningToSession warning: " + e.Message); }
             });
     }
 
-    // ========== Listen for changes ==========
+    // ================== Host Control Functions ==================
+    public void SetReadyToStart()
+    {
+        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
+
+        dbRoot.Child("sessions").Child(currentSessionId).Child("readyToStart")
+            .SetValueAsync(true).ContinueWithOnMainThread(t =>
+            {
+                if (t.IsFaulted) Debug.LogError("Failed to set readyToStart: " + t.Exception);
+                else Debug.Log("Session ready to start.");
+            });
+    }
+
+    public void StartTimer()
+    {
+        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
+
+        dbRoot.Child("sessions").Child(currentSessionId).Child("active")
+            .SetValueAsync(true).ContinueWithOnMainThread(t =>
+            {
+                if (t.IsFaulted) Debug.LogError("Failed to start session: " + t.Exception);
+                else Debug.Log("Session timer started.");
+            });
+    }
+
+    public void PauseSession()
+    {
+        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
+        dbRoot.Child("sessions").Child(currentSessionId).Child("paused")
+            .SetValueAsync(true);
+    }
+
+    public void ResumeSession()
+    {
+        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
+        dbRoot.Child("sessions").Child(currentSessionId).Child("paused")
+            .SetValueAsync(false);
+    }
+
+    public void EndSession()
+    {
+        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
+        dbRoot.Child("sessions").Child(currentSessionId).Child("active")
+            .SetValueAsync(false);
+    }
+
+    // ================== Listen to Session Changes ==================
     private void StartListeningToSession()
     {
         var sessionRef = dbRoot.Child("sessions").Child(currentSessionId);
 
-        // listen for the root session object (to pick up many changes)
         sessionRef.ValueChanged += (s, e) =>
         {
             if (e.DatabaseError != null) { Debug.LogError(e.DatabaseError.Message); return; }
-            if (e.Snapshot.Exists)
-            {
-                var dict = SnapshotToDict(e.Snapshot);
-                // update local values if present
-                if (e.Snapshot.HasChild("elapsedSeconds"))
-                {
-                    double newTime = ConvertToDouble(e.Snapshot.Child("elapsedSeconds").Value);
-                    elapsedSeconds = newTime;
-                    OnTimerUpdated?.Invoke(elapsedSeconds);
-                }
-                if (e.Snapshot.HasChild("paused"))
-                {
-                    paused = Convert.ToBoolean(e.Snapshot.Child("paused").Value);
-                    OnPausedChanged?.Invoke(paused);
-                }
-                if (e.Snapshot.HasChild("active"))
-                {
-                    active = Convert.ToBoolean(e.Snapshot.Child("active").Value);
-                    OnActiveChanged?.Invoke(active);
-                }
+            if (!e.Snapshot.Exists) return;
 
-                OnSessionDataChanged?.Invoke(dict);
-            }
-            else
+            var dict = SnapshotToDict(e.Snapshot);
+            OnSessionDataChanged?.Invoke(dict);
+
+            if (e.Snapshot.HasChild("elapsedSeconds"))
             {
-                Debug.Log("Session snapshot does not exist.");
+                elapsedSeconds = ConvertToDouble(e.Snapshot.Child("elapsedSeconds").Value);
+                OnTimerUpdated?.Invoke(elapsedSeconds);
+            }
+
+            if (e.Snapshot.HasChild("paused"))
+            {
+                paused = Convert.ToBoolean(e.Snapshot.Child("paused").Value);
+                OnPausedChanged?.Invoke(paused);
+            }
+
+            if (e.Snapshot.HasChild("active"))
+            {
+                active = Convert.ToBoolean(e.Snapshot.Child("active").Value);
+                OnActiveChanged?.Invoke(active);
+            }
+
+            if (e.Snapshot.HasChild("readyToStart"))
+            {
+                bool ready = Convert.ToBoolean(e.Snapshot.Child("readyToStart").Value);
+                OnReadyToStartChanged?.Invoke(ready);
+            }
+
+            if (e.Snapshot.HasChild("participants"))
+            {
+                var participantsSnap = e.Snapshot.Child("participants");
+                List<string> participants = new List<string>();
+                foreach (var child in participantsSnap.Children)
+                    participants.Add(child.Key);
+
+                OnParticipantsChanged?.Invoke(participants);
             }
         };
     }
 
-    // ========== Host timer update (send periodically) ==========
+    // ================== Timer Updates (Host Only) ==================
     void Update()
     {
         if (isHost && active && !paused && !string.IsNullOrEmpty(currentSessionId))
@@ -148,7 +212,6 @@ public class SessionManager : MonoBehaviour
             elapsedSeconds += Time.deltaTime;
             hostUpdateAccumulator += Time.deltaTime;
 
-            // throttle writes to Firebase to e.g. 0.5s
             if (hostUpdateAccumulator >= hostUpdateInterval)
             {
                 hostUpdateAccumulator = 0f;
@@ -160,33 +223,12 @@ public class SessionManager : MonoBehaviour
         }
     }
 
-    // ========== Host controls ==========
-    public void PauseSession()
-    {
-        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
-        dbRoot.Child("sessions").Child(currentSessionId).Child("paused").SetValueAsync(true);
-    }
-
-    public void ResumeSession()
-    {
-        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
-        dbRoot.Child("sessions").Child(currentSessionId).Child("paused").SetValueAsync(false);
-    }
-
-    public void EndSession()
-    {
-        if (!isHost || string.IsNullOrEmpty(currentSessionId)) return;
-        dbRoot.Child("sessions").Child(currentSessionId).Child("active").SetValueAsync(false);
-    }
-
-    // ========== Utility ==========
+    // ================== Utility ==================
     private static Dictionary<string, object> SnapshotToDict(DataSnapshot snap)
     {
         var d = new Dictionary<string, object>();
         foreach (var child in snap.Children)
-        {
             d[child.Key] = child.Value;
-        }
         return d;
     }
 

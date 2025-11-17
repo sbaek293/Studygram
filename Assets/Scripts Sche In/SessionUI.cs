@@ -1,18 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class SessionUI : MonoBehaviour
 {
-    public InputField sessionIdInput;
+    public TMP_InputField sessionIdInput;
     public Button createButton;
     public Button joinButton;
-    public Text sessionIdText;
-    public Text timerText;
+    public TMP_Text sessionIdText;
+    public TMP_Text timerText;
     public Button pauseButton;
     public Button resumeButton;
     public Button endButton;
-    public Text participantsText; // optional list display
+    public TMP_Text participantsText; // optional list display
 
     void Start()
     {

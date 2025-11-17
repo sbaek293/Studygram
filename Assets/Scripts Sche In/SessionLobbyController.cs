@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Database;
 using UnityEngine.UI;
+using TMPro;
 
 public class SessionLobbyController : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class SessionLobbyController : MonoBehaviour
                     {
                         string id = child.Key;
                         var go = Instantiate(sessionItemPrefab, listParent);
-                        go.GetComponentInChildren<Text>().text = id;
+                        go.GetComponentInChildren<TMP_Text>().text = id;
                         go.GetComponent<Button>().onClick.AddListener(() => {
                             SessionManager.Instance.JoinSession(id);
                         });
