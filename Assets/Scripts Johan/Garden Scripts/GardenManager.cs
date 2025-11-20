@@ -3,78 +3,49 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 
 /// <summary>
-/// Hybrid Garden System: Levels up (visual improvements) AND unlocks new areas (expansion)
-/// Perfect for shared study group gardens that evolve over time
+/// Hybrid System: Uses Progress Points for passive Garden Upgrades, and Coins for Card Shop.
 /// </summary>
 public class GardenManager : MonoBehaviour
 {
     [System.Serializable]
-    public class GardenArea
-    {
-        public string areaName;
-        public GameObject areaObject; // The GameObject containing this area's objects
-        public int unlockAtLevel = 1; // What garden level unlocks this area
-        [HideInInspector] public bool isUnlocked = false;
-    }
-    
-    [System.Serializable]
     public class VisualTier
     {
         public int minLevel; // This tier applies from this level onwards
-        public Color grassColor = new Color(0.6f, 0.9f, 0.6f);
-        public Material grassMaterial; // Optional custom material
-        public GameObject[] decorationsToEnable; // Objects that appear at this tier
-        public ParticleSystem ambientParticles; // Optional sparkles, butterflies, etc.
+        public Sprite gardenSprite; // The complete garden image for this tier
+        public GameObject[] decorationsToEnable; 
     }
     
-    [Header("XP & Leveling")]
-    [SerializeField] private int currentXP = 0;
+    [Header("1. PROGRESS & LEVELING (Garden Visuals)")]
+    [SerializeField] private int currentProgressPoints = 0;
     [SerializeField] private int currentLevel = 1;
-    [SerializeField] private int baseXPPerLevel = 100; // XP needed for level 1→2
-    [SerializeField] private float xpScaling = 1.5f; // Each level needs 1.5x more XP
+    [SerializeField] private int baseProgressPerLevel = 100; // Acts like base XP
+    [SerializeField] private float scalingFactor = 1.5f;
     
-    [Header("Garden Areas (Expansion)")]
-    [SerializeField] private List<GardenArea> areas = new List<GardenArea>();
-    
-    [Header("Visual Improvements (Level-based)")]
+    [Header("2. CURRENCY (Card Shop)")]
+    [SerializeField] private int currentCoins = 0;
+
+    [Header("3. VISUAL TIERS")]
     [SerializeField] private List<VisualTier> visualTiers = new List<VisualTier>();
-    [SerializeField] private SpriteRenderer gardenGround; // Main ground sprite to recolor
-    
-    [Header("Garden Settings")]
-    [SerializeField] private Vector2 gardenSize = new Vector2(20, 20);
-    
-    [Header("References")]
-    [SerializeField] private PetController pet;
-    [SerializeField] private CameraFollow cameraFollow;
-    
-    [Header("Events")]
-    public UnityEvent<int> onLevelUp; // Triggered when garden levels up
-    public UnityEvent<string> onAreaUnlocked; // Triggered when new area unlocks
+    [SerializeField] private SpriteRenderer gardenGround; 
+
+    [Header("4. EVENTS")]
+    public UnityEvent<int> onLevelUp;
+    public UnityEvent<int> onCoinsChanged;
     
     void Start()
     {
         LoadProgress();
-        
-        // Setup camera boundaries
-        if (cameraFollow != null)
-        {
-            cameraFollow.SetBoundaries(gardenSize.x, gardenSize.y, Vector2.zero);
-        }
-        
         UpdateGardenVisuals();
-        UpdateAreaVisibility();
     }
     
-    /// <summary>
-    /// Add XP to the garden (from study sessions, completing tasks, etc.)
-    /// </summary>
-    public void AddXP(int xp)
+    // --- PROGRESS LOGIC (FOR GARDEN UPGRADES) ---
+    
+    public void AddProgressPoints(int points)
     {
-        currentXP += xp;
-        Debug.Log($"Garden gained {xp} XP! Total: {currentXP}/{GetXPForNextLevel()}");
+        currentProgressPoints += points;
+        Debug.Log($"Group gained {points} Progress Points! Total: {currentProgressPoints}");
         
-        // Check for level up
-        while (currentXP >= GetXPForNextLevel())
+        while (currentProgressPoints >= GetPointsForNextLevel())
         {
             LevelUp();
         }
@@ -84,72 +55,32 @@ public class GardenManager : MonoBehaviour
     
     void LevelUp()
     {
-        currentXP -= GetXPForNextLevel();
+        currentProgressPoints -= GetPointsForNextLevel();
         currentLevel++;
-        
-        Debug.Log($"🎉 GARDEN LEVELED UP! Now Level {currentLevel}");
-        
-        // Update visuals based on new level
+        Debug.Log($"🎉 GARDEN UPGRADED! Now Level {currentLevel}");
         UpdateGardenVisuals();
-        
-        // Check for area unlocks
-        CheckAreaUnlocks();
-        
-        // Trigger event for UI notifications, celebrations, etc.
         onLevelUp?.Invoke(currentLevel);
-        
+    }
+    
+    public int GetPointsForNextLevel()
+    {
+        return Mathf.RoundToInt(baseProgressPerLevel * Mathf.Pow(scalingFactor, currentLevel - 1));
+    }
+    
+    // --- COIN LOGIC (FOR CARD SHOP) ---
+
+    public void AddCoins(int amount)
+    {
+        currentCoins += amount;
+        onCoinsChanged?.Invoke(currentCoins);
         SaveProgress();
+        Debug.Log($"💰 Personal Wallet gained {amount} coins! Total: {currentCoins}");
     }
     
-    public int GetXPForNextLevel()
-    {
-        // Progressive XP curve: Level 2 needs 100, Level 3 needs 150, Level 4 needs 225, etc.
-        return Mathf.RoundToInt(baseXPPerLevel * Mathf.Pow(xpScaling, currentLevel - 1));
-    }
-    
-    void CheckAreaUnlocks()
-    {
-        for (int i = 0; i < areas.Count; i++)
-        {
-            if (!areas[i].isUnlocked && currentLevel >= areas[i].unlockAtLevel)
-            {
-                UnlockArea(i);
-            }
-        }
-    }
-    
-    void UnlockArea(int areaIndex)
-    {
-        if (areaIndex >= 0 && areaIndex < areas.Count)
-        {
-            areas[areaIndex].isUnlocked = true;
-            
-            if (areas[areaIndex].areaObject != null)
-            {
-                areas[areaIndex].areaObject.SetActive(true);
-            }
-            
-            Debug.Log($"🗺️ NEW AREA UNLOCKED: {areas[areaIndex].areaName}!");
-            onAreaUnlocked?.Invoke(areas[areaIndex].areaName);
-            
-            SaveProgress();
-        }
-    }
-    
-    void UpdateAreaVisibility()
-    {
-        for (int i = 0; i < areas.Count; i++)
-        {
-            if (areas[i].areaObject != null)
-            {
-                areas[i].areaObject.SetActive(areas[i].isUnlocked);
-            }
-        }
-    }
-    
+    // --- VISUALS ---
+
     void UpdateGardenVisuals()
     {
-        // Find the highest tier that applies to current level
         VisualTier currentTier = null;
         for (int i = visualTiers.Count - 1; i >= 0; i--)
         {
@@ -160,111 +91,41 @@ public class GardenManager : MonoBehaviour
             }
         }
         
-        if (currentTier != null)
+        if (currentTier != null && gardenGround != null && currentTier.gardenSprite != null)
         {
-            // Update ground color/material
-            if (gardenGround != null)
-            {
-                gardenGround.color = currentTier.grassColor;
-                
-                if (currentTier.grassMaterial != null)
-                {
-                    gardenGround.material = currentTier.grassMaterial;
-                }
-            }
-            
-            // Enable tier-specific decorations
-            if (currentTier.decorationsToEnable != null)
-            {
-                foreach (GameObject deco in currentTier.decorationsToEnable)
-                {
-                    if (deco != null)
-                    {
-                        deco.SetActive(true);
-                    }
-                }
-            }
-            
-            // Enable ambient particles
-            if (currentTier.ambientParticles != null)
-            {
-                currentTier.ambientParticles.gameObject.SetActive(true);
-            }
+            gardenGround.sprite = currentTier.gardenSprite;
         }
     }
     
-    // Public getters
+    // --- GETTERS ---
     public int GetCurrentLevel() => currentLevel;
-    public int GetCurrentXP() => currentXP;
-    public float GetLevelProgress() => (float)currentXP / GetXPForNextLevel();
+    public int GetCurrentProgressPoints() => currentProgressPoints;
+    public float GetProgress() => (float)currentProgressPoints / GetPointsForNextLevel();
+    public int GetCoins() => currentCoins;
     
-    public bool IsAreaUnlocked(string areaName)
-    {
-        foreach (var area in areas)
-        {
-            if (area.areaName == areaName)
-            {
-                return area.isUnlocked;
-            }
-        }
-        return false;
-    }
-    
-    // Save/Load
+    // --- SAVE SYSTEM ---
     void SaveProgress()
     {
         PlayerPrefs.SetInt("GardenLevel", currentLevel);
-        PlayerPrefs.SetInt("GardenXP", currentXP);
-        
-        for (int i = 0; i < areas.Count; i++)
-        {
-            PlayerPrefs.SetInt($"Area_{i}_Unlocked", areas[i].isUnlocked ? 1 : 0);
-        }
-        
+        PlayerPrefs.SetInt("GardenProgress", currentProgressPoints);
+        PlayerPrefs.SetInt("Coins", currentCoins);
         PlayerPrefs.Save();
     }
     
     void LoadProgress()
     {
         currentLevel = PlayerPrefs.GetInt("GardenLevel", 1);
-        currentXP = PlayerPrefs.GetInt("GardenXP", 0);
-        
-        for (int i = 0; i < areas.Count; i++)
-        {
-            // First area always starts unlocked
-            bool defaultUnlocked = areas[i].unlockAtLevel <= 1;
-            areas[i].isUnlocked = PlayerPrefs.GetInt($"Area_{i}_Unlocked", defaultUnlocked ? 1 : 0) == 1;
-        }
+        currentProgressPoints = PlayerPrefs.GetInt("GardenProgress", 0);
+        currentCoins = PlayerPrefs.GetInt("Coins", 0);
     }
     
-    // Testing helpers
-    [ContextMenu("Add 50 XP (Test)")]
-    public void TestAddXP()
-    {
-        AddXP(50);
-    }
+    // --- TESTING HELPERS ---
+    [ContextMenu("Add 50 Progress Points (Test)")]
+    public void TestAddProgress() { AddProgressPoints(50); }
     
-    [ContextMenu("Level Up (Test)")]
-    public void TestLevelUp()
-    {
-        AddXP(GetXPForNextLevel());
-    }
+    [ContextMenu("Add 500 Coins (Test)")]
+    public void TestAddCoins() { AddCoins(500); }
     
     [ContextMenu("Reset Progress")]
-    public void ResetProgress()
-    {
-        PlayerPrefs.DeleteAll();
-        currentLevel = 1;
-        currentXP = 0;
-        
-        for (int i = 0; i < areas.Count; i++)
-        {
-            areas[i].isUnlocked = areas[i].unlockAtLevel <= 1;
-        }
-        
-        UpdateGardenVisuals();
-        UpdateAreaVisibility();
-        
-        Debug.Log("Garden progress reset!");
-    }
+    public void ResetProgress() { PlayerPrefs.DeleteAll(); currentLevel = 1; currentProgressPoints = 0; currentCoins = 0; UpdateGardenVisuals(); Debug.Log("Progress reset!"); }
 }
