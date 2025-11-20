@@ -851,7 +851,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 409049324}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1160201073}
+        m_TargetAssemblyTypeName: SessionManager, Assembly-CSharp
+        m_MethodName: StartSession
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &409049324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1788,7 +1800,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1070575873}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1160201073}
+        m_TargetAssemblyTypeName: SessionManager, Assembly-CSharp
+        m_MethodName: ResumeSession
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1070575873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2022,6 +2046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sessionManager: {fileID: 1160201073}
+  panelController: {fileID: 112734664}
   sessionListParent: {fileID: 1997447298}
   sessionItemPrefab: {fileID: 2328975552801988215, guid: 0c911a3a3ad664049aaf9c74cf4c3295, type: 3}
   statusText: {fileID: 1868933028}
@@ -2069,6 +2094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa3f3c81e404ae24aa67d74bee5eb00e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panelController: {fileID: 0}
   currentUserId: 
   currentSessionId: 
   groupId: groupA
@@ -2694,7 +2720,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1465447037}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1160201073}
+        m_TargetAssemblyTypeName: SessionManager, Assembly-CSharp
+        m_MethodName: EndSession
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1465447037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2818,7 +2856,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1155265444}
         m_TargetAssemblyTypeName: SessionLobbyController, Assembly-CSharp
-        m_MethodName: CreateNewSession
+        m_MethodName: CreateSession
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3159,7 +3197,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1674611984}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1160201073}
+        m_TargetAssemblyTypeName: SessionManager, Assembly-CSharp
+        m_MethodName: PauseSession
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1674611984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4112,6 +4162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2010148101}
+  - component: {fileID: 2010148102}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -4138,6 +4189,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &2010148102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2010148100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: -146.09
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &2039352080
 GameObject:
   m_ObjectHideFlags: 0

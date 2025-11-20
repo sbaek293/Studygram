@@ -8,6 +8,7 @@ using UnityEngine;
 public class SessionManager : MonoBehaviour
 {
     public static SessionManager Instance;
+    public SessionPanelController panelController;
 
     [Header("Session State")]
     public string currentUserId;
@@ -89,6 +90,7 @@ public class SessionManager : MonoBehaviour
 
               Debug.Log("Session created: " + currentSessionId);
               StartListening();
+              panelController.ShowSession();
           }
       });
 
@@ -115,6 +117,7 @@ public class SessionManager : MonoBehaviour
 
                 Debug.Log("Joined session: " + currentSessionId);
                 StartListening();
+                panelController.ShowSession();
             });
     }
 

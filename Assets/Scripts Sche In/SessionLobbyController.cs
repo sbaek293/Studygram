@@ -7,6 +7,7 @@ using Firebase.Extensions;
 public class SessionLobbyController : MonoBehaviour
 {
     public SessionManager sessionManager;
+    public SessionPanelController panelController;
 
     [Header("UI")]
     public Transform sessionListParent;
@@ -47,14 +48,8 @@ public class SessionLobbyController : MonoBehaviour
             foreach (var snap in t.Result.Children)
             {
                 GameObject item = Instantiate(sessionItemPrefab, sessionListParent);
-                item.transform.Find("Name").GetComponent<TMP_Text>().text = snap.Key;
-
-                Button joinBtn = item.transform.Find("JoinButton").GetComponent<Button>();
-                string id = snap.Key;
-                joinBtn.onClick.AddListener(() =>
-                {
-                    sessionManager.JoinSession(id);
-                });
+                SessionItemUI itemUI = item.GetComponent<SessionItemUI>();
+                itemUI.Init(snap.Key, snap.Key); // or some display name
             }
         });
     }
