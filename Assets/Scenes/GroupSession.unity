@@ -2094,7 +2094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa3f3c81e404ae24aa67d74bee5eb00e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelController: {fileID: 0}
+  panelController: {fileID: 112734664}
   currentUserId: 
   currentSessionId: 
   groupId: groupA
