@@ -1,43 +1,73 @@
-using System.Collections.Generic;
 using UnityEngine;
-using Firebase.Database;
 using UnityEngine.UI;
 using TMPro;
+using Firebase.Database;
+using Firebase.Extensions;
 
 public class SessionLobbyController : MonoBehaviour
 {
-    public Transform listParent;
-    public GameObject sessionItemPrefab; // button with text
-    private DatabaseReference dbRef;
+    public SessionManager sessionManager;
 
-    void Start()
+    [Header("UI")]
+    public Transform sessionListParent;
+    public GameObject sessionItemPrefab;
+    public TMP_Text statusText;
+
+    private DatabaseReference db;
+
+    private void Start()
     {
-        dbRef = FirebaseDatabase.DefaultInstance.RootReference;
-        ListenForActiveSessions();
+        db = FirebaseDatabase.DefaultInstance.RootReference;
+        RefreshSessions();
     }
 
-    void ListenForActiveSessions()
+    public void RefreshSessions()
     {
-        var sessionsRef = dbRef.Child("sessions");
-        sessionsRef.OrderByChild("groupId").EqualTo(SessionManager.Instance.groupId)
-            .ValueChanged += (s, e) =>
+        statusText.text = "Loading sessions...";
+
+        db.Child("sessions").GetValueAsync().ContinueWithOnMainThread(t =>
+        {
+            foreach (Transform child in sessionListParent)
+                Destroy(child.gameObject);
+
+            if (t.IsFaulted)
             {
-                if (e.DatabaseError != null) { Debug.LogError(e.DatabaseError.Message); return; }
-                // clear current list
-                foreach (Transform child in listParent) Destroy(child.gameObject);
-                if (!e.Snapshot.Exists) return;
-                foreach (var child in e.Snapshot.Children)
+                statusText.text = "Failed to load.";
+                return;
+            }
+
+            if (!t.Result.Exists)
+            {
+                statusText.text = "No sessions yet.";
+                return;
+            }
+
+            statusText.text = "";
+
+            foreach (var snap in t.Result.Children)
+            {
+                GameObject item = Instantiate(sessionItemPrefab, sessionListParent);
+                item.transform.Find("Name").GetComponent<TMP_Text>().text = snap.Key;
+
+                Button joinBtn = item.transform.Find("JoinButton").GetComponent<Button>();
+                string id = snap.Key;
+                joinBtn.onClick.AddListener(() =>
                 {
-                    if (child.HasChild("active") && child.Child("active").Value is bool active && active)
-                    {
-                        string id = child.Key;
-                        var go = Instantiate(sessionItemPrefab, listParent);
-                        go.GetComponentInChildren<TMP_Text>().text = id;
-                        go.GetComponent<Button>().onClick.AddListener(() => {
-                            SessionManager.Instance.JoinSession(id);
-                        });
-                    }
-                }
-            };
+                    sessionManager.JoinSession(id);
+                });
+            }
+        });
     }
+
+    public void CreateSession()
+    {
+        if (!FirebaseInit.IsReady)
+        {
+            Debug.LogError("SESSION CREATE FAILED - Firebase not ready yet!");
+            return;
+        }
+
+        sessionManager.CreateSession();
+    }
+
 }

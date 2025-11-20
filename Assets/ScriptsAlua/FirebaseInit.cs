@@ -7,10 +7,7 @@ public class FirebaseInit : MonoBehaviour
 {
     public static DatabaseReference DB;
 
-    void Awake()
-    {
-        DontDestroyOnLoad(gameObject);  // <--- Keep this object forever
-    }
+    public static bool IsReady = false;
 
     void Start()
     {
@@ -19,13 +16,16 @@ public class FirebaseInit : MonoBehaviour
             var status = task.Result;
             if (status == DependencyStatus.Available)
             {
-                Debug.Log("Firebase is ready!");
+                Debug.Log("Firebase READY");
+
                 DB = FirebaseDatabase.DefaultInstance.RootReference;
+                IsReady = true;
             }
             else
             {
-                Debug.LogError($"Could not resolve Firebase dependencies: {status}");
+                Debug.LogError("Firebase FAILURE: " + status);
             }
         });
     }
+
 }

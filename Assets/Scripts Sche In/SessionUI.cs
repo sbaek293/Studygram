@@ -1,87 +1,91 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class SessionUI : MonoBehaviour
 {
-    public TMP_InputField sessionIdInput;
-    public Button createButton;
-    public Button joinButton;
-    public TMP_Text sessionIdText;
+    public SessionManager manager;
+
     public TMP_Text timerText;
+    public TMP_Text statusText;
+
+    public Transform participantParent;
+    public GameObject participantItemPrefab;
+
+    // Host buttons
+    public Button startButton;
     public Button pauseButton;
     public Button resumeButton;
     public Button endButton;
-    public TMP_Text participantsText; // optional list display
 
-    void Start()
+    private void Start()
     {
-        createButton.onClick.AddListener(OnCreateClicked);
-        joinButton.onClick.AddListener(OnJoinClicked);
-        pauseButton.onClick.AddListener(OnPauseClicked);
-        resumeButton.onClick.AddListener(OnResumeClicked);
-        endButton.onClick.AddListener(OnEndClicked);
+        if (manager == null) manager = SessionManager.Instance;
 
-        SessionManager.Instance.OnTimerUpdated += UpdateTimer;
-        SessionManager.Instance.OnPausedChanged += OnPausedChanged;
-        SessionManager.Instance.OnActiveChanged += OnActiveChanged;
-        SessionManager.Instance.OnSessionDataChanged += OnSessionDataChanged;
+        manager.OnTimerUpdated += UpdateTimer;
+        manager.OnActiveChanged += UpdateActiveState;
+        manager.OnPausedChanged += UpdatePausedState;
+        manager.OnParticipantsChanged += UpdateParticipants;
+
+        InitUI();
     }
 
-    void OnCreateClicked()
+    private void InitUI()
     {
-        SessionManager.Instance.CreateSession();
-        sessionIdText.text = $"Session ID: {SessionManager.Instance.currentSessionId}";
+        timerText.text = "00:00";
+        statusText.text = "Waiting...";
+
+        startButton.gameObject.SetActive(manager.isHost);
+        pauseButton.gameObject.SetActive(false);
+        resumeButton.gameObject.SetActive(false);
+        endButton.gameObject.SetActive(false);
     }
 
-    void OnJoinClicked()
+    // ----------- EVENTS ------------
+    private void UpdateTimer(double s)
     {
-        var id = sessionIdInput.text.Trim();
-        if (string.IsNullOrEmpty(id)) return;
-        SessionManager.Instance.JoinSession(id);
-        sessionIdText.text = $"Session ID: {SessionManager.Instance.currentSessionId}";
+        TimeSpan t = TimeSpan.FromSeconds(s);
+        timerText.text = $"{t.Minutes:D2}:{t.Seconds:D2}";
     }
 
-    void OnPauseClicked() => SessionManager.Instance.PauseSession();
-    void OnResumeClicked() => SessionManager.Instance.ResumeSession();
-    void OnEndClicked() => SessionManager.Instance.EndSession();
-
-    void UpdateTimer(double seconds)
+    private void UpdateActiveState(bool active)
     {
-        timerText.text = FormatTime(seconds);
+        if (manager.isHost)
+        {
+            startButton.gameObject.SetActive(!active);
+            pauseButton.gameObject.SetActive(active && !manager.paused);
+            resumeButton.gameObject.SetActive(active && manager.paused);
+            endButton.gameObject.SetActive(active);
+        }
+
+        statusText.text = active ? "Running" : "Waiting";
     }
 
-    void OnPausedChanged(bool paused)
+    private void UpdatePausedState(bool paused)
     {
-        // reflect paused state on UI
+        if (!manager.isHost) return;
+
         pauseButton.gameObject.SetActive(!paused);
         resumeButton.gameObject.SetActive(paused);
     }
 
-    void OnActiveChanged(bool active)
+    private void UpdateParticipants(Dictionary<string, bool> p)
     {
-        if (!active)
+        foreach (Transform t in participantParent)
+            Destroy(t.gameObject);
+
+        foreach (var kv in p)
         {
-            // session ended - update UI
-            timerText.text += " (ENDED)";
+            var obj = Instantiate(participantItemPrefab, participantParent);
+            obj.GetComponentInChildren<TMP_Text>().text = kv.Key;
         }
     }
 
-    void OnSessionDataChanged(System.Collections.Generic.Dictionary<string, object> dict)
-    {
-        // Optionally show participants
-        if (dict != null && dict.ContainsKey("participants"))
-        {
-            // it's easier to fetch participants separately in a real app; here's a simple render
-            participantsText.text = "Participants updated";
-        }
-    }
-
-    string FormatTime(double t)
-    {
-        int minutes = Mathf.FloorToInt((float)t / 60f);
-        int seconds = Mathf.FloorToInt((float)t % 60f);
-        return $"{minutes:00}:{seconds:00}";
-    }
+    // -------- BUTTONS --------
+    public void OnStart() => manager.StartSession();
+    public void OnPause() => manager.PauseSession();
+    public void OnResume() => manager.ResumeSession();
+    public void OnEnd() => manager.EndSession();
 }
