@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Displays both passive progress (Level/Bar) and active currency (Coins).
@@ -55,7 +56,10 @@ public class GardenUI : MonoBehaviour
             if (notificationTimer <= 0) HideNotifications();
         }
     }
-    
+    public void GoToStudyRoom()
+    {
+    SceneManager.LoadScene("GardenSingleUser");
+    }
     void UpdateProgressUI()
     {
         if (gardenManager == null) return;
@@ -79,7 +83,17 @@ public class GardenUI : MonoBehaviour
     {
         if (coinText != null) coinText.text = coins.ToString();
     }
-    
+    public void GoToGroupSession()
+{
+    // Load group study session scene
+    SceneManager.LoadScene("GroupSession"); // Change to your scene name
+}
+
+    public void GoToStudyCards()
+{
+    // Load study cards/flashcards scene
+    SceneManager.LoadScene("CardMenu"); // Change to your scene name
+}
     void OnGardenLevelUp(int newLevel)
     {
         Debug.Log($"🎉 UI: Garden reached Level {newLevel}!");
