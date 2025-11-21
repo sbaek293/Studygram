@@ -74,13 +74,12 @@ private bool IsProfileOpen()
 
     public void GoToGroupGarden()
     {
-        // Transition to the group scene
-        if (string.IsNullOrEmpty(groupGardenSceneName))
-        {
-            Debug.LogError("Group Scene name is missing! Cannot load scene.");
-            return;
-        }
-        
-        SceneManager.LoadScene(groupGardenSceneName);
+       // Show group selection modal instead of loading directly
+        GroupSelectionUI groupSelection = FindObjectOfType<GroupSelectionUI>();
+    if (groupSelection != null)
+    {
+        groupSelection.ShowGroupSelection();
+        ToggleMainMenu(); // Close the hamburger menu
+    }
     }
 }
