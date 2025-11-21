@@ -30,7 +30,9 @@ public class SessionManager : MonoBehaviour
     public event Action<bool> OnActiveChanged;
     public event Action<bool> OnPausedChanged;
     public event Action<Dictionary<string, bool>> OnParticipantsChanged;
-
+    public event Action<double> OnSessionEnded;
+    
+    private EventHandler<ValueChangedEventArgs> sessionListener;
 
     private IEnumerator Start()
     {
@@ -128,13 +130,10 @@ public class SessionManager : MonoBehaviour
     {
         var sessionRef = dbRoot.Child("sessions").Child(currentSessionId);
 
-        sessionRef.ValueChanged += (s, e) =>
+        // Keep a reference so we can detach later
+        sessionListener = (s, e) =>
         {
-            if (e.DatabaseError != null)
-            {
-                Debug.LogError("DB ERROR: " + e.DatabaseError.Message);
-                return;
-            }
+            if (e.DatabaseError != null) return;
 
             if (!e.Snapshot.Exists) return;
 
@@ -168,8 +167,40 @@ public class SessionManager : MonoBehaviour
                 paused = Convert.ToBoolean(e.Snapshot.Child("paused").Value);
                 OnPausedChanged?.Invoke(paused);
             }
+
+            if (e.Snapshot.HasChild("ended"))
+            {
+                bool ended = Convert.ToBoolean(e.Snapshot.Child("ended").Value);
+                if (ended)
+                {
+                    double finalTime = Convert.ToDouble(e.Snapshot.Child("finalTime").Value);
+
+                    int exp = Convert.ToInt32(e.Snapshot.Child("rewards").Child("exp").Value);
+                    int coins = Convert.ToInt32(e.Snapshot.Child("rewards").Child("coins").Value);
+
+                    // Show popup
+                    EndPopUpUI.Instance.Show(finalTime, exp, coins);
+
+                    return; // stop processing anything else
+                }
+            }
+
         };
+
+        // Subscribe
+        sessionRef.ValueChanged += sessionListener;
     }
+
+    private void StopListening()
+    {
+        if (sessionListener != null)
+        {
+            var sessionRef = dbRoot.Child("sessions").Child(currentSessionId);
+            sessionRef.ValueChanged -= sessionListener;
+            sessionListener = null;
+        }
+    }
+
 
     // ---------------------------------------------------------
     // HOST TIMER UPDATE
@@ -225,7 +256,50 @@ public class SessionManager : MonoBehaviour
     {
         if (!isHost) return;
 
-        dbRoot.Child("sessions").Child(currentSessionId)
-            .Child("active").SetValueAsync(false);
+        StopListening(); // detach listener locally but clients still have theirs
+
+        double finalTime = elapsedSeconds;
+
+        var updates = new Dictionary<string, object>()
+    {
+        { "active", false },
+        { "ended", true },
+        { "finalTime", finalTime },
+        { "rewards/exp", 50 },
+        { "rewards/coins", 10 }
+    };
+
+        var sessionRef = dbRoot.Child("sessions").Child(currentSessionId);
+
+        // Step 1: Write end summary
+        sessionRef.UpdateChildrenAsync(updates).ContinueWithOnMainThread(t =>
+        {
+            if (t.IsFaulted)
+            {
+                Debug.LogError("Failed to send session end data.");
+                return;
+            }
+
+            Debug.Log("Session summary sent.");
+
+            // Step 2: Wait for clients to process the popup
+            StartCoroutine(DeleteSessionAfterDelay());
+        });
     }
+
+    private IEnumerator DeleteSessionAfterDelay()
+    {
+        yield return new WaitForSeconds(3f); // give clients time
+
+        dbRoot.Child("sessions").Child(currentSessionId).RemoveValueAsync()
+            .ContinueWithOnMainThread(t =>
+            {
+                Debug.Log("Session deleted.");
+
+                
+            });
+    }
+
+
+
 }

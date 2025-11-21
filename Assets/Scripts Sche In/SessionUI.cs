@@ -20,6 +20,9 @@ public class SessionUI : MonoBehaviour
     public Button resumeButton;
     public Button endButton;
 
+    public GameObject endPopup;
+    public TMP_Text endTimeText;
+    public TMP_Text rewardText;
     private void Start()
     {
         if (manager == null) manager = SessionManager.Instance;
