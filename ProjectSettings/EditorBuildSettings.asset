@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GroupSession.unity
     guid: 0c0dc1bbb15e97e448e2157f928db356
+  - enabled: 1
+    path: Assets/Scenes/Auth.unity
+    guid: cee4b56c5bff64f778e79d044faa6521
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

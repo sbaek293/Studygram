@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class SessionManager : MonoBehaviour
 {
@@ -11,9 +12,9 @@ public class SessionManager : MonoBehaviour
     public SessionPanelController panelController;
 
     [Header("Session State")]
-    public string currentUserId;
+    //public string currentUserId;
     public string currentSessionId;
-    public string groupId = "groupA";
+    //public string groupId = "groupA";
 
     public bool isHost = false;
     public bool active = false;
@@ -49,9 +50,6 @@ public class SessionManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        if (string.IsNullOrEmpty(currentUserId))
-            currentUserId = "user_" + UnityEngine.Random.Range(1000, 9999);
-
         dbRoot = FirebaseDatabase.DefaultInstance.RootReference;
     }
 
@@ -68,8 +66,8 @@ public class SessionManager : MonoBehaviour
 
         var sessionData = new Dictionary<string, object>()
         {
-            { "groupId", groupId },
-            { "hostId", currentUserId },
+            { "groupId", AppContext.CurrentGroupId },
+            { "hostId", AppContext.UserId },
             { "active", false },
             { "paused", false },
             { "elapsedSeconds", 0.0 },
@@ -78,7 +76,7 @@ public class SessionManager : MonoBehaviour
 
         var updates = new Dictionary<string, object>();
         updates[$"sessions/{currentSessionId}"] = sessionData;
-        updates[$"sessions/{currentSessionId}/participants/{currentUserId}"] = true;
+        updates[$"sessions/{currentSessionId}/participants/{AppContext.UserId}"] = true;
 
         dbRoot.Child("sessions").Child(currentSessionId)
       .SetValueAsync(sessionData).ContinueWithOnMainThread(t =>
@@ -88,7 +86,7 @@ public class SessionManager : MonoBehaviour
           {
               // Add host participant separately
               dbRoot.Child("sessions").Child(currentSessionId).Child("participants")
-                    .Child(currentUserId).SetValueAsync(true);
+                    .Child(AppContext.UserId).SetValueAsync(true);
 
               Debug.Log("Session created: " + currentSessionId);
               StartListening();
@@ -107,7 +105,7 @@ public class SessionManager : MonoBehaviour
         isHost = false;
 
         dbRoot.Child("sessions").Child(currentSessionId)
-            .Child("participants").Child(currentUserId)
+            .Child("participants").Child(AppContext.UserId)
             .SetValueAsync(true)
             .ContinueWithOnMainThread(t =>
             {
@@ -177,9 +175,14 @@ public class SessionManager : MonoBehaviour
 
                     int exp = Convert.ToInt32(e.Snapshot.Child("rewards").Child("exp").Value);
                     int coins = Convert.ToInt32(e.Snapshot.Child("rewards").Child("coins").Value);
+                    int score = e.Snapshot.Child("rewards").Child("score").Exists ? Convert.ToInt32(e.Snapshot.Child("rewards").Child("score").Value) : 0;
 
+                    UserManager.Instance.AddXP(exp);
+                    UserManager.Instance.AddCoins(coins);
                     // Show popup
                     EndPopUpUI.Instance.Show(finalTime, exp, coins);
+
+                    LeaderboardManager.Instance.SetScore(score);
 
                     return; // stop processing anything else
                 }
@@ -266,7 +269,8 @@ public class SessionManager : MonoBehaviour
         { "ended", true },
         { "finalTime", finalTime },
         { "rewards/exp", 50 },
-        { "rewards/coins", 10 }
+        { "rewards/coins", 10 },
+
     };
 
         var sessionRef = dbRoot.Child("sessions").Child(currentSessionId);

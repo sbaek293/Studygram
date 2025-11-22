@@ -2446,9 +2446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelController: {fileID: 112734664}
-  currentUserId: 
   currentSessionId: 
-  groupId: groupA
   isHost: 0
   active: 0
   paused: 0

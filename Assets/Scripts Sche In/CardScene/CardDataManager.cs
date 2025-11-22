@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
+using UnityEngine;
 
 [System.Serializable]
 public class Card
@@ -26,6 +27,7 @@ public static class DataManager
     public static List<CardSet> allSets = new List<CardSet>();
     private static string savePath => Path.Combine(Application.persistentDataPath, "flashcard_data.json");
 
+    public static event Action<CardSet> OnSetChanged;
     // -----------------------------
     // Load data from disk
     // -----------------------------
@@ -74,6 +76,7 @@ public static class DataManager
         }
         target.cards.Add(newCard);
         SaveData(); // auto-save after adding card
+        OnSetChanged?.Invoke(target); OnSetChanged?.Invoke(target); OnSetChanged?.Invoke(target);
     }
 
     public static void DeleteSet(string name)

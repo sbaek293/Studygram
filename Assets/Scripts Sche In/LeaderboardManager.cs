@@ -1,5 +1,4 @@
 using Firebase.Database;
-using Firebase.Extensions;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,78 +6,58 @@ using UnityEngine;
 public class LeaderboardManager : MonoBehaviour
 {
     public static LeaderboardManager Instance;
-
     private DatabaseReference db;
-
-    public string groupId = "groupA";
-
     public event Action<List<LeaderboardEntry>> OnLeaderboardUpdated;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
-
-    private void Start()
-    {
-        db = FirebaseDatabase.DefaultInstance.RootReference;
-        ListenToLeaderboard();
-    }
-
-    // -------------------------------
-    // PUBLIC: Update a player's score
-    // -------------------------------
-    public void SetScore(string userId, int newScore, string userName)
-    {
-        var data = new Dictionary<string, object>()
+        if (Instance == null)
         {
-            { "score", newScore },
-            { "name", userName }
-        };
-
-        db.Child("groups").Child(groupId)
-          .Child("leaderboard").Child(userId)
-          .UpdateChildrenAsync(data);
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        db = FirebaseDatabase.DefaultInstance.RootReference;
     }
 
-    // -------------------------------
-    // LISTENER
-    // -------------------------------
+    private void Start() => ListenToLeaderboard();
+
     private void ListenToLeaderboard()
     {
+        string groupId = AppContext.CurrentGroupId;
+        db.Child("groups").Child(groupId).Child("leaderboard").ValueChanged += (s, e) =>
+        {
+            List<LeaderboardEntry> entries = new List<LeaderboardEntry>();
+            if (e.Snapshot.Exists)
+            {
+                foreach (var child in e.Snapshot.Children)
+                {
+                    int score = child.Child("score").Value != null ? Convert.ToInt32(child.Child("score").Value) : 0;
+                    string name = child.Child("name").Value?.ToString() ?? "Unknown";
+                    entries.Add(new LeaderboardEntry(child.Key, name, score));
+                }
+                entries.Sort((a, b) => b.score.CompareTo(a.score));
+            }
+            OnLeaderboardUpdated?.Invoke(entries);
+        };
+    }
+
+    public void SetScore(int newScore)
+    {
+        string groupId = AppContext.CurrentGroupId;
         db.Child("groups").Child(groupId).Child("leaderboard")
-          .ValueChanged += (s, e) =>
-          {
-              if (e.Snapshot == null || !e.Snapshot.Exists)
-              {
-                  OnLeaderboardUpdated?.Invoke(new List<LeaderboardEntry>());
-                  return;
-              }
-
-              List<LeaderboardEntry> entries = new List<LeaderboardEntry>();
-
-              foreach (var child in e.Snapshot.Children)
-              {
-                  int score = 0;
-                  string name = "Unknown";
-
-                  if (child.Child("score").Value != null)
-                      score = Convert.ToInt32(child.Child("score").Value);
-
-                  if (child.Child("name").Value != null)
-                      name = child.Child("name").Value.ToString();
-
-                  entries.Add(new LeaderboardEntry(child.Key, name, score));
-              }
-
-              // SORT DESCENDING (highest score first)
-              entries.Sort((a, b) => b.score.CompareTo(a.score));
-
-              OnLeaderboardUpdated?.Invoke(entries);
-          };
+            .Child(AppContext.UserId)
+            .UpdateChildrenAsync(new Dictionary<string, object>
+            {
+                { "score", newScore },
+                { "name", AppContext.UserName }
+            });
     }
 }
+
 
 [Serializable]
 public class LeaderboardEntry

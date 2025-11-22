@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
         Instance = this;
         ShowMainMenu();
         DataManager.LoadData();
+        OnlineCardManager.Instance.DownloadAllUserSets();
     }
 
     public void ShowPanel(GameObject activePanel)
