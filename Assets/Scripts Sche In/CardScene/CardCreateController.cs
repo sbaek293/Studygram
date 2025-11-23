@@ -46,6 +46,14 @@ public class CardCreateController : MonoBehaviour
                 if (errorPanel != null)
                     errorPanel.SetActive(false);
             });
+
+        var questionPlaceholder = questionField.placeholder as TMP_Text;
+        if (questionPlaceholder != null)
+            questionPlaceholder.text = "Enter question";
+
+        var answerPlaceholder = answerField.placeholder as TMP_Text;
+        if (answerPlaceholder != null)
+            answerPlaceholder.text = "Enter an answer";
     }
 
     void OnTypeChange(int index)
@@ -55,18 +63,19 @@ public class CardCreateController : MonoBehaviour
 
     void AddChoice()
     {
-        Debug.Log("AddChoice clicked");
-        if (choicePrefab == null)
-        {
-            Debug.LogError("choicePrefab is NOT assigned in the inspector!");
-            return;
-        }
-        if (choicesParent == null)
-        {
-            Debug.LogError("choicesParent is NOT assigned in the inspector!");
-            return;
-        }
         Instantiate(choicePrefab, choicesParent);
+
+        // Set placeholder text on the new choice's input field
+        TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
+        if (input != null)
+        {
+            var placeholder = input.placeholder as TMP_Text;
+            if (placeholder != null)
+            {
+                int optionNumber = choicesParent.childCount;
+                placeholder.text = $"Enter option {optionNumber}";
+            }
+        }
     }
 
     void ChangeColor()
@@ -134,23 +143,23 @@ public class CardCreateController : MonoBehaviour
                 TMP_InputField inputField = child.GetComponentInChildren<TMP_InputField>();
                 Toggle toggle = child.GetComponentInChildren<Toggle>();
 
-                if (inputField == null)
+                // Only treat objects that have BOTH an input and a toggle as choices
+                if (inputField == null || toggle == null)
                     continue;
 
                 string text = inputField.text.Trim();
 
-                // skip empty choices
                 if (string.IsNullOrEmpty(text))
                     continue;
 
                 choices.Add(text);
 
-                if (toggle != null && toggle.isOn)
+                if (toggle.isOn)
                 {
-                    // index based on the filtered choices list
                     correctIndex = choices.Count - 1;
                 }
             }
+
 
             // Require at least 2 non-empty choices
             if (choices.Count < 2)
