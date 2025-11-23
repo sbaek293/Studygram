@@ -21,6 +21,11 @@ public class CardCreateController : MonoBehaviour
     public Image colorPreview;
     public Button saveButton;
 
+    [Header("Error Popup")]
+    public GameObject errorPanel;
+    public TMP_Text errorText;
+    public Button errorCloseButton;
+
     private string colorHex = "#000000";
 
     void Start()
@@ -30,6 +35,17 @@ public class CardCreateController : MonoBehaviour
         addChoiceButton.onClick.AddListener(AddChoice);
         colorButton.onClick.AddListener(ChangeColor);
         saveButton.onClick.AddListener(SaveCard);
+
+        //error panel attempt
+        if (errorPanel != null)
+            errorPanel.SetActive(false);
+
+        if (errorCloseButton != null)
+            errorCloseButton.onClick.AddListener(() =>
+            {
+                if (errorPanel != null)
+                    errorPanel.SetActive(false);
+            });
     }
 
     void OnTypeChange(int index)
@@ -52,10 +68,43 @@ public class CardCreateController : MonoBehaviour
 
     void SaveCard()
     {
+        // Card newCard = new Card
+        // {
+        //     cardID = System.Guid.NewGuid().ToString(),
+        //     type = typeDropdown.options[typeDropdown.value].text.ToLower(),
+        //     question = questionField.text,
+        //     colorHex = colorHex
+        // };
+
+        // if (newCard.type == "definition")
+        // {
+        //     newCard.answer = answerField.text;
+        // }
+        // else
+        // {
+        //     newCard.choices = new List<string>();
+        //     int index = 0;
+        //     foreach (Transform child in choicesParent)
+        //     {
+        //         var input = child.GetComponentInChildren<TMP_InputField>().text;
+        //         var toggle = child.GetComponentInChildren<Toggle>().isOn;
+        //         newCard.choices.Add(input);
+        //         if (toggle) newCard.correctChoiceIndex = index;
+        //         index++;
+        //     }
+        // }
+
+        // PlayerPrefs.SetString("TempCard", JsonUtility.ToJson(newCard));
+        // UIManager.Instance.ShowSetSelector();
+
+
+        //above was working
+        string selectedType = typeDropdown.options[typeDropdown.value].text.ToLower();
+
         Card newCard = new Card
         {
             cardID = System.Guid.NewGuid().ToString(),
-            type = typeDropdown.options[typeDropdown.value].text.ToLower(),
+            type = selectedType,
             question = questionField.text,
             colorHex = colorHex
         };
@@ -64,22 +113,66 @@ public class CardCreateController : MonoBehaviour
         {
             newCard.answer = answerField.text;
         }
-        else
+        else // multiple choice
         {
-            newCard.choices = new List<string>();
-            int index = 0;
+            List<string> choices = new List<string>();
+            int correctIndex = -1;
+
             foreach (Transform child in choicesParent)
             {
-                var input = child.GetComponentInChildren<TMP_InputField>().text;
-                var toggle = child.GetComponentInChildren<Toggle>().isOn;
-                newCard.choices.Add(input);
-                if (toggle) newCard.correctChoiceIndex = index;
-                index++;
+                TMP_InputField inputField = child.GetComponentInChildren<TMP_InputField>();
+                Toggle toggle = child.GetComponentInChildren<Toggle>();
+
+                if (inputField == null)
+                    continue;
+
+                string text = inputField.text.Trim();
+
+                // skip empty choices
+                if (string.IsNullOrEmpty(text))
+                    continue;
+
+                choices.Add(text);
+
+                if (toggle != null && toggle.isOn)
+                {
+                    // index based on the filtered choices list
+                    correctIndex = choices.Count - 1;
+                }
             }
+
+            // Require at least 2 non-empty choices
+            if (choices.Count < 2)
+            {
+                ShowError("Please enter at least two answer choices for multiple choice cards.");
+                return;
+            }
+
+            // Require one marked correct answer
+            if (correctIndex == -1)
+            {
+                ShowError("Please mark one of the choices as the correct answer.");
+                return;
+            }
+
+            newCard.choices = choices;
+            newCard.correctChoiceIndex = correctIndex;
         }
 
         PlayerPrefs.SetString("TempCard", JsonUtility.ToJson(newCard));
         UIManager.Instance.ShowSetSelector();
+    }
+
+    //error popup during card creation (when count of MCQ options <=2 for instance)
+    void ShowError(string message)
+    {
+        if (errorText != null)
+            errorText.text = message;
+
+        if (errorPanel != null)
+            errorPanel.SetActive(true);
+        else
+            Debug.LogError(message);
     }
 
 }
