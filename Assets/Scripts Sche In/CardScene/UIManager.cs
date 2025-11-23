@@ -19,7 +19,8 @@
 
         public void ShowBuyPopup(string setName, string setId)
         {
-            pendingBuySetId = setId;
+        Debug.Log(setId);    
+        pendingBuySetId = setId;
             pendingBuySetName = setName;
 
             buyTitleText.text = "Buy Set: " + setName;

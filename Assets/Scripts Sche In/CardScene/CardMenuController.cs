@@ -32,17 +32,24 @@ public class CardMenuController : MonoBehaviour
 
     void OpenSet(string setName)
     {
-        // Find setId from Firebase based on set name
-        string setId = PlayerPrefs.GetString("setId_" + setName, "");
-
-        //  If user does NOT own the set → show buy UI
-        if (!OnlineCardManager.Instance.purchasedSetIds.Contains(setId))
+        // Find set in DataManager
+        CardSet set = DataManager.GetSet(setName);
+        if (set == null)
         {
-            UIManager.Instance.ShowBuyPopup(setName, setId); // you create this UI panel
+            Debug.LogError("Set not found: " + setName);
             return;
         }
 
-        //  User owns the set → open normally
+        string setId = set.setId;
+
+        // If user does NOT own the set → show buy UI
+        if (!OnlineCardManager.Instance.purchasedSetIds.Contains(setId))
+        {
+            UIManager.Instance.ShowBuyPopup(setName, setId);
+            return;
+        }
+
+        // User owns the set → open normally
         PlayerPrefs.SetString("CurrentSet", setName);
         UIManager.Instance.ShowStudyMode();
     }

@@ -135,13 +135,13 @@ public class OnlineCardManager : MonoBehaviour
                     .SetValueAsync(true)
                     .ContinueWithOnMainThread(_ =>
                     {
-                        // 🔥 IMPORTANT: update local purchased list instantly
+                        //  IMPORTANT: update local purchased list instantly
                         purchasedSetIds.Add(setId);
 
-                        // 🔥 Now allow clicking the set
+                        //  Now allow clicking the set
                         UIManager.Instance.HideBuyPopup();
 
-                        // 🔥 Now download the set
+                        //  Now download the set
                         DownloadSet(setId);
                     });
             }
