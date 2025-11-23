@@ -73,13 +73,33 @@ private bool IsProfileOpen()
 }
 
     public void GoToGroupGarden()
+{
+    // Check if user has completed quiz
+    if (!HasUserProfile())
     {
-       // Show group selection modal instead of loading directly
-        GroupSelectionUI groupSelection = FindObjectOfType<GroupSelectionUI>();
-    if (groupSelection != null)
+        // No profile - load quiz scene first
+        SceneManager.LoadScene("Quiz"); // Change to your exact scene name!
+    }
+    else
     {
-        groupSelection.ShowGroupSelection();
-        ToggleMainMenu(); // Close the hamburger menu
+        // Has profile - go straight to garden
+        SceneManager.LoadScene(groupGardenSceneName);
     }
-    }
+}
+
+bool HasUserProfile()
+{
+    return PlayerPrefs.GetInt("ProfileCompleted", 0) == 1;
+}
+
+
+void ShowQuiz()
+{
+    // Load quiz scene or show quiz panel
+    SceneManager.LoadScene("Quiz"); // If quiz is separate scene
+    
+    // OR if quiz is in same scene:
+    // QuizManager quiz = FindObjectOfType<QuizManager>();
+    // quiz.InitializeQuiz();
+}
 }

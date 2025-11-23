@@ -246,19 +246,19 @@ public class QuizManager : MonoBehaviour
 }
 
     void SaveUserProfile()
-    {
-        // Save to PlayerPrefs (or your database)
-        PlayerPrefs.SetInt("Profile_MorningPerson", userProfile.morningPerson);
-        PlayerPrefs.SetInt("Profile_GroupStudy", userProfile.groupStudy);
-        PlayerPrefs.SetInt("Profile_Seriousness", userProfile.seriousness);
-        PlayerPrefs.SetInt("Profile_Talkative", userProfile.talkative);
-        PlayerPrefs.SetInt("Profile_Visual", userProfile.visual);
-        PlayerPrefs.SetInt("Profile_Practical", userProfile.practical);
-        PlayerPrefs.SetInt("Profile_Theoretical", userProfile.theoretical);
-        PlayerPrefs.Save();
-        
-        // TODO: Send to your backend/Firebase for matching algorithm
-    }
+{
+    PlayerPrefs.SetInt("Profile_MorningPerson", userProfile.morningPerson);
+    PlayerPrefs.SetInt("Profile_GroupStudy", userProfile.groupStudy);
+    PlayerPrefs.SetInt("Profile_Seriousness", userProfile.seriousness);
+    PlayerPrefs.SetInt("Profile_Talkative", userProfile.talkative);
+    PlayerPrefs.SetInt("Profile_Visual", userProfile.visual);
+    PlayerPrefs.SetInt("Profile_Practical", userProfile.practical);
+    PlayerPrefs.SetInt("Profile_Theoretical", userProfile.theoretical);
+    
+    PlayerPrefs.SetInt("ProfileCompleted", 1); // ADD THIS
+    
+    PlayerPrefs.Save();
+}
     
     public MatchingProfile GetUserProfile()
     {

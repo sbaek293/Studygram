@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GroupMatchResultsUI : MonoBehaviour
 {
@@ -61,9 +62,14 @@ public class GroupMatchResultsUI : MonoBehaviour
     }
     
     private void JoinGroup(string groupId)
-    {
-        Debug.Log($"Joining group: {groupId}");
-        // TODO: Firebase - add user to group
-        // TODO: Load group garden scene
-    }
+{
+    Debug.Log($"Joining group: {groupId}");
+    
+    // Save selected group
+    PlayerPrefs.SetString("SelectedGroup", groupId);
+    PlayerPrefs.Save();
+    
+    // Load garden scene
+    SceneManager.LoadScene("Garden"); // Change to your garden scene name!
+}
 }
