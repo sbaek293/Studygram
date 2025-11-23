@@ -3119,9 +3119,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 821583841}
-        m_TargetAssemblyTypeName: GroupSelectionUI, Assembly-CSharp
-        m_MethodName: ShowGroupSelection
+      - m_Target: {fileID: 821583840}
+        m_TargetAssemblyTypeName: MainMenuNavigation, Assembly-CSharp
+        m_MethodName: GoToGroupGarden
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

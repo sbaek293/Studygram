@@ -72,25 +72,38 @@ private bool IsProfileOpen()
     return profileUI != null && profileUI.IsPanelOpen();
 }
 
-    public void GoToGroupGarden()
+   public void GoToGroupGarden()
 {
+    Debug.Log("=== GoToGroupGarden called ===");
+    
     // Check if user has completed quiz
-    if (!HasUserProfile())
+    bool hasProfile = HasUserProfile();
+    Debug.Log($"HasUserProfile returned: {hasProfile}");
+    
+    if (!hasProfile)
     {
-        // No profile - load quiz scene first
-        SceneManager.LoadScene("Quiz"); // Change to your exact scene name!
+        Debug.Log("No profile found - Loading Quiz Scene");
+        
+        // Load quiz scene (change to your exact scene name!)
+        string quizSceneName = "Quiz"; // TODO: Verify this name!
+        Debug.Log($"Attempting to load scene: {quizSceneName}");
+        
+        SceneManager.LoadScene(quizSceneName);
     }
     else
     {
-        // Has profile - go straight to garden
+        Debug.Log("Profile exists - Loading Garden Scene");
         SceneManager.LoadScene(groupGardenSceneName);
     }
 }
 
 bool HasUserProfile()
 {
-    return PlayerPrefs.GetInt("ProfileCompleted", 0) == 1;
+    int profileCompleted = PlayerPrefs.GetInt("ProfileCompleted", 0);
+    Debug.Log($"ProfileCompleted value from PlayerPrefs: {profileCompleted}");
+    return profileCompleted == 1;
 }
+
 
 
 void ShowQuiz()

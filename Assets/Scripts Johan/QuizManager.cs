@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
-
+using UnityEngine.SceneManagement; // ADD THIS LINE
+using System; // Also add this if not there
 public class QuizManager : MonoBehaviour
 {
     [Header("Quiz Questions")]
@@ -270,4 +271,8 @@ public class QuizManager : MonoBehaviour
     {
         InitializeQuiz();
     }
+    public void GoToGarden()
+{
+    SceneManager.LoadScene("Garden"); // Change to your exact garden scene name
+}
 }
