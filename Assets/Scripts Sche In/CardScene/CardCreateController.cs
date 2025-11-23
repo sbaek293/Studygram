@@ -65,17 +65,17 @@ public class CardCreateController : MonoBehaviour
     {
         Instantiate(choicePrefab, choicesParent);
 
-        // Set placeholder text on the new choice's input field
-        TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
-        if (input != null)
-        {
-            var placeholder = input.placeholder as TMP_Text;
-            if (placeholder != null)
-            {
-                int optionNumber = choicesParent.childCount;
-                placeholder.text = $"Enter option {optionNumber}";
-            }
-        }
+        // // Set placeholder text on the new choice's input field
+        // TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
+        // if (input != null)
+        // {
+        //     var placeholder = input.placeholder as TMP_Text;
+        //     if (placeholder != null)
+        //     {
+        //         int optionNumber = choicesParent.childCount;
+        //         placeholder.text = $"Enter option {optionNumber}";
+        //     }
+        // }
     }
 
     void ChangeColor()
