@@ -30,7 +30,7 @@ public class CardCreateController : MonoBehaviour
 
     void Start()
     {
-        multipleChoicePanel.SetActive(false);
+        // multipleChoicePanel.SetActive(false);
         typeDropdown.onValueChanged.AddListener(OnTypeChange);
         addChoiceButton.onClick.AddListener(AddChoice);
         colorButton.onClick.AddListener(ChangeColor);
@@ -54,28 +54,64 @@ public class CardCreateController : MonoBehaviour
         var answerPlaceholder = answerField.placeholder as TMP_Text;
         if (answerPlaceholder != null)
             answerPlaceholder.text = "Enter an answer";
+
+        OnTypeChange(typeDropdown.value);
     }
 
     void OnTypeChange(int index)
     {
-        multipleChoicePanel.SetActive(typeDropdown.options[index].text == "Multiple Choice");
+        // multipleChoicePanel.SetActive(typeDropdown.options[index].text == "Multiple Choice");
+        bool isMCQ = typeDropdown.options[index].text == "Multiple Choice";
+
+        if (isMCQ)
+        {
+            // Definition → MCQ: copy answerField into option 1
+            TMP_InputField firstOption = GetFirstChoiceInput();
+            if (firstOption != null)
+            {
+                firstOption.text = answerField.text;  // keep values in sync
+            }
+
+            // Rename placeholders of existing option fields (including option 1)
+            UpdateChoicePlaceholders();
+        }
+        else
+        {
+            // MCQ → Definition: copy option 1 into answerField
+            TMP_InputField firstOption = GetFirstChoiceInput();
+            if (firstOption != null)
+            {
+                answerField.text = firstOption.text;
+            }
+
+            // Make sure definition placeholder stays correct
+            var answerPlaceholder = answerField.placeholder as TMP_Text;
+            if (answerPlaceholder != null)
+                answerPlaceholder.text = "Enter an answer";
+        }
+
+        multipleChoicePanel.SetActive(isMCQ);
+        addChoiceButton.gameObject.SetActive(isMCQ);
+        answerField.gameObject.SetActive(!isMCQ);
     }
 
     void AddChoice()
     {
-        Instantiate(choicePrefab, choicesParent);
+        // Instantiate and keep a reference to the new choice object
+        GameObject newChoice = Instantiate(choicePrefab, choicesParent);
 
-        // // Set placeholder text on the new choice's input field
-        // TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
-        // if (input != null)
-        // {
-        //     var placeholder = input.placeholder as TMP_Text;
-        //     if (placeholder != null)
-        //     {
-        //         int optionNumber = choicesParent.childCount;
-        //         placeholder.text = $"Enter option {optionNumber}";
-        //     }
-        // }
+        // Set placeholder text on the new choice's input field
+        TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
+        if (input != null)
+        {
+            var placeholder = input.placeholder as TMP_Text;
+            if (placeholder != null)
+            {
+                // childCount now includes this newly added choice
+                int optionNumber = choicesParent.childCount;
+                placeholder.text = $"Enter option {optionNumber}";
+            }
+        }
     }
 
     void ChangeColor()
@@ -194,5 +230,46 @@ public class CardCreateController : MonoBehaviour
         else
             Debug.LogError(message);
     }
+
+    //this is to make different placeholders for MCQ 
+    void UpdateChoicePlaceholders()
+    {
+        int optionNumber = 1;
+
+        foreach (Transform child in choicesParent)
+        {
+            TMP_InputField input = child.GetComponentInChildren<TMP_InputField>();
+            if (input == null) continue;
+
+            var placeholder = input.placeholder as TMP_Text;
+            if (placeholder == null) continue;
+
+            placeholder.text = $"Enter option {optionNumber}";
+            optionNumber++;
+        }
+    }
+
+    //for keeping def ansField and MCQ option 1 the same
+    TMP_InputField GetFirstChoiceInput()
+    {
+        // Try to find an existing option 1 under choicesParent
+        foreach (Transform child in choicesParent)
+        {
+            TMP_InputField input = child.GetComponentInChildren<TMP_InputField>();
+            if (input != null)
+                return input;
+        }
+
+        // If none exists but we have a prefab, create option 1
+        if (choicePrefab != null && choicesParent != null)
+        {
+            GameObject newChoice = Instantiate(choicePrefab, choicesParent);
+            TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
+            return input;
+        }
+
+        return null;
+    }
+
 
 }
