@@ -16,10 +16,18 @@ public class RandomGroupAssigner : MonoBehaviour
 
     DatabaseReference db;
 
-    private void Start()
+   private async void Start()
+{
+    db = FirebaseDatabase.DefaultInstance.RootReference;
+
+    // Ensure user is signed in
+    if (FirebaseAuth.DefaultInstance.CurrentUser == null)
     {
-        db = FirebaseDatabase.DefaultInstance.RootReference;
+        await FirebaseAuth.DefaultInstance.SignInAnonymouslyAsync();
+        Debug.Log("Signed in anonymously as: " + FirebaseAuth.DefaultInstance.CurrentUser.UserId);
     }
+}
+
 
     /// <summary>
     /// Call this after quiz finishes.
@@ -79,4 +87,29 @@ public class RandomGroupAssigner : MonoBehaviour
 
         Debug.Log("User assigned to group: " + selectedGroupId);
     }
+
+public void AssignMe()
+{
+    string userId = FirebaseAuth.DefaultInstance.CurrentUser.UserId;
+
+    // Get className from Firebase
+    FirebaseDatabase.DefaultInstance
+        .GetReference("Users")
+        .Child(userId)
+        .Child("className")
+        .GetValueAsync()
+        .ContinueWith(task =>
+        {
+            if (task.IsFaulted || !task.Result.Exists)
+            {
+                Debug.LogError("Failed to load className from Firebase.");
+                return;
+            }
+
+            string className = task.Result.Value.ToString();
+
+            // Call your already-written random group assigner
+            AssignUserToRandomGroup(userId, className);
+        });
+}
 }
