@@ -10,6 +10,8 @@ public class OnlineCardManager : MonoBehaviour
     public static OnlineCardManager Instance;
     private DatabaseReference db;
     public CardMenuController controller;
+    public HashSet<string> purchasedSetIds = new HashSet<string>();
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -21,7 +23,25 @@ public class OnlineCardManager : MonoBehaviour
         DataManager.OnSetChanged += UploadOrUpdateSet;
     }
 
-   
+
+    public void LoadPurchasedSets(Action callback = null)
+    {
+        string userId = AppContext.UserId;
+
+        db.Child("users").Child(userId).Child("purchasedSets")
+          .GetValueAsync().ContinueWithOnMainThread(t =>
+          {
+              purchasedSetIds.Clear();
+
+              if (t.IsCompleted && t.Result.Exists)
+              {
+                  foreach (var snap in t.Result.Children)
+                      purchasedSetIds.Add(snap.Key);
+              }
+
+              callback?.Invoke();
+          });
+    }
 
     // ------------------------
     // Upload a new card set
@@ -35,9 +55,28 @@ public class OnlineCardManager : MonoBehaviour
             // Neues Set → generiere ID
             setId = "set_" + Guid.NewGuid().ToString("N").Substring(0, 6);
             PlayerPrefs.SetString("setId_" + set.setName, setId);
+
+            // 🔥 Creator automatically owns the set
+            string userId = AppContext.UserId;
+            db.Child("users").Child(userId).Child("purchasedSets").Child(setId).SetValueAsync(true);
+            purchasedSetIds.Add(setId);
         }
 
-        UploadSet(set, 0, setId); // price = 0, bereits gekauft vom User selbst
+        UploadSet(set, 10, setId); // price irrelevant for creator
+    }
+    public void GetSetPrice(string setId, Action<int> callback)
+    {
+        db.Child("cardSets").Child(setId).Child("price")
+          .GetValueAsync().ContinueWithOnMainThread(t =>
+          {
+              if (t.IsFaulted || !t.Result.Exists)
+              {
+                  callback?.Invoke(0);
+                  return;
+              }
+
+              callback.Invoke(Convert.ToInt32(t.Result.Value));
+          });
     }
 
     public void UploadSet(CardSet set, int price, string setId)
@@ -209,13 +248,16 @@ public class OnlineCardManager : MonoBehaviour
                       }
 
                       downloaded++;
+
                       if (downloaded >= setsCount)
-                          callback?.Invoke();
+                      {
+                          callback?.Invoke(); // UI refresh will happen here
+                      }
                   });
               }
           });
 
-        controller.PopulateSets();
+        //controller.PopulateSets();
     }
 
 }
