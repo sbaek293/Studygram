@@ -6,7 +6,6 @@ using Firebase.Database;
 public class FirebaseInit : MonoBehaviour
 {
     public static DatabaseReference DB;
-
     public static bool IsReady = false;
 
     void Start()
@@ -16,16 +15,14 @@ public class FirebaseInit : MonoBehaviour
             var status = task.Result;
             if (status == DependencyStatus.Available)
             {
-                Debug.Log("Firebase READY");
-
+                Debug.Log("✅ Firebase Database READY (No Auth)");
                 DB = FirebaseDatabase.DefaultInstance.RootReference;
                 IsReady = true;
             }
             else
             {
-                Debug.LogError("Firebase FAILURE: " + status);
+                Debug.LogError($"❌ Firebase FAILURE: {status}");
             }
         });
     }
-
 }
