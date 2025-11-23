@@ -63,18 +63,19 @@ public class CardCreateController : MonoBehaviour
 
     void AddChoice()
     {
-        Debug.Log("AddChoice clicked");
-        if (choicePrefab == null)
-        {
-            Debug.LogError("choicePrefab is NOT assigned in the inspector!");
-            return;
-        }
-        if (choicesParent == null)
-        {
-            Debug.LogError("choicesParent is NOT assigned in the inspector!");
-            return;
-        }
         Instantiate(choicePrefab, choicesParent);
+
+        // Set placeholder text on the new choice's input field
+        TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
+        if (input != null)
+        {
+            var placeholder = input.placeholder as TMP_Text;
+            if (placeholder != null)
+            {
+                int optionNumber = choicesParent.childCount;
+                placeholder.text = $"Enter option {optionNumber}";
+            }
+        }
     }
 
     void ChangeColor()
