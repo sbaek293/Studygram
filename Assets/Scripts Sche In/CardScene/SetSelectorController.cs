@@ -13,6 +13,11 @@ public class SetSelectorController : MonoBehaviour
     void Start()
     {
         PopulateDropdown();
+        existingSetsDropdown.onValueChanged.AddListener(OnDropdownChanged);
+
+        //Set initial visibility based on current selection
+        OnDropdownChanged(existingSetsDropdown.value);
+
         saveButton.onClick.AddListener(OnSave);
     }
 
@@ -38,5 +43,17 @@ public class SetSelectorController : MonoBehaviour
 
         DataManager.AddCardToSet(card, finalName);
         UIManager.Instance.ShowMainMenu();
+    }
+
+    void OnDropdownChanged(int index)
+    {
+        string selected = existingSetsDropdown.options[index].text;
+        bool isNewSet = selected == "New Set";
+
+        newSetNameField.gameObject.SetActive(isNewSet);
+
+        // optional: clear the field when not creating a new set
+        if (!isNewSet)
+            newSetNameField.text = string.Empty;
     }
 }

@@ -20,6 +20,7 @@ public class CardCreateController : MonoBehaviour
     public Button colorButton;
     public Image colorPreview;
     public Button saveButton;
+    public Image windowBackground;
 
     [Header("Error Popup")]
     public GameObject errorPanel;
@@ -27,6 +28,7 @@ public class CardCreateController : MonoBehaviour
     public Button errorCloseButton;
 
     private string colorHex = "#000000";
+    private int previewColorIndex = 0;
 
     void Start()
     {
@@ -35,6 +37,9 @@ public class CardCreateController : MonoBehaviour
         addChoiceButton.onClick.AddListener(AddChoice);
         colorButton.onClick.AddListener(ChangeColor);
         saveButton.onClick.AddListener(SaveCard);
+
+        typeDropdown.value = 1;
+        // typeDropdown.options[index].text == "Definition";
 
         //error panel attempt
         if (errorPanel != null)
@@ -55,6 +60,15 @@ public class CardCreateController : MonoBehaviour
         if (answerPlaceholder != null)
             answerPlaceholder.text = "Enter an answer";
 
+        Color c;
+        ColorUtility.TryParseHtmlString("#acc8e5", out c);
+        colorPreview.color = c;
+
+        ColorUtility.TryParseHtmlString("#519FBE", out c);
+        windowBackground.color = c;
+
+        addChoiceButton.gameObject.SetActive(false);
+
         OnTypeChange(typeDropdown.value);
     }
 
@@ -62,6 +76,7 @@ public class CardCreateController : MonoBehaviour
     {
         // multipleChoicePanel.SetActive(typeDropdown.options[index].text == "Multiple Choice");
         bool isMCQ = typeDropdown.options[index].text == "Multiple Choice";
+        Debug.Log("Dropdown value = " + typeDropdown.value);
 
         if (isMCQ)
         {
@@ -116,10 +131,20 @@ public class CardCreateController : MonoBehaviour
 
     void ChangeColor()
     {
+        // 1) Save current preview color into colorHex (so it gets stored in the Card)
         Color currentPreview = colorPreview.color;
         colorHex = $"#{ColorUtility.ToHtmlStringRGB(currentPreview)}";
-        Color newPreview = Random.ColorHSV();
-        colorPreview.color = newPreview;
+
+        // 2) Define a small palette of hex colors
+        string[] previewPalette = { "#acc8e5", "#E6ACBA", "#cbace6", "#B0E6AC", "#F7E1A0", "#58CCB5" };
+
+        // 3) Advance index and wrap around
+        previewColorIndex = (previewColorIndex + 1) % previewPalette.Length;
+
+        // 4) Parse the next hex and apply it to the preview
+        Color nextPreview;
+        ColorUtility.TryParseHtmlString(previewPalette[previewColorIndex], out nextPreview);
+        colorPreview.color = nextPreview;
     }
 
     void SaveCard()
