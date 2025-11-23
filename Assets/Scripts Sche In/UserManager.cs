@@ -40,19 +40,29 @@ public class UserManager : MonoBehaviour
     {
         string uid = AppContext.UserId;
 
-        var data = new Dictionary<string, object>
+        db.Child("users").Child(uid).GetValueAsync().ContinueWithOnMainThread(t =>
         {
-            { "username", username },
-            { "class", userClass },
-            { "coins", 0 },
-            { "xp", 0 },
-            { "score", 0 },
-            {"isGrouped", false},
-            { "activeGroup", "" }
-        };
+            if (t.IsFaulted) return;
 
-        db.Child("users").Child(uid).SetValueAsync(data);
+            // Only create if user does NOT exist
+            if (!t.Result.Exists)
+            {
+                var data = new Dictionary<string, object>
+            {
+                { "username", username },
+                { "class", userClass },
+                { "coins", 0 },
+                { "xp", 0 },
+                { "score", 0 },
+                {"isGrouped", false},
+                { "activeGroup", "" }
+            };
+
+                db.Child("users").Child(uid).SetValueAsync(data);
+            }
+        });
     }
+
 
     public void LoadUserFromFirebase()
     {
@@ -66,6 +76,7 @@ public class UserManager : MonoBehaviour
             var snap = t.Result;
 
             coins = snap.Child("coins").Exists ? Convert.ToInt32(snap.Child("coins").Value) : 0;
+            Debug.Log("updatedCoins");
             xp = snap.Child("xp").Exists ? Convert.ToInt32(snap.Child("xp").Value) : 0;
             score = snap.Child("score").Exists ? Convert.ToInt32(snap.Child("score").Value) : 0;
         });

@@ -18,9 +18,11 @@ public class Card
 [System.Serializable]
 public class CardSet
 {
+    public string setId;   // NEW: store Firebase ID
     public string setName;
     public List<Card> cards = new List<Card>();
 }
+
 
 public static class DataManager
 {

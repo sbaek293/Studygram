@@ -21,6 +21,7 @@ public class OnlineCardManager : MonoBehaviour
 
         // Automatisches Uploaden
         DataManager.OnSetChanged += UploadOrUpdateSet;
+        LoadPurchasedSets();
     }
 
 
@@ -55,11 +56,16 @@ public class OnlineCardManager : MonoBehaviour
             // Neues Set → generiere ID
             setId = "set_" + Guid.NewGuid().ToString("N").Substring(0, 6);
             PlayerPrefs.SetString("setId_" + set.setName, setId);
+            set.setId = setId;
 
-            // 🔥 Creator automatically owns the set
+            // Creator automatically owns the set
             string userId = AppContext.UserId;
             db.Child("users").Child(userId).Child("purchasedSets").Child(setId).SetValueAsync(true);
             purchasedSetIds.Add(setId);
+        }
+        else
+        {
+            set.setId = setId;
         }
 
         UploadSet(set, 10, setId); // price irrelevant for creator
@@ -118,15 +124,26 @@ public class OnlineCardManager : MonoBehaviour
             if (t.IsFaulted || !t.Result.Exists) return;
 
             int price = Convert.ToInt32(t.Result.Child("price").Value);
+            Debug.Log("tried to buy");
             if (UserManager.Instance.coins >= price)
             {
+                Debug.Log("bought");
                 UserManager.Instance.AddCoins(-price);
 
-                // Add to user's purchased sets
-                db.Child("users").Child(userId).Child("purchasedSets").Child(setId).SetValueAsync(true);
+                // Save in DB
+                db.Child("users").Child(userId).Child("purchasedSets").Child(setId)
+                    .SetValueAsync(true)
+                    .ContinueWithOnMainThread(_ =>
+                    {
+                        // 🔥 IMPORTANT: update local purchased list instantly
+                        purchasedSetIds.Add(setId);
 
-                // Download to local immediately
-                DownloadSet(setId);
+                        // 🔥 Now allow clicking the set
+                        UIManager.Instance.HideBuyPopup();
+
+                        // 🔥 Now download the set
+                        DownloadSet(setId);
+                    });
             }
         });
     }
@@ -141,7 +158,11 @@ public class OnlineCardManager : MonoBehaviour
             if (t.IsFaulted || !t.Result.Exists) return;
 
             var snap = t.Result;
-            CardSet set = new CardSet { setName = snap.Child("setName").Value.ToString() };
+            CardSet set = new CardSet
+            {
+                setId = setId,
+                setName = snap.Child("setName").Value.ToString()
+            };
 
             foreach (var cardSnap in snap.Child("cards").Children)
             {
@@ -179,85 +200,75 @@ public class OnlineCardManager : MonoBehaviour
     // ------------------------
     public void DownloadAllUserSets(Action callback = null)
     {
-        string userId = AppContext.UserId;
-        Debug.Log("1");
         db.Child("cardSets")
           .GetValueAsync().ContinueWithOnMainThread(t =>
           {
-              Debug.Log("2");
               if (t.IsFaulted)
               {
                   Debug.LogError("Firebase Fehler: " + t.Exception);
                   callback?.Invoke();
                   return;
               }
-              Debug.Log("3");
+
               if (!t.Result.Exists || t.Result.ChildrenCount == 0)
               {
                   callback?.Invoke();
                   return;
               }
-              Debug.Log("4");
+
               int setsCount = (int)t.Result.ChildrenCount;
               int downloaded = 0;
 
               foreach (var setSnap in t.Result.Children)
               {
-                  Debug.Log("5");
                   string setId = setSnap.Key;
 
-                  // Direkt inlined statt DownloadSet, um Task korrekt zu überwachen
                   db.Child("cardSets").Child(setId)
-                .GetValueAsync().ContinueWithOnMainThread(s =>
-                  {
-                      Debug.Log("6");
-                      if (!s.IsFaulted && s.Result.Exists)
-                      {
-                          var snap = s.Result;
-                          CardSet set = new CardSet { setName = snap.Child("setName").Value.ToString() };
+                    .GetValueAsync().ContinueWithOnMainThread(s =>
+                    {
+                        if (!s.IsFaulted && s.Result.Exists)
+                        {
+                            var snap = s.Result;
+                            CardSet set = new CardSet
+                            {
+                                setId = setId,
+                                setName = snap.Child("setName").Value.ToString()
+                            };
 
-                          foreach (var cardSnap in snap.Child("cards").Children)
-                          {
-                              Card c = new Card
-                              {
-                                  cardID = cardSnap.Key,
-                                  type = cardSnap.Child("type").Value.ToString(),
-                                  question = cardSnap.Child("question").Value.ToString(),
-                                  answer = cardSnap.Child("answer").Value.ToString(),
-                                  correctChoiceIndex = int.Parse(cardSnap.Child("correctChoiceIndex").Value.ToString()),
-                                  colorHex = cardSnap.Child("colorHex").Value.ToString(),
-                                  choices = new List<string>()
-                              };
+                            foreach (var cardSnap in snap.Child("cards").Children)
+                            {
+                                Card c = new Card
+                                {
+                                    cardID = cardSnap.Key,
+                                    type = cardSnap.Child("type").Value.ToString(),
+                                    question = cardSnap.Child("question").Value.ToString(),
+                                    answer = cardSnap.Child("answer").Value.ToString(),
+                                    correctChoiceIndex = int.Parse(cardSnap.Child("correctChoiceIndex").Value.ToString()),
+                                    colorHex = cardSnap.Child("colorHex").Value.ToString(),
+                                    choices = new List<string>()
+                                };
 
-                              if (cardSnap.Child("choices").Exists)
-                              {
-                                  foreach (var ch in cardSnap.Child("choices").Children)
-                                      c.choices.Add(ch.Value.ToString());
-                              }
+                                if (cardSnap.Child("choices").Exists)
+                                {
+                                    foreach (var ch in cardSnap.Child("choices").Children)
+                                        c.choices.Add(ch.Value.ToString());
+                                }
 
-                              set.cards.Add(c);
-                          }
+                                set.cards.Add(c);
+                            }
 
-                          // Merge in DataManager
-                          if (DataManager.GetSet(set.setName) == null)
-                          {
-                              Debug.Log("Sets downloaded");
-                              DataManager.allSets.Add(set);
-                              DataManager.SaveData();
-                          }
-                      }
+                            if (DataManager.GetSet(set.setName) == null)
+                            {
+                                DataManager.allSets.Add(set);
+                                DataManager.SaveData();
+                            }
+                        }
 
-                      downloaded++;
-
-                      if (downloaded >= setsCount)
-                      {
-                          callback?.Invoke(); // UI refresh will happen here
-                      }
-                  });
+                        downloaded++;
+                        if (downloaded >= setsCount)
+                            callback?.Invoke();
+                    });
               }
           });
-
-        //controller.PopulateSets();
     }
-
 }
