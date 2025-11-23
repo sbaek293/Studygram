@@ -1,6 +1,7 @@
 ﻿using Firebase.Database;
 using Firebase.Extensions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ public class OnlineCardManager : MonoBehaviour
 {
     public static OnlineCardManager Instance;
     private DatabaseReference db;
-
+    public CardMenuController controller;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -19,6 +20,8 @@ public class OnlineCardManager : MonoBehaviour
         // Automatisches Uploaden
         DataManager.OnSetChanged += UploadOrUpdateSet;
     }
+
+   
 
     // ------------------------
     // Upload a new card set
@@ -138,34 +141,37 @@ public class OnlineCardManager : MonoBehaviour
     public void DownloadAllUserSets(Action callback = null)
     {
         string userId = AppContext.UserId;
-
-        db.Child("users").Child(userId).Child("purchasedSets")
+        Debug.Log("1");
+        db.Child("cardSets")
           .GetValueAsync().ContinueWithOnMainThread(t =>
           {
+              Debug.Log("2");
               if (t.IsFaulted)
               {
                   Debug.LogError("Firebase Fehler: " + t.Exception);
                   callback?.Invoke();
                   return;
               }
-
+              Debug.Log("3");
               if (!t.Result.Exists || t.Result.ChildrenCount == 0)
               {
                   callback?.Invoke();
                   return;
               }
-
+              Debug.Log("4");
               int setsCount = (int)t.Result.ChildrenCount;
               int downloaded = 0;
 
               foreach (var setSnap in t.Result.Children)
               {
+                  Debug.Log("5");
                   string setId = setSnap.Key;
 
                   // Direkt inlined statt DownloadSet, um Task korrekt zu überwachen
                   db.Child("cardSets").Child(setId)
                 .GetValueAsync().ContinueWithOnMainThread(s =>
                   {
+                      Debug.Log("6");
                       if (!s.IsFaulted && s.Result.Exists)
                       {
                           var snap = s.Result;
@@ -196,6 +202,7 @@ public class OnlineCardManager : MonoBehaviour
                           // Merge in DataManager
                           if (DataManager.GetSet(set.setName) == null)
                           {
+                              Debug.Log("Sets downloaded");
                               DataManager.allSets.Add(set);
                               DataManager.SaveData();
                           }
@@ -207,6 +214,8 @@ public class OnlineCardManager : MonoBehaviour
                   });
               }
           });
+
+        controller.PopulateSets();
     }
 
 }

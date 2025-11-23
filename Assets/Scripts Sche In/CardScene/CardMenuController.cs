@@ -15,7 +15,7 @@ public class CardMenuController : MonoBehaviour
         newSetButton.onClick.AddListener(() => UIManager.Instance.ShowCardCreator());
     }
 
-    void PopulateSets()
+    public void PopulateSets()
     {
         foreach (Transform child in gridParent) Destroy(child.gameObject);
         foreach (var set in DataManager.allSets)

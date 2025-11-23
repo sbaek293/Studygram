@@ -8,14 +8,16 @@ public class UIManager : MonoBehaviour
     public CanvasGroup overlayFade;
     public GameObject panelMainMenu, panelCardCreator, panelSetSelector, panelStudyMode;
 
-    void Awake()
+    private IEnumerator Start()
     {
+        while (string.IsNullOrEmpty(AppContext.UserId))
+            yield return null;
+
         Instance = this;
         ShowMainMenu();
         DataManager.LoadData();
         OnlineCardManager.Instance.DownloadAllUserSets();
     }
-
     public void ShowPanel(GameObject activePanel)
     {
         StartCoroutine(SwitchPanel(activePanel));
