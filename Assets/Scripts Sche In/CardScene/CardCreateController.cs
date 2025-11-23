@@ -55,6 +55,17 @@ public class CardCreateController : MonoBehaviour
 
     void AddChoice()
     {
+        Debug.Log("AddChoice clicked");
+        if (choicePrefab == null)
+        {
+            Debug.LogError("choicePrefab is NOT assigned in the inspector!");
+            return;
+        }
+        if (choicesParent == null)
+        {
+            Debug.LogError("choicesParent is NOT assigned in the inspector!");
+            return;
+        }
         Instantiate(choicePrefab, choicesParent);
     }
 
