@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using Firebase.Database;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
@@ -193,6 +194,8 @@ public class QuizManager : MonoBehaviour
     
     // NEW: Find and display best groups
     FindBestGroup();
+
+
     
     if (quizPanel != null) quizPanel.SetActive(false);
     if (resultsPanel != null) resultsPanel.SetActive(true);

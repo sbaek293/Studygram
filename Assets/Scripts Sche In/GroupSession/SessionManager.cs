@@ -263,19 +263,22 @@ public class SessionManager : MonoBehaviour
 
         double finalTime = elapsedSeconds;
 
+        // Define rewards
+        int expReward = 50;
+        int coinReward = 10;
+
         var updates = new Dictionary<string, object>()
     {
         { "active", false },
         { "ended", true },
         { "finalTime", finalTime },
-        { "rewards/exp", 50 },
-        { "rewards/coins", 10 },
-
+        { "rewards/exp", expReward },
+        { "rewards/coins", coinReward },
     };
 
         var sessionRef = dbRoot.Child("sessions").Child(currentSessionId);
 
-        // Step 1: Write end summary
+        // Step 1: Write end summary to Firebase
         sessionRef.UpdateChildrenAsync(updates).ContinueWithOnMainThread(t =>
         {
             if (t.IsFaulted)
@@ -286,7 +289,11 @@ public class SessionManager : MonoBehaviour
 
             Debug.Log("Session summary sent.");
 
-            // Step 2: Wait for clients to process the popup
+            // Step 2: Update host coins/XP locally and in Firebase
+            UserManager.Instance.AddXP(expReward);
+            UserManager.Instance.AddCoins(coinReward);
+
+            // Step 3: Wait for clients to process the popup before deleting session
             StartCoroutine(DeleteSessionAfterDelay());
         });
     }

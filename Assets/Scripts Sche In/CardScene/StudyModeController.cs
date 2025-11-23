@@ -79,7 +79,9 @@ public class StudyModeController : MonoBehaviour
 
         // Optional: visually set background color
         if (ColorUtility.TryParseHtmlString(card.colorHex, out Color c))
-            questionText.color = c; // or apply to background element if desired
+            // questionText.color = c; // or apply to background element if desired
+            // flipButton.colors.normalColor = c;
+            flipButton.GetComponent<Image>().color = c;
     }
 
     // Flip card (for Definition type)

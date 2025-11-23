@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -7,12 +7,16 @@ public class CardMenuController : MonoBehaviour
     public Transform gridParent;
     public GameObject setButtonPrefab;
     public Button newSetButton;
+    public Button refreshButton;    
 
     void OnEnable()
     {
         PopulateSets();
         newSetButton.onClick.RemoveAllListeners();
         newSetButton.onClick.AddListener(() => UIManager.Instance.ShowCardCreator());
+
+        refreshButton.onClick.RemoveAllListeners();
+        refreshButton.onClick.AddListener(RefreshSets);  // NEW
     }
 
     public void PopulateSets()
@@ -28,8 +32,38 @@ public class CardMenuController : MonoBehaviour
 
     void OpenSet(string setName)
     {
+        // Find set in DataManager
+        CardSet set = DataManager.GetSet(setName);
+        if (set == null)
+        {
+            Debug.LogError("Set not found: " + setName);
+            return;
+        }
+
+        string setId = set.setId;
+
+        // If user does NOT own the set → show buy UI
+        if (!OnlineCardManager.Instance.purchasedSetIds.Contains(setId))
+        {
+            UIManager.Instance.ShowBuyPopup(setName, setId);
+            return;
+        }
+
+        // User owns the set → open normally
         PlayerPrefs.SetString("CurrentSet", setName);
         UIManager.Instance.ShowStudyMode();
+    }
+
+    void RefreshSets()
+    {
+        Debug.Log("Refreshing sets...");
+
+        // Fetch from Firebase
+        OnlineCardManager.Instance.DownloadAllUserSets(() =>
+        {
+            Debug.Log("Refresh complete.");
+            PopulateSets();
+        });
     }
 
     public void ClearAllData()
