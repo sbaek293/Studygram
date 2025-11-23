@@ -116,45 +116,14 @@ public class CardCreateController : MonoBehaviour
 
     void ChangeColor()
     {
-        colorHex = $"#{ColorUtility.ToHtmlStringRGB(Random.ColorHSV())}";
-        Color c;
-        ColorUtility.TryParseHtmlString(colorHex, out c);
-        colorPreview.color = c;
+        Color currentPreview = colorPreview.color;
+        colorHex = $"#{ColorUtility.ToHtmlStringRGB(currentPreview)}";
+        Color newPreview = Random.ColorHSV();
+        colorPreview.color = newPreview;
     }
 
     void SaveCard()
     {
-        // Card newCard = new Card
-        // {
-        //     cardID = System.Guid.NewGuid().ToString(),
-        //     type = typeDropdown.options[typeDropdown.value].text.ToLower(),
-        //     question = questionField.text,
-        //     colorHex = colorHex
-        // };
-
-        // if (newCard.type == "definition")
-        // {
-        //     newCard.answer = answerField.text;
-        // }
-        // else
-        // {
-        //     newCard.choices = new List<string>();
-        //     int index = 0;
-        //     foreach (Transform child in choicesParent)
-        //     {
-        //         var input = child.GetComponentInChildren<TMP_InputField>().text;
-        //         var toggle = child.GetComponentInChildren<Toggle>().isOn;
-        //         newCard.choices.Add(input);
-        //         if (toggle) newCard.correctChoiceIndex = index;
-        //         index++;
-        //     }
-        // }
-
-        // PlayerPrefs.SetString("TempCard", JsonUtility.ToJson(newCard));
-        // UIManager.Instance.ShowSetSelector();
-
-
-        //above was working
         string selectedType = typeDropdown.options[typeDropdown.value].text.ToLower();
 
         Card newCard = new Card
