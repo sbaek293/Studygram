@@ -47,6 +47,7 @@ public class UserManager : MonoBehaviour
             { "coins", 0 },
             { "xp", 0 },
             { "score", 0 },
+            {"isGrouped", false},
             { "activeGroup", "" }
         };
 
