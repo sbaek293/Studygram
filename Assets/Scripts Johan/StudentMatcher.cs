@@ -1,6 +1,10 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Firebase.Database;
+using Firebase.Extensions;
+using UnityEngine;
 
 public class StudentMatcher : MonoBehaviour
 {
@@ -113,4 +117,77 @@ public class StudentMatcher : MonoBehaviour
         
         return reasons;
     }
+     public async Task<string> FindBestGroupForStudent(string userId, MatchingProfile userProfile, int maxGroupSize = 4)
+    {
+        var db = FirebaseDatabase.DefaultInstance.RootReference;
+        var groupsSnap = await db.Child("groups").GetValueAsync();
+
+        if (!groupsSnap.Exists)
+        {
+            Debug.Log("No groups exist yet.");
+            return null; // caller should create a new group
+        }
+
+        string bestGroupId = null;
+        float bestGroupScore = -1f;
+
+        foreach (var group in groupsSnap.Children)
+        {
+            int size = group.Child("size").Exists ? Convert.ToInt32(group.Child("size").Value) : 0;
+            if (size >= maxGroupSize) continue; // skip full groups
+
+            // gather member ids
+            var usersNode = group.Child("users");
+            List<string> memberIds = new List<string>();
+            foreach (var member in usersNode.Children)
+                memberIds.Add(member.Key);
+
+            // if a group is empty (rare), skip
+            if (memberIds.Count == 0) continue;
+
+            // load member profiles in parallel
+            var tasks = memberIds.Select(id => db.Child("users").Child(id).Child("profile").GetValueAsync()).ToArray();
+            await Task.WhenAll(tasks);
+
+            List<StudentProfile> members = new List<StudentProfile>();
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                var snap = tasks[i].Result;
+                if (snap.Exists)
+                {
+                    try
+                    {
+                        // Expect profile stored as JSON under /users/{uid}/profile
+                        MatchingProfile mp = JsonUtility.FromJson<MatchingProfile>(snap.GetRawJsonValue());
+                        members.Add(new StudentProfile { studentId = memberIds[i], profile = mp });
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning($"Failed to parse profile for {memberIds[i]}: {e.Message}");
+                    }
+                }
+            }
+
+            if (members.Count == 0) continue;
+
+            // compute average compatibility vs members
+            float total = 0f;
+            foreach (var m in members)
+                total += CalculateCompatibility(userProfile, m.profile);
+
+            float avgCompatibility = total / members.Count;
+
+            // choose the group with the highest avgCompatibility
+            if (avgCompatibility > bestGroupScore)
+            {
+                bestGroupScore = avgCompatibility;
+                bestGroupId = group.Key;
+            }
+        }
+
+        // if bestGroupScore is very low, you might prefer to return null to force new group creation.
+        // e.g. if (bestGroupScore < 30) return null;
+        return bestGroupId;
+    }
 }
+

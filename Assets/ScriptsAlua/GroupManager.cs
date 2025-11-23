@@ -1,99 +1,88 @@
-using UnityEngine;
-using Firebase.Database;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Firebase.Database;
+using Firebase.Extensions;
+using UnityEngine;
 
 public class GroupManager : MonoBehaviour
 {
+    public static GroupManager Instance;
     private DatabaseReference db;
 
-    private void Start()
+    private void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
         db = FirebaseDatabase.DefaultInstance.RootReference;
+        DontDestroyOnLoad(gameObject);
     }
 
-    public async Task AssignUserToGroup(string userId, string userClass, int score)
+    // Create a new group with the user as first member. Returns new groupId
+    public async Task<string> CreateNewGroup(string userId, MatchingProfile userProfile)
     {
-        // Step 1: Check if user is already assigned
-        var userGroupSnap = await db.Child("userGroups").Child(userId).GetValueAsync();
-        if (userGroupSnap.Exists)
+        string newGroupId = db.Child("groups").Push().Key;
+
+        var users = new Dictionary<string, object> { { userId, true } };
+
+        var groupData = new Dictionary<string, object>
         {
-            Debug.Log("User already in group: " + userGroupSnap.Value);
+            { "groupId", newGroupId },
+            { "size", 1 },
+            { "averageScore", (int)ComputeProfileScore(userProfile) }, // optional aggregate numeric score
+            { "points", 0 },
+            { "users", users }
+        };
+
+        await db.Child("groups").Child(newGroupId).SetValueAsync(groupData);
+
+        // mark user's active group & isGrouped
+        await db.Child("users").Child(userId).Child("activeGroup").SetValueAsync(newGroupId);
+        await db.Child("users").Child(userId).Child("isGrouped").SetValueAsync(true);
+
+        return newGroupId;
+    }
+
+    // Add user to existing group and update size & averageScore
+    public async Task AddUserToExistingGroup(string userId, string groupId, MatchingProfile userProfile)
+    {
+        var groupRef = db.Child("groups").Child(groupId);
+
+        var snap = await groupRef.GetValueAsync();
+        if (!snap.Exists)
+        {
+            Debug.LogError("Group does not exist: " + groupId);
             return;
         }
 
-        // Step 2: Get all groups of same class with less than 4 people
-        var groupsSnap = await db.Child("groups").GetValueAsync();
-        List<GroupData> possibleGroups = new();
+        int size = snap.Child("size").Exists ? Convert.ToInt32(snap.Child("size").Value) : 0;
+        int avg = snap.Child("averageScore").Exists ? Convert.ToInt32(snap.Child("averageScore").Value) : 0;
 
-        if (groupsSnap.Exists)
-        {
-            foreach (var g in groupsSnap.Children)
-            {
-                string c = g.Child("class").Value.ToString();
-                int size = int.Parse(g.Child("size").Value.ToString());
+        int newSize = size + 1;
 
-                if (c == userClass && size < 4)
-                {
-                    int avgScore = int.Parse(g.Child("averageScore").Value.ToString());
+        // recompute averageScore by including user's profile score (we use a simple numeric proxy)
+        int userScoreValue = (int)ComputeProfileScore(userProfile);
+        int newAvg = (avg * size + userScoreValue) / Math.Max(1, newSize);
 
-                    possibleGroups.Add(new GroupData
-                    {
-                        groupId = g.Key,
-                        averageScore = avgScore,
-                        size = size
-                    });
-                }
-            }
-        }
+        // write updates
+        await groupRef.Child("users").Child(userId).SetValueAsync(true);
+        await groupRef.Child("size").SetValueAsync(newSize);
+        await groupRef.Child("averageScore").SetValueAsync(newAvg);
 
-        string selectedGroupId;
-
-        // Step 3: If no group → create new one
-        if (possibleGroups.Count == 0)
-        {
-            selectedGroupId = db.Child("groups").Push().Key;
-
-            await db.Child("groups").Child(selectedGroupId).SetValueAsync(new Dictionary<string, object>
-            {
-                {"class", userClass},
-                {"size", 1},
-                {"averageScore", score},
-                {"users/" + userId, true}
-            });
-        }
-        else
-        {
-            // Step 4: Pick most compatible group (closest score)
-            var bestGroup = possibleGroups
-                .OrderBy(g => Mathf.Abs(g.averageScore - score))
-                .First();
-
-            selectedGroupId = bestGroup.groupId;
-
-            // Update group info
-            int newSize = bestGroup.size + 1;
-            int newAvg = (bestGroup.averageScore * bestGroup.size + score) / newSize;
-
-            await db.Child("groups").Child(selectedGroupId).Child("users").Child(userId).SetValueAsync(true);
-            await db.Child("groups").Child(selectedGroupId).Child("size").SetValueAsync(newSize);
-            await db.Child("groups").Child(selectedGroupId).Child("averageScore").SetValueAsync(newAvg);
-        }
-
-        // Step 5: Mark user as grouped
+        await db.Child("users").Child(userId).Child("activeGroup").SetValueAsync(groupId);
         await db.Child("users").Child(userId).Child("isGrouped").SetValueAsync(true);
 
-        // Step 6: Add reverse lookup
-        await db.Child("userGroups").Child(userId).SetValueAsync(selectedGroupId);
-
-        Debug.Log("User assigned to group: " + selectedGroupId);
     }
 
-    private class GroupData
+    // Optional helper: compute a numeric score for a profile to store in group.averageScore
+    // You can tune this mapping; here we simply average the attributes to a 0-100 scale.
+    private float ComputeProfileScore(MatchingProfile p)
     {
-        public string groupId;
-        public int averageScore;
-        public int size;
+        float sum = p.morningPerson + p.groupStudy + p.seriousness + p.talkative + p.visual + p.practical + p.theoretical;
+        float avg = sum / 7f; // 1-10 scale
+        return (avg / 10f) * 100f; // convert to 0-100
     }
 }

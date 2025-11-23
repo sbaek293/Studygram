@@ -1496,6 +1496,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1978487544}
   - component: {fileID: 1978487543}
+  - component: {fileID: 1978487545}
+  - component: {fileID: 1978487546}
   m_Layer: 0
   m_Name: QuizManager
   m_TagString: Untagged
@@ -1549,6 +1551,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1978487545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978487542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4c4dc7bd10024468921be6eef993d05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  studentMatcher: {fileID: 0}
+  groupManager: {fileID: 0}
+--- !u!114 &1978487546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978487542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6cd9362fd3a0433eb3ef7ea92f4080c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2142858274
 GameObject:
   m_ObjectHideFlags: 0
