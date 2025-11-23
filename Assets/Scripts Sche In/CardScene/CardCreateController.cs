@@ -30,7 +30,7 @@ public class CardCreateController : MonoBehaviour
 
     void Start()
     {
-        multipleChoicePanel.SetActive(false);
+        // multipleChoicePanel.SetActive(false);
         typeDropdown.onValueChanged.AddListener(OnTypeChange);
         addChoiceButton.onClick.AddListener(AddChoice);
         colorButton.onClick.AddListener(ChangeColor);
@@ -54,28 +54,36 @@ public class CardCreateController : MonoBehaviour
         var answerPlaceholder = answerField.placeholder as TMP_Text;
         if (answerPlaceholder != null)
             answerPlaceholder.text = "Enter an answer";
+
+        OnTypeChange(typeDropdown.value);
     }
 
     void OnTypeChange(int index)
     {
-        multipleChoicePanel.SetActive(typeDropdown.options[index].text == "Multiple Choice");
+        // multipleChoicePanel.SetActive(typeDropdown.options[index].text == "Multiple Choice");
+        bool isMCQ = typeDropdown.options[index].text == "Multiple Choice";
+
+        multipleChoicePanel.SetActive(isMCQ);
+        addChoiceButton.gameObject.SetActive(isMCQ);
     }
 
     void AddChoice()
     {
-        Instantiate(choicePrefab, choicesParent);
+        // Instantiate and keep a reference to the new choice object
+        GameObject newChoice = Instantiate(choicePrefab, choicesParent);
 
-        // // Set placeholder text on the new choice's input field
-        // TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
-        // if (input != null)
-        // {
-        //     var placeholder = input.placeholder as TMP_Text;
-        //     if (placeholder != null)
-        //     {
-        //         int optionNumber = choicesParent.childCount;
-        //         placeholder.text = $"Enter option {optionNumber}";
-        //     }
-        // }
+        // Set placeholder text on the new choice's input field
+        TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
+        if (input != null)
+        {
+            var placeholder = input.placeholder as TMP_Text;
+            if (placeholder != null)
+            {
+                // childCount now includes this newly added choice
+                int optionNumber = choicesParent.childCount;
+                placeholder.text = $"Enter option {optionNumber+1}";
+            }
+        }
     }
 
     void ChangeColor()
