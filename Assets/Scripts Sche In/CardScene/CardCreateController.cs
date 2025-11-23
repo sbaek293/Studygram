@@ -21,7 +21,7 @@ public class CardCreateController : MonoBehaviour
     public Image colorPreview;
     public Button saveButton;
 
-    private string colorHex = "#FFFFFF";
+    private string colorHex = "#000000";
 
     void Start()
     {
