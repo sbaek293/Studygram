@@ -49,7 +49,10 @@ public class SessionLobbyController : MonoBehaviour
             {
                 GameObject item = Instantiate(sessionItemPrefab, sessionListParent);
                 SessionItemUI itemUI = item.GetComponent<SessionItemUI>();
-                itemUI.Init(snap.Key, snap.Key); // or some display name
+                // itemUI.Init(snap.Key, snap.Key); // or some display name
+                string displayName = $"Session {index}/{totalSessions}";
+                itemUI.Init(snap.Key, displayName);
+                index++;
             }
         });
     }
