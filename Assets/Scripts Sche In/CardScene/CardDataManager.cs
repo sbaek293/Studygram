@@ -78,7 +78,8 @@ public static class DataManager
         }
         target.cards.Add(newCard);
         SaveData(); // auto-save after adding card
-        OnSetChanged?.Invoke(target); OnSetChanged?.Invoke(target); OnSetChanged?.Invoke(target);
+        // OnSetChanged?.Invoke(target); OnSetChanged?.Invoke(target); OnSetChanged?.Invoke(target);
+        OnSetChanged?.Invoke(target);
     }
 
     public static void DeleteSet(string name)

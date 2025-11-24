@@ -49,7 +49,15 @@ public class OnlineCardManager : MonoBehaviour
     // ------------------------
     private void UploadOrUpdateSet(CardSet set)
     {
-        string setId = PlayerPrefs.GetString("setId_" + set.setName, "");
+        // string setId = PlayerPrefs.GetString("setId_" + set.setName, "");
+
+        // 1) Prefer the set's own setId (for sets downloaded from Firebase)
+        string setId = set.setId;                             
+        // 2) If it's empty, fall back to PlayerPrefs (for older/local-created sets)
+        if (string.IsNullOrEmpty(setId))                   
+        {
+            setId = PlayerPrefs.GetString("setId_" + set.setName, "");
+        }
 
         if (string.IsNullOrEmpty(setId))
         {
