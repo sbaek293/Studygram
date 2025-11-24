@@ -355,4 +355,28 @@ public class CardCreateController : MonoBehaviour
         // result can be 0 toggles on, which is fine,
         // since SaveCard() already enforces "one must be checked".
     }
+
+    void OnEnable()
+    {
+        previewColorIndex = 1;
+        colorHex = "#acc8e5";
+        Color c;
+        if (ColorUtility.TryParseHtmlString("#E6ACBA", out c))
+            colorPreview.color = c;
+
+        // Clear text fields every time panel opens
+        questionField.text = string.Empty;
+        answerField.text = string.Empty;
+
+        // Clear MCQ options
+        foreach (Transform child in choicesParent)
+            Destroy(child.gameObject);
+
+        // Reset dropdown (optional)
+        typeDropdown.value = 1;
+        typeDropdown.RefreshShownValue();
+
+        // Make sure UI matches type
+        OnTypeChange(typeDropdown.value);
+    }
 }

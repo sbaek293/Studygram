@@ -26,8 +26,19 @@ public class CardMenuController : MonoBehaviour
         {
             var go = Instantiate(setButtonPrefab, gridParent);
             go.GetComponentInChildren<TMP_Text>().text = $"{set.setName} ({set.cards.Count})";
+            // Color the button based on the first card in the set
+            var img = go.GetComponent<Image>();  
+            if (img != null && set.cards != null && set.cards.Count > 0)
+            {
+                string hex = set.cards[0].colorHex;
+                if (!string.IsNullOrEmpty(hex) && ColorUtility.TryParseHtmlString(hex, out Color c))
+                {
+                    img.color = c;
+                }
+            }
             go.GetComponent<Button>().onClick.AddListener(() => OpenSet(set.setName));
         }
+
     }
 
     void OpenSet(string setName)
