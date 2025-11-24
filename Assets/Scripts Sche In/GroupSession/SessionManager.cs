@@ -177,8 +177,9 @@ public class SessionManager : MonoBehaviour
                     int coins = Convert.ToInt32(e.Snapshot.Child("rewards").Child("coins").Value);
                     int score = e.Snapshot.Child("rewards").Child("score").Exists ? Convert.ToInt32(e.Snapshot.Child("rewards").Child("score").Value) : 0;
 
-                    // UserManager.Instance.AddXP(exp);
-                    // UserManager.Instance.AddCoins(coins);
+                    UserManager.Instance.AddXP(exp);
+                    UserManager.Instance.AddCoins(coins);
+                    GardenManager.Instance.AddProgressPoints((int)finalTime);
                     // Show popup
                     EndPopUpUI.Instance.Show(finalTime, exp, coins);
 
