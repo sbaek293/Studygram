@@ -133,8 +133,30 @@ public class CardCreateController : MonoBehaviour
         answerField.gameObject.SetActive(!isMCQ);
     }
 
+    int GetChoiceCount()
+    {
+        int count = 0;
+        foreach (Transform child in choicesParent)
+        {
+            TMP_InputField inputField = child.GetComponentInChildren<TMP_InputField>();
+            Toggle toggle = child.GetComponentInChildren<Toggle>();
+
+            // Only count objects that are actual choice rows (have both input + toggle)
+            if (inputField != null && toggle != null)
+                count++;
+        }
+        return count;
+    }
+
     void AddChoice()
     {
+        int currentCount = GetChoiceCount();
+        if (currentCount >= 4)
+        {
+            ShowError("You can only add up to 4 choices.");
+            return;
+        }
+
         // Instantiate and keep a reference to the new choice object
         GameObject newChoice = Instantiate(choicePrefab, choicesParent);
 
