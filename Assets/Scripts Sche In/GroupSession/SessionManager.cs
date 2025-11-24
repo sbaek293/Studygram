@@ -292,8 +292,8 @@ public class SessionManager : MonoBehaviour
             Debug.Log("Session summary sent.");
 
             // Step 2: Update host coins/XP locally and in Firebase
-            UserManager.Instance.AddXP(expReward);
-            UserManager.Instance.AddCoins(coinReward);
+            // UserManager.Instance.AddXP(expReward);
+            // UserManager.Instance.AddCoins(coinReward);
 
             // Step 3: Wait for clients to process the popup before deleting session
             StartCoroutine(DeleteSessionAfterDelay());
