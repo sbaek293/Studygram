@@ -52,16 +52,16 @@ public class CardCreateController : MonoBehaviour
                     errorPanel.SetActive(false);
             });
 
-        var questionPlaceholder = questionField.placeholder as TMP_Text;
-        if (questionPlaceholder != null)
-            questionPlaceholder.text = "Enter question";
+        // var questionPlaceholder = questionField.placeholder as TMP_Text;
+        // if (questionPlaceholder != null)
+        //     questionPlaceholder.text = "Enter question";
 
         var answerPlaceholder = answerField.placeholder as TMP_Text;
         if (answerPlaceholder != null)
-            answerPlaceholder.text = "Enter an answer";
+            answerPlaceholder.text = "Enter the definition";
 
         Color c;
-        ColorUtility.TryParseHtmlString("#acc8e5", out c);
+        ColorUtility.TryParseHtmlString("#E6ACBA", out c);
         colorPreview.color = c;
 
         ColorUtility.TryParseHtmlString("#519FBE", out c);
@@ -69,8 +69,6 @@ public class CardCreateController : MonoBehaviour
 
         addChoiceButton.gameObject.SetActive(false);
 
-        
-        //added
         foreach (Transform child in choicesParent)                   
         {                                                            
             Toggle t = child.GetComponentInChildren<Toggle>();      
@@ -90,6 +88,14 @@ public class CardCreateController : MonoBehaviour
         // multipleChoicePanel.SetActive(typeDropdown.options[index].text == "Multiple Choice");
         bool isMCQ = typeDropdown.options[index].text == "Multiple Choice";
         Debug.Log("Dropdown value = " + typeDropdown.value);
+
+        var questionPlaceholder = questionField.placeholder as TMP_Text;   
+        if (questionPlaceholder != null)                                  
+        {                                                            
+            questionPlaceholder.text = isMCQ                             
+                ? "Enter the question"                                
+                : "Enter the term";                                 
+        } 
 
         if (isMCQ)
         {
@@ -115,7 +121,7 @@ public class CardCreateController : MonoBehaviour
             // Make sure definition placeholder stays correct
             var answerPlaceholder = answerField.placeholder as TMP_Text;
             if (answerPlaceholder != null)
-                answerPlaceholder.text = "Enter an answer";
+                answerPlaceholder.text = "Enter the definition";
         }
 
         multipleChoicePanel.SetActive(isMCQ);
@@ -179,14 +185,32 @@ public class CardCreateController : MonoBehaviour
             colorHex = colorHex
         };
 
+        string questionText = questionField.text.Trim();                    
+        if (string.IsNullOrEmpty(questionText))                             
+        {                 
+            if (newCard.type == "definition")               
+                ShowError("Please enter the term."); 
+            else ShowError("Please enter the question.");                  
+            return;                                                         
+        } 
+
         if (newCard.type == "definition")
         {
-            newCard.answer = answerField.text;
+            // newCard.answer = answerField.text;
+            string answerText = answerField.text.Trim();                    
+            if (string.IsNullOrEmpty(answerText))                           
+            {                                                               
+                ShowError("Please enter the definition.");                       
+                return;                                                     
+            }                                                               
+
+            newCard.answer = answerText;
         }
         else // multiple choice
         {
             List<string> choices = new List<string>();
             int correctIndex = -1;
+            bool hasEmptyOption = false; 
 
             foreach (Transform child in choicesParent)
             {
@@ -199,8 +223,10 @@ public class CardCreateController : MonoBehaviour
 
                 string text = inputField.text.Trim();
 
-                if (string.IsNullOrEmpty(text))
+                if (string.IsNullOrEmpty(text)) {
+                    hasEmptyOption = true;
                     continue;
+                }
 
                 choices.Add(text);
 
@@ -210,6 +236,11 @@ public class CardCreateController : MonoBehaviour
                 }
             }
 
+            if (hasEmptyOption)
+            {
+                ShowError("Don't leave the choice fields empty.");
+                return;
+            }
 
             // Require at least 2 non-empty choices
             if (choices.Count < 2)
@@ -320,7 +351,4 @@ public class CardCreateController : MonoBehaviour
         // result can be 0 toggles on, which is fine,
         // since SaveCard() already enforces "one must be checked".
     }
-
-
-
 }
