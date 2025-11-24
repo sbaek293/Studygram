@@ -23,6 +23,7 @@ public class SessionManager : MonoBehaviour
     private double elapsedSeconds = 0;
     private float hostUpdateCounter = 0f;
     private const float hostUpdateInterval = 0.5f;
+    private int participantCount = 0; 
 
     private DatabaseReference dbRoot;
 
@@ -142,6 +143,8 @@ public class SessionManager : MonoBehaviour
                 foreach (var child in e.Snapshot.Child("participants").Children)
                     dict[child.Key] = true;
 
+                participantCount = dict.Count; 
+
                 OnParticipantsChanged?.Invoke(dict);
             }
 
@@ -235,6 +238,7 @@ public class SessionManager : MonoBehaviour
     public void StartSession()
     {
         if (!isHost) return;
+        if (participantCount <= 1) return;
 
         dbRoot.Child("sessions").Child(currentSessionId)
             .Child("active").SetValueAsync(true);
