@@ -11,9 +11,10 @@ public class AnswerButton : MonoBehaviour
     
     [Header("Colors")]
     public Color normalColor = Color.white;
-    public Color selectedColor = new Color(0.4f, 0.8f, 1f); // Light blue
+    private Color selectedColor;
     public Color hoverColor = new Color(0.9f, 0.9f, 0.9f);
-    
+    public string selected = "#66ff99";   // your hex color  
+
     private QuizAnswer answer;
     private QuizManager quizManager;
     private Button button;
@@ -21,6 +22,8 @@ public class AnswerButton : MonoBehaviour
     
     void Awake()
     {
+        ColorUtility.TryParseHtmlString(selected, out selectedColor);
+
         button = GetComponent<Button>();
         if (button != null)
         {
