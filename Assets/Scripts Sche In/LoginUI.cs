@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +13,27 @@ public class LoginUI : MonoBehaviour
 
     private void Start()
     {
+        // Hide error label
         errorLabel.SetActive(false);
+
+        //  AUTO LOGIN
+        if (PlayerPrefs.HasKey("userName") && PlayerPrefs.HasKey("userClass") && PlayerPrefs.HasKey("userId"))
+        {
+            Debug.Log("Auto-login with existing user");
+
+            // Load saved values
+            string username = PlayerPrefs.GetString("userName");
+            string userClass = PlayerPrefs.GetString("userClass");
+
+            // Initialize AppContext with saved values
+            AppContext.InitUser(username, userClass);
+
+            // Load user from Firebase
+            UserManager.Instance.LoadUserFromFirebase();
+
+            // Skip login screen
+            SceneManager.LoadScene("GardenSingleUser");
+        }
     }
 
     public async void OnConfirm()
@@ -23,7 +43,6 @@ public class LoginUI : MonoBehaviour
         string username = usernameField.text.Trim();
         string userClass = classDropdown.options[classDropdown.value].text;
 
-        // --- VALIDATION ---
         if (string.IsNullOrEmpty(username))
         {
             errorLabel.SetActive(true);
@@ -33,16 +52,25 @@ public class LoginUI : MonoBehaviour
 
         loading = true;
 
-        // --- 1. Initialize LOCAL user ---
+        // Initialize user
         AppContext.InitUser(username, userClass);
 
-        // --- 2. Create user entry in Firebase ---
-        UserManager.Instance.CreateUserInFirebase(username, userClass);
+        // Check if user already exists in Firebase
+        string uid = AppContext.UserId;
+        var db = Firebase.Database.FirebaseDatabase.DefaultInstance.RootReference;
 
-        // --- 3. Load user data ---
+        var snap = await db.Child("users").Child(uid).GetValueAsync();
+
+        if (!snap.Exists)
+        {
+            // First time  create new user entry
+            UserManager.Instance.CreateUserInFirebase(username, userClass);
+        }
+
+        // Load user into memory
         UserManager.Instance.LoadUserFromFirebase();
 
-        // --- 4. Go to quiz screen ---
+        // Continue to game
         SceneManager.LoadScene("GardenSingleUser");
     }
 }

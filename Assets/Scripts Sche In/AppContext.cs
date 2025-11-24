@@ -8,30 +8,36 @@
         public static string UserClass { get; private set; }
         public static string CurrentGroupId { get; private set; }
 
-        public static void InitUser(string username, string userClass)
+    public static void InitUser(string username, string userClass)
+    {
+        // ---------------------------
+        // USER ID (persistent)
+        // ---------------------------
+        if (!PlayerPrefs.HasKey("userId"))
         {
-            if (string.IsNullOrEmpty(username)) username = "guest";
-
-            if (!PlayerPrefs.HasKey("userId"))
-            {
-                // First-time user → create local ID
-                UserId = "user_" + Guid.NewGuid().ToString("N").Substring(0, 6);
-                PlayerPrefs.SetString("userId", UserId);
-            }
-            else
-            {
-                // Existing user
-                UserId = PlayerPrefs.GetString("userId");
-            }
-
-            UserName = username;
-            UserClass = userClass;
-
-            PlayerPrefs.SetString("userName", username);
-            PlayerPrefs.SetString("userClass", userClass);
+            UserId = "user_" + Guid.NewGuid().ToString("N").Substring(0, 6);
+            PlayerPrefs.SetString("userId", UserId);
+        }
+        else
+        {
+            UserId = PlayerPrefs.GetString("userId");
         }
 
-        public static void SetCurrentGroup(string groupId)
+        // ---------------------------
+        // USERNAME + CLASS (only overwrite if first time)
+        // ---------------------------
+        if (!PlayerPrefs.HasKey("userName"))
+            PlayerPrefs.SetString("userName", username);
+
+        if (!PlayerPrefs.HasKey("userClass"))
+            PlayerPrefs.SetString("userClass", userClass);
+
+        UserName = PlayerPrefs.GetString("userName");
+        UserClass = PlayerPrefs.GetString("userClass");
+    }
+
+
+    public static void SetCurrentGroup(string groupId)
         {
             CurrentGroupId = groupId;
             PlayerPrefs.SetString("currentGroupId", groupId);
