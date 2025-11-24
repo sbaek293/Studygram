@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: What's your approach during study sessions?
   questionType: 4
   answers:
-  - answerText: "Let's chat and learn together! \U0001F4AC"
+  - answerText: 'Let''s chat and learn together! '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Mix of discussion and quiet time \U0001F5E3\uFE0F\u27A1\uFE0F\U0001F910"
+  - answerText: 'Mix of discussion and quiet time '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Mostly quiet with occasional questions \u2753"
+  - answerText: 'Mostly quiet with occasional questions '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Complete silence, just focused work \U0001F507"
+  - answerText: 'Complete silence, just focused work '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5

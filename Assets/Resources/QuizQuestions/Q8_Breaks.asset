@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: How do you handle study breaks?
   questionType: 1
   answers:
-  - answerText: "Power through! Minimal breaks \U0001F4AA"
+  - answerText: 'Power through! Minimal breaks '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 7
       theoretical: 5
-  - answerText: "Pomodoro technique (25 min work, 5 min break) \u23F1\uFE0F"
+  - answerText: "Pomodoro technique (25 min work, 5 min break) \u23F1"
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 8
       theoretical: 5
-  - answerText: "Flexible breaks when I need them \U0001F30A"
+  - answerText: 'Flexible breaks when I need them '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Frequent breaks to stay fresh \U0001F504"
+  - answerText: 'Frequent breaks to stay fresh '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5

@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: How do you learn best?
   questionType: 1
   answers:
-  - answerText: "Visual aids, diagrams, and videos \U0001F441\uFE0F"
+  - answerText: 'Visual aids, diagrams, and videos '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 10
       practical: 5
       theoretical: 6
-  - answerText: "Hands-on practice and examples \U0001F6E0\uFE0F"
+  - answerText: 'Hands-on practice and examples '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 10
       theoretical: 5
-  - answerText: "Reading and understanding concepts \U0001F4D6"
+  - answerText: 'Reading and understanding concepts '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 4
       practical: 5
       theoretical: 10
-  - answerText: "Discussion and explaining to others \U0001F5E3\uFE0F"
+  - answerText: 'Discussion and explaining to others '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5

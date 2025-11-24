@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Sometimes with others, sometimes alone \U0001F91D"
+  - answerText: 'Sometimes with others, sometimes alone '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Mostly alone, occasional partner \U0001F9D1"
+  - answerText: 'Mostly alone, occasional partner '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Always alone, I need silence \U0001F92B"
+  - answerText: 'Always alone, I need silence '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5

@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: What's your goal for this class?
   questionType: 3
   answers:
-  - answerText: "A+ or bust! Going for excellence \U0001F3C6"
+  - answerText: 'A+ or bust! Going for excellence '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 7
       theoretical: 5
-  - answerText: "Solid grade and actually understand the material \U0001F4DA"
+  - answerText: 'Solid grade and actually understand the material '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 7
-  - answerText: "Just pass and learn something useful \U0001F44D"
+  - answerText: 'Just pass and learn something useful '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 5
       practical: 8
       theoretical: 5
-  - answerText: "Pass the class, that's all I need \u2713"
+  - answerText: 'Pass the class, that''s all I need '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5

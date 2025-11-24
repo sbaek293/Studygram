@@ -1,6 +1,5 @@
 using UnityEngine;
 using Firebase.Database;
-using Firebase.Auth;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,26 +13,40 @@ public class RandomGroupAssigner : MonoBehaviour
             Instance = this;
     }
 
-    DatabaseReference db;
-
-   private async void Start()
-{
-    db = FirebaseDatabase.DefaultInstance.RootReference;
-
-    // Ensure user is signed in
-    if (FirebaseAuth.DefaultInstance.CurrentUser == null)
-    {
-        await FirebaseAuth.DefaultInstance.SignInAnonymouslyAsync();
-        Debug.Log("Signed in anonymously as: " + FirebaseAuth.DefaultInstance.CurrentUser.UserId);
-    }
-}
-
+    // REMOVED: Start() method that initializes DB. 
+    // We will use FirebaseInit.DB or fetch it when needed, ensuring dependencies are ready.
 
     /// <summary>
-    /// Call this after quiz finishes.
+    /// Call this button to test random assignment
     /// </summary>
+    public void AssignMe()
+    {
+        if (!FirebaseInit.IsReady)
+        {
+            Debug.LogError("Firebase not ready yet! Wait for FirebaseInit.");
+            return;
+        }
+
+        // CORRECTED: Get the ID from PlayerPrefs, matching QuizEnd.cs logic
+        string userId = PlayerPrefs.GetString("LocalUserId", "");
+        
+        if (string.IsNullOrEmpty(userId))
+        {
+            Debug.LogError("No LocalUserId found. Run the Quiz first!");
+            return;
+        }
+
+        // Note: You need to decide where "className" comes from. 
+        // For testing, we can hardcode it or fetch it if you saved it.
+        string className = "Social Computing"; 
+
+        AssignUserToRandomGroup(userId, className);
+    }
+
     public async void AssignUserToRandomGroup(string userId, string className)
     {
+        var db = FirebaseDatabase.DefaultInstance.RootReference;
+
         // prevent double placement
         var existing = await db.Child("userGroups").Child(userId).GetValueAsync();
         if (existing.Exists)
@@ -42,7 +55,7 @@ public class RandomGroupAssigner : MonoBehaviour
             return;
         }
 
-        // get all groups of same class
+        // get all groups
         var snapshot = await db.Child("groups").GetValueAsync();
 
         List<(string groupId, int size)> candidateGroups = new List<(string, int)>();
@@ -51,8 +64,10 @@ public class RandomGroupAssigner : MonoBehaviour
         {
             foreach (var group in snapshot.Children)
             {
+                // Safety check for null values
                 string gClass = group.Child("className").Value?.ToString();
-                int size = int.Parse(group.Child("size").Value?.ToString() ?? "0");
+                string sizeStr = group.Child("size").Value?.ToString();
+                int size = int.Parse(string.IsNullOrEmpty(sizeStr) ? "0" : sizeStr);
 
                 if (gClass == className && size < 4)
                     candidateGroups.Add((group.Key, size));
@@ -69,6 +84,7 @@ public class RandomGroupAssigner : MonoBehaviour
 
             int newSize = picked.size + 1;
 
+            // Update Group
             await db.Child("groups").Child(selectedGroupId).Child("users").Child(userId).SetValueAsync(true);
             await db.Child("groups").Child(selectedGroupId).Child("size").SetValueAsync(newSize);
         }
@@ -84,32 +100,10 @@ public class RandomGroupAssigner : MonoBehaviour
 
         // store reverse lookup
         await db.Child("userGroups").Child(userId).SetValueAsync(selectedGroupId);
+        
+        // Update user profile to know they have a group (Matches GroupManager logic)
+        await db.Child("users").Child(userId).Child("activeGroup").SetValueAsync(selectedGroupId);
 
-        Debug.Log("User assigned to group: " + selectedGroupId);
+        Debug.Log("User assigned to random group: " + selectedGroupId);
     }
-
-public void AssignMe()
-{
-    string userId = FirebaseAuth.DefaultInstance.CurrentUser.UserId;
-
-    // Get className from Firebase
-    FirebaseDatabase.DefaultInstance
-        .GetReference("Users")
-        .Child(userId)
-        .Child("className")
-        .GetValueAsync()
-        .ContinueWith(task =>
-        {
-            if (task.IsFaulted || !task.Result.Exists)
-            {
-                Debug.LogError("Failed to load className from Firebase.");
-                return;
-            }
-
-            string className = task.Result.Value.ToString();
-
-            // Call your already-written random group assigner
-            AssignUserToRandomGroup(userId, className);
-        });
-}
 }

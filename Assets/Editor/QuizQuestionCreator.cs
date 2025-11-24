@@ -46,22 +46,22 @@ public class QuizQuestionCreator : MonoBehaviour
         {
             new QuizAnswer
             {
-                answerText = "Early morning (6-9 AM) 🌅",
+                answerText = "Early morning (6-9 AM) ",
                 profile = new MatchingProfile { morningPerson = 10, seriousness = 7 }
             },
             new QuizAnswer
             {
-                answerText = "Mid-morning to afternoon (9 AM-5 PM) ☀️",
+                answerText = "Mid-morning to afternoon (9 AM-5 PM) ",
                 profile = new MatchingProfile { morningPerson = 7, seriousness = 6 }
             },
             new QuizAnswer
             {
-                answerText = "Evening (5-10 PM) 🌆",
+                answerText = "Evening (5-10 PM) ",
                 profile = new MatchingProfile { morningPerson = 4, seriousness = 6 }
             },
             new QuizAnswer
             {
-                answerText = "Late night (10 PM-2 AM) 🌙",
+                answerText = "Late night (10 PM-2 AM) ",
                 profile = new MatchingProfile { morningPerson = 1, seriousness = 5 }
             }
         };
@@ -85,17 +85,17 @@ public class QuizQuestionCreator : MonoBehaviour
             },
             new QuizAnswer
             {
-                answerText = "Sometimes with others, sometimes alone 🤝",
+                answerText = "Sometimes with others, sometimes alone ",
                 profile = new MatchingProfile { groupStudy = 6, talkative = 6 }
             },
             new QuizAnswer
             {
-                answerText = "Mostly alone, occasional partner 🧑",
+                answerText = "Mostly alone, occasional partner ",
                 profile = new MatchingProfile { groupStudy = 3, talkative = 4 }
             },
             new QuizAnswer
             {
-                answerText = "Always alone, I need silence 🤫",
+                answerText = "Always alone, I need silence ",
                 profile = new MatchingProfile { groupStudy = 0, talkative = 2 }
             }
         };
@@ -114,22 +114,22 @@ public class QuizQuestionCreator : MonoBehaviour
         {
             new QuizAnswer
             {
-                answerText = "Let's chat and learn together! 💬",
+                answerText = "Let's chat and learn together! ",
                 profile = new MatchingProfile { talkative = 9, groupStudy = 8 }
             },
             new QuizAnswer
             {
-                answerText = "Mix of discussion and quiet time 🗣️➡️🤐",
+                answerText = "Mix of discussion and quiet time ",
                 profile = new MatchingProfile { talkative = 6, groupStudy = 6 }
             },
             new QuizAnswer
             {
-                answerText = "Mostly quiet with occasional questions ❓",
+                answerText = "Mostly quiet with occasional questions ",
                 profile = new MatchingProfile { talkative = 3, groupStudy = 5 }
             },
             new QuizAnswer
             {
-                answerText = "Complete silence, just focused work 🔇",
+                answerText = "Complete silence, just focused work ",
                 profile = new MatchingProfile { talkative = 1, groupStudy = 2 }
             }
         };
@@ -148,22 +148,22 @@ public class QuizQuestionCreator : MonoBehaviour
         {
             new QuizAnswer
             {
-                answerText = "A+ or bust! Going for excellence 🏆",
+                answerText = "A+ or bust! Going for excellence ",
                 profile = new MatchingProfile { seriousness = 10, practical = 7 }
             },
             new QuizAnswer
             {
-                answerText = "Solid grade and actually understand the material 📚",
+                answerText = "Solid grade and actually understand the material ",
                 profile = new MatchingProfile { seriousness = 7, theoretical = 7 }
             },
             new QuizAnswer
             {
-                answerText = "Just pass and learn something useful 👍",
+                answerText = "Just pass and learn something useful ",
                 profile = new MatchingProfile { seriousness = 5, practical = 8 }
             },
             new QuizAnswer
             {
-                answerText = "Pass the class, that's all I need ✓",
+                answerText = "Pass the class, that's all I need ",
                 profile = new MatchingProfile { seriousness = 3, practical = 6 }
             }
         };
@@ -182,22 +182,22 @@ public class QuizQuestionCreator : MonoBehaviour
         {
             new QuizAnswer
             {
-                answerText = "Video calls all the way! 📹",
+                answerText = "Video calls all the way! ",
                 profile = new MatchingProfile { talkative = 9, groupStudy = 8 }
             },
             new QuizAnswer
             {
-                answerText = "Voice chat works great 🎙️",
+                answerText = "Voice chat works great ",
                 profile = new MatchingProfile { talkative = 7, groupStudy = 7 }
             },
             new QuizAnswer
             {
-                answerText = "Text/chat is perfect for me 💬",
+                answerText = "Text/chat is perfect for me ",
                 profile = new MatchingProfile { talkative = 5, groupStudy = 6 }
             },
             new QuizAnswer
             {
-                answerText = "In-person only 🤝",
+                answerText = "In-person only ",
                 profile = new MatchingProfile { talkative = 6, groupStudy = 9 }
             }
         };
@@ -216,22 +216,22 @@ public class QuizQuestionCreator : MonoBehaviour
         {
             new QuizAnswer
             {
-                answerText = "Visual aids, diagrams, and videos 👁️",
+                answerText = "Visual aids, diagrams, and videos ",
                 profile = new MatchingProfile { visual = 10, theoretical = 6 }
             },
             new QuizAnswer
             {
-                answerText = "Hands-on practice and examples 🛠️",
+                answerText = "Hands-on practice and examples ",
                 profile = new MatchingProfile { practical = 10, visual = 5 }
             },
             new QuizAnswer
             {
-                answerText = "Reading and understanding concepts 📖",
+                answerText = "Reading and understanding concepts ",
                 profile = new MatchingProfile { theoretical = 10, visual = 4 }
             },
             new QuizAnswer
             {
-                answerText = "Discussion and explaining to others 🗣️",
+                answerText = "Discussion and explaining to others ",
                 profile = new MatchingProfile { talkative = 9, groupStudy = 9, theoretical = 6 }
             }
         };
@@ -250,22 +250,22 @@ public class QuizQuestionCreator : MonoBehaviour
         {
             new QuizAnswer
             {
-                answerText = "Coffee shop with some background noise ☕",
+                answerText = "Coffee shop with some background noise ",
                 profile = new MatchingProfile { talkative = 6, groupStudy = 7 }
             },
             new QuizAnswer
             {
-                answerText = "Library - quiet but not isolated 📚",
+                answerText = "Library - quiet but not isolated ",
                 profile = new MatchingProfile { talkative = 4, groupStudy = 5, seriousness = 7 }
             },
             new QuizAnswer
             {
-                answerText = "My room with music 🎵",
+                answerText = "My room with music ",
                 profile = new MatchingProfile { talkative = 3, groupStudy = 3 }
             },
             new QuizAnswer
             {
-                answerText = "Silent study room, zero distractions 🔇",
+                answerText = "Silent study room, zero distractions ",
                 profile = new MatchingProfile { talkative = 1, groupStudy = 2, seriousness = 9 }
             }
         };
@@ -284,22 +284,22 @@ public class QuizQuestionCreator : MonoBehaviour
         {
             new QuizAnswer
             {
-                answerText = "Power through! Minimal breaks 💪",
+                answerText = "Power through! Minimal breaks ",
                 profile = new MatchingProfile { seriousness = 9, practical = 7 }
             },
             new QuizAnswer
             {
-                answerText = "Pomodoro technique (25 min work, 5 min break) ⏱️",
+                answerText = "Pomodoro technique (25 min work, 5 min break) ⏱",
                 profile = new MatchingProfile { seriousness = 7, practical = 8 }
             },
             new QuizAnswer
             {
-                answerText = "Flexible breaks when I need them 🌊",
+                answerText = "Flexible breaks when I need them ",
                 profile = new MatchingProfile { seriousness = 5 }
             },
             new QuizAnswer
             {
-                answerText = "Frequent breaks to stay fresh 🔄",
+                answerText = "Frequent breaks to stay fresh ",
                 profile = new MatchingProfile { seriousness = 4, talkative = 6 }
             }
         };

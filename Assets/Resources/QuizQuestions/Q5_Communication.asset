@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: How do you like to communicate with study partners?
   questionType: 2
   answers:
-  - answerText: "Video calls all the way! \U0001F4F9"
+  - answerText: 'Video calls all the way! '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Voice chat works great \U0001F399\uFE0F"
+  - answerText: 'Voice chat works great '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Text/chat is perfect for me \U0001F4AC"
+  - answerText: 'Text/chat is perfect for me '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "In-person only \U0001F91D"
+  - answerText: 'In-person only '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5

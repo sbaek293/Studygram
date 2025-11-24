@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: When do you feel most productive when studying?
   questionType: 0
   answers:
-  - answerText: "Early morning (6-9 AM) \U0001F305"
+  - answerText: 'Early morning (6-9 AM) '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 10
@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Mid-morning to afternoon (9 AM-5 PM) \u2600\uFE0F"
+  - answerText: 'Mid-morning to afternoon (9 AM-5 PM) '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 7
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Evening (5-10 PM) \U0001F306"
+  - answerText: 'Evening (5-10 PM) '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 4
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Late night (10 PM-2 AM) \U0001F319"
+  - answerText: 'Late night (10 PM-2 AM) '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 1

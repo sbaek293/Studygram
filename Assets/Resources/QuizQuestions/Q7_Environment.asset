@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: What's your ideal study environment?
   questionType: 4
   answers:
-  - answerText: "Coffee shop with some background noise \u2615"
+  - answerText: 'Coffee shop with some background noise '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Library - quiet but not isolated \U0001F4DA"
+  - answerText: 'Library - quiet but not isolated '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -35,7 +35,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "My room with music \U0001F3B5"
+  - answerText: 'My room with music '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
       visual: 5
       practical: 5
       theoretical: 5
-  - answerText: "Silent study room, zero distractions \U0001F507"
+  - answerText: 'Silent study room, zero distractions '
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
