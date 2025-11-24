@@ -21,6 +21,7 @@ public class CardCreateController : MonoBehaviour
     public Image colorPreview;
     public Button saveButton;
     public Image windowBackground;
+    public Button backButton; 
 
     [Header("Error Popup")]
     public GameObject errorPanel;
@@ -38,6 +39,13 @@ public class CardCreateController : MonoBehaviour
         colorButton.onClick.AddListener(ChangeColor);
         saveButton.onClick.AddListener(SaveCard);
 
+        backButton.onClick.RemoveAllListeners();
+        backButton.onClick.AddListener(() =>
+        {
+            // Go back without saving – same place SaveCard goes after save
+            UIManager.Instance.ShowSetSelector();
+        });
+
         typeDropdown.value = 1;
         // typeDropdown.options[index].text == "Definition";
 
@@ -51,10 +59,6 @@ public class CardCreateController : MonoBehaviour
                 if (errorPanel != null)
                     errorPanel.SetActive(false);
             });
-
-        // var questionPlaceholder = questionField.placeholder as TMP_Text;
-        // if (questionPlaceholder != null)
-        //     questionPlaceholder.text = "Enter question";
 
         var answerPlaceholder = answerField.placeholder as TMP_Text;
         if (answerPlaceholder != null)

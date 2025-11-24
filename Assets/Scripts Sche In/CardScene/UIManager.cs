@@ -19,16 +19,20 @@
 
         public void ShowBuyPopup(string setName, string setId)
         {
-        Debug.Log(setId);    
-        pendingBuySetId = setId;
+            Debug.Log(setId);    
+            pendingBuySetId = setId;
             pendingBuySetName = setName;
 
-            buyTitleText.text = "Buy Set: " + setName;
+            buyTitleText.text = "Would you like to buy the " + setName + " set?";
+            buyTitleText.enableAutoSizing = false;
+            buyTitleText.fontSize = 24f;
 
             // Load price from Firebase (async)
             OnlineCardManager.Instance.GetSetPrice(setId, (price) =>
             {
-                buyPriceText.text = "Price: " + price + " Coins";
+                buyPriceText.text = "Price: " + price + " coins";
+                buyPriceText.enableAutoSizing = false;
+                buyPriceText.fontSize = 24f;
             });
 
             buyPopup.SetActive(true);
@@ -39,12 +43,14 @@
                 OnlineCardManager.Instance.BuySet(pendingBuySetId);
                 buyPopup.SetActive(false);
             });
+            buyButton.GetComponentInChildren<TMP_Text>().text = "Buy";
 
             cancelBuyButton.onClick.RemoveAllListeners();
             cancelBuyButton.onClick.AddListener(() =>
             {
                 buyPopup.SetActive(false);
             });
+            cancelBuyButton.GetComponentInChildren<TMP_Text>().text = "Cancel";
         }
 
     public void HideBuyPopup()
