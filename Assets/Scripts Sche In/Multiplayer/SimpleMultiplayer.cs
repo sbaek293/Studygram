@@ -51,8 +51,7 @@ public class SimpleMultiplayer : MonoBehaviourPunCallbacks
     {
         Debug.Log("Left room!");
 
-        // load your menu scene
-        SceneManager.LoadScene("MainMenu");
+       
     }
 
     // --------------------------
@@ -62,7 +61,5 @@ public class SimpleMultiplayer : MonoBehaviourPunCallbacks
     {
         Debug.LogWarning("Disconnected: " + cause);
 
-        // back to menu
-        SceneManager.LoadScene("MainMenu");
     }
 }
