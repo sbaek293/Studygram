@@ -69,7 +69,7 @@ public class CardCreateController : MonoBehaviour
         colorPreview.color = c;
 
         ColorUtility.TryParseHtmlString("#519FBE", out c);
-        windowBackground.color = c;
+        //windowBackground.color = c;
 
         addChoiceButton.gameObject.SetActive(false);
 
