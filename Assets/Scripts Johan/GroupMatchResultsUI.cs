@@ -80,13 +80,19 @@ public class GroupMatchResultsUI : MonoBehaviour
 {
     Debug.Log($"Joining group: {groupId}");
     
-    string userId = "user123"; // TODO: Get real user ID
-    
+    // FIX 1: Use the Real User ID (from PlayerPrefs), not "user123"
+    string userId = PlayerPrefs.GetString("LocalUserId", "");
+    if (string.IsNullOrEmpty(userId))
+    {
+        Debug.LogError("No LocalUserId found! Cannot join group.");
+        return;
+    }
+
     try
     {
         var db = FirebaseDatabase.DefaultInstance.RootReference;
         
-        // Add user to group
+        // Add user to group list
         await db.Child("groups").Child(groupId).Child("users").Child(userId).SetValueAsync(true);
         
         // Increment group size
@@ -94,8 +100,9 @@ public class GroupMatchResultsUI : MonoBehaviour
         int currentSize = sizeSnapshot.Exists ? Convert.ToInt32(sizeSnapshot.Value) : 0;
         await db.Child("groups").Child(groupId).Child("size").SetValueAsync(currentSize + 1);
         
-        // Update user's groupId
-        await db.Child("users").Child(userId).Child("groupId").SetValueAsync(groupId);
+        // FIX 2: Save as "activeGroup" (What GardenManager looks for), not "groupId"
+        await db.Child("users").Child(userId).Child("activeGroup").SetValueAsync(groupId);
+        await db.Child("users").Child(userId).Child("isGrouped").SetValueAsync(true); // Optional helpful flag
         
         Debug.Log("Successfully joined group!");
         
@@ -104,7 +111,7 @@ public class GroupMatchResultsUI : MonoBehaviour
         PlayerPrefs.Save();
         
         // Load garden scene
-        SceneManager.LoadScene("Garden"); // Change to your garden scene name
+        SceneManager.LoadScene("Garden"); 
     }
     catch (Exception e)
     {

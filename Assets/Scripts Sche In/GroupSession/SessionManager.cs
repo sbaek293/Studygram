@@ -304,6 +304,36 @@ public class SessionManager : MonoBehaviour
         });
     }
 
+    public void LeaveSession()
+    {
+        // Host: end the session for everyone
+        if (isHost)
+        {
+            EndSession();
+        }
+        else
+        {
+            // Guest: just remove yourself from participants
+            if (!string.IsNullOrEmpty(currentSessionId))
+            {
+                dbRoot.Child("sessions")
+                    .Child(currentSessionId)
+                    .Child("participants")
+                    .Child(AppContext.UserId)
+                    .RemoveValueAsync();
+            }
+
+            StopListening();
+        }
+
+        // Go back to lobby UI if you want
+        if (panelController != null)
+        {
+            panelController.ShowLobby();
+        }
+    }
+
+
     private IEnumerator DeleteSessionAfterDelay()
     {
         yield return new WaitForSeconds(3f); // give clients time
@@ -312,8 +342,6 @@ public class SessionManager : MonoBehaviour
             .ContinueWithOnMainThread(t =>
             {
                 Debug.Log("Session deleted.");
-
-                
             });
     }
 
