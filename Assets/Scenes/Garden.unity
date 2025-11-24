@@ -1808,7 +1808,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuPanel: {fileID: 724356422}
   profileUI: {fileID: 0}
-  groupGardenSceneName: Group_Garden_Scene
+  groupGardenSceneName: Garden
 --- !u!1 &1558198776
 GameObject:
   m_ObjectHideFlags: 0
