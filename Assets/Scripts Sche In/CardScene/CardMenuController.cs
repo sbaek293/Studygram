@@ -12,6 +12,7 @@ public class CardMenuController : MonoBehaviour
     void OnEnable()
     {
         PopulateSets();
+        // RefreshSets();
         newSetButton.onClick.RemoveAllListeners();
         newSetButton.onClick.AddListener(() => UIManager.Instance.ShowCardCreator());
 
