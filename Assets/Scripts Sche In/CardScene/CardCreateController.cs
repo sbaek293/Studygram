@@ -27,8 +27,8 @@ public class CardCreateController : MonoBehaviour
     public TMP_Text errorText;
     public Button errorCloseButton;
 
-    private string colorHex = "#000000";
-    private int previewColorIndex = 0;
+    private string colorHex = "#acc8e5";
+    private int previewColorIndex = 1;
 
     void Start()
     {
@@ -68,6 +68,19 @@ public class CardCreateController : MonoBehaviour
         windowBackground.color = c;
 
         addChoiceButton.gameObject.SetActive(false);
+
+        
+        //added
+        foreach (Transform child in choicesParent)                   
+        {                                                            
+            Toggle t = child.GetComponentInChildren<Toggle>();      
+            if (t != null)                                        
+            {                                                       
+                t.isOn = false;                                     
+                t.onValueChanged.AddListener(isOn =>               
+                    OnChoiceToggleChanged(t, isOn));               
+            }                                                      
+        } 
 
         OnTypeChange(typeDropdown.value);
     }
@@ -114,6 +127,13 @@ public class CardCreateController : MonoBehaviour
     {
         // Instantiate and keep a reference to the new choice object
         GameObject newChoice = Instantiate(choicePrefab, choicesParent);
+
+        Toggle toggle = newChoice.GetComponentInChildren<Toggle>();                  
+        if (toggle != null)                                                         
+        {                                                                           
+            toggle.isOn = false;                                                    
+            toggle.onValueChanged.AddListener(isOn => OnChoiceToggleChanged(toggle, isOn)); 
+        } 
 
         // Set placeholder text on the new choice's input field
         TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
@@ -250,8 +270,18 @@ public class CardCreateController : MonoBehaviour
         foreach (Transform child in choicesParent)
         {
             TMP_InputField input = child.GetComponentInChildren<TMP_InputField>();
-            if (input != null)
+            if (input != null) {
+                // make sure its toggle is part of the "at most one" logic
+                Toggle t = child.GetComponentInChildren<Toggle>();
+                if (t != null)
+                {
+                    // optional: force it off initially
+                    // t.isOn = false;
+                    t.onValueChanged.AddListener(isOn => OnChoiceToggleChanged(t, isOn));
+                }
+
                 return input;
+            }
         }
 
         // If none exists but we have a prefab, create option 1
@@ -259,11 +289,38 @@ public class CardCreateController : MonoBehaviour
         {
             GameObject newChoice = Instantiate(choicePrefab, choicesParent);
             TMP_InputField input = newChoice.GetComponentInChildren<TMP_InputField>();
+            Toggle t = newChoice.GetComponentInChildren<Toggle>();
+            if (t != null)
+            {
+                t.isOn = true;
+                t.onValueChanged.AddListener(isOn => OnChoiceToggleChanged(t, isOn));
+            }
             return input;
         }
 
         return null;
     }
+
+    // Ensures at most one toggle is on at any time
+    void OnChoiceToggleChanged(Toggle changedToggle, bool isOn)
+    {
+        // If this toggle was turned ON, turn all others OFF
+        if (isOn)
+        {
+            foreach (Transform child in choicesParent)
+            {
+                Toggle t = child.GetComponentInChildren<Toggle>();
+                if (t != null && t != changedToggle)
+                {
+                    t.isOn = false;
+                }
+            }
+        }
+        // If it was turned OFF, we do nothing:
+        // result can be 0 toggles on, which is fine,
+        // since SaveCard() already enforces "one must be checked".
+    }
+
 
 
 }

@@ -192,6 +192,13 @@ public class OnlineCardManager : MonoBehaviour
                 DataManager.allSets.Add(set);
                 DataManager.SaveData();
             }
+            //load new version and delete old if exists
+            else
+            {
+                var existing = DataManager.GetSet(set.setName);
+                DataManager.allSets.Remove(existing);
+                DataManager.allSets.Add(set);
+            }
         });
     }
 
@@ -261,6 +268,12 @@ public class OnlineCardManager : MonoBehaviour
                             {
                                 DataManager.allSets.Add(set);
                                 DataManager.SaveData();
+                            }
+                            else
+                            {
+                                var existing = DataManager.GetSet(set.setName);
+                                DataManager.allSets.Remove(existing);
+                                DataManager.allSets.Add(set);
                             }
                         }
 
