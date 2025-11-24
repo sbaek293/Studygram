@@ -20,7 +20,6 @@ public class CardCreateController : MonoBehaviour
     public Button colorButton;
     public Image colorPreview;
     public Button saveButton;
-    public Image windowBackground;
     public Button backButton; 
 
     [Header("Error Popup")]
@@ -43,7 +42,7 @@ public class CardCreateController : MonoBehaviour
         backButton.onClick.AddListener(() =>
         {
             // Go back without saving – same place SaveCard goes after save
-            UIManager.Instance.ShowSetSelector();
+            UIManager.Instance.ShowMainMenu();
         });
 
         typeDropdown.value = 1;
@@ -67,9 +66,6 @@ public class CardCreateController : MonoBehaviour
         Color c;
         ColorUtility.TryParseHtmlString("#E6ACBA", out c);
         colorPreview.color = c;
-
-        ColorUtility.TryParseHtmlString("#519FBE", out c);
-        //windowBackground.color = c;
 
         addChoiceButton.gameObject.SetActive(false);
 
@@ -133,8 +129,30 @@ public class CardCreateController : MonoBehaviour
         answerField.gameObject.SetActive(!isMCQ);
     }
 
+    int GetChoiceCount()
+    {
+        int count = 0;
+        foreach (Transform child in choicesParent)
+        {
+            TMP_InputField inputField = child.GetComponentInChildren<TMP_InputField>();
+            Toggle toggle = child.GetComponentInChildren<Toggle>();
+
+            // Only count objects that are actual choice rows (have both input + toggle)
+            if (inputField != null && toggle != null)
+                count++;
+        }
+        return count;
+    }
+
     void AddChoice()
     {
+        int currentCount = GetChoiceCount();
+        if (currentCount >= 4)
+        {
+            ShowError("You can only add up to 4 choices.");
+            return;
+        }
+
         // Instantiate and keep a reference to the new choice object
         GameObject newChoice = Instantiate(choicePrefab, choicesParent);
 
@@ -156,14 +174,54 @@ public class CardCreateController : MonoBehaviour
                 int optionNumber = choicesParent.childCount;
                 placeholder.text = $"Enter option {optionNumber}";
             }
+            // Color the new choice with current colorHex
+            Color c;
+            if (ColorUtility.TryParseHtmlString(colorHex, out c))
+            {
+                var choiceBg = input.GetComponent<Image>();
+                if (choiceBg != null)
+                    choiceBg.color = c;
+            }
         }
     }
+
+    void ApplyCurrentColorToTextFields()
+    {
+        Color c;
+        if (!ColorUtility.TryParseHtmlString(colorHex, out c))
+            return;
+
+        // Question box background
+        var questionBg = questionField.GetComponent<Image>();
+        if (questionBg != null)
+            questionBg.color = c;
+
+        // Definition answer box background
+        var answerBg = answerField.GetComponent<Image>();
+        if (answerBg != null)
+            answerBg.color = c;
+
+        // MCQ choice input backgrounds (if any exist already)
+        foreach (Transform child in choicesParent)
+        {
+            TMP_InputField choiceInput = child.GetComponentInChildren<TMP_InputField>();
+            if (choiceInput != null)
+            {
+                var choiceBg = choiceInput.GetComponent<Image>();
+                if (choiceBg != null)
+                    choiceBg.color = c;
+            }
+        }
+    }
+
 
     void ChangeColor()
     {
         // 1) Save current preview color into colorHex (so it gets stored in the Card)
         Color currentPreview = colorPreview.color;
         colorHex = $"#{ColorUtility.ToHtmlStringRGB(currentPreview)}";
+
+        ApplyCurrentColorToTextFields();
 
         // 2) Define a small palette of hex colors
         string[] previewPalette = { "#acc8e5", "#E6ACBA", "#cbace6", "#EB9A57", "#F7E1A0", "#58CCB5" };
@@ -305,14 +363,22 @@ public class CardCreateController : MonoBehaviour
         foreach (Transform child in choicesParent)
         {
             TMP_InputField input = child.GetComponentInChildren<TMP_InputField>();
-            if (input != null) {
+            if (input != null)
+            {
                 // make sure its toggle is part of the "at most one" logic
                 Toggle t = child.GetComponentInChildren<Toggle>();
                 if (t != null)
                 {
-                    // optional: force it off initially
-                    // t.isOn = false;
                     t.onValueChanged.AddListener(isOn => OnChoiceToggleChanged(t, isOn));
+                }
+
+                // Ensure its background matches current colorHex
+                Color c;
+                if (ColorUtility.TryParseHtmlString(colorHex, out c))
+                {
+                    var choiceBg = input.GetComponent<Image>();
+                    if (choiceBg != null)
+                        choiceBg.color = c;
                 }
 
                 return input;
@@ -330,6 +396,16 @@ public class CardCreateController : MonoBehaviour
                 t.isOn = true;
                 t.onValueChanged.AddListener(isOn => OnChoiceToggleChanged(t, isOn));
             }
+
+            // Color the newly created first option
+            Color c;
+            if (ColorUtility.TryParseHtmlString(colorHex, out c))
+            {
+                var choiceBg = input.GetComponent<Image>();
+                if (choiceBg != null)
+                    choiceBg.color = c;
+            }
+
             return input;
         }
 
@@ -363,6 +439,8 @@ public class CardCreateController : MonoBehaviour
         Color c;
         if (ColorUtility.TryParseHtmlString("#E6ACBA", out c))
             colorPreview.color = c;
+
+        ApplyCurrentColorToTextFields();
 
         // Clear text fields every time panel opens
         questionField.text = string.Empty;

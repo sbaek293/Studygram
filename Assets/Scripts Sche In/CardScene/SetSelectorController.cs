@@ -41,6 +41,18 @@ public class SetSelectorController : MonoBehaviour
 
         if (string.IsNullOrEmpty(finalName)) return;
 
+        // Only need to check duplicates when user is creating a NEW set
+        if (selected == "New Set")
+        {
+            // Does a set with this name already exist?
+            if (DataManager.GetSet(finalName) != null)
+            {
+                // You can replace this with a proper error popup if you want
+                Debug.LogWarning("A set with this name already exists: " + finalName);
+                return;
+            }
+        }
+
         DataManager.AddCardToSet(card, finalName);
         UIManager.Instance.ShowMainMenu();
     }

@@ -29,12 +29,30 @@ public class CardMenuController : MonoBehaviour
             go.GetComponentInChildren<TMP_Text>().text = $"{set.setName} ({set.cards.Count})";
             // Color the button based on the first card in the set
             var img = go.GetComponent<Image>();  
-            if (img != null && set.cards != null && set.cards.Count > 0)
+
+            bool isOwned = true;   // default: assume owned
+            string setId = set.setId;
+            // If the set has a valid online id, check purchasedSetIds
+            if (!string.IsNullOrEmpty(setId) && OnlineCardManager.Instance != null)
             {
-                string hex = set.cards[0].colorHex;
-                if (!string.IsNullOrEmpty(hex) && ColorUtility.TryParseHtmlString(hex, out Color c))
+                isOwned = OnlineCardManager.Instance.purchasedSetIds.Contains(setId);
+            }
+            if (!isOwned)
+            {
+                // Unbought = grey
+                if (img != null)
+                    img.color = Color.gray;
+            }
+            else
+            {
+                // Owned = color of first card
+                if (img != null && set.cards != null && set.cards.Count > 0)
                 {
-                    img.color = c;
+                    string hex = set.cards[0].colorHex;
+                    if (!string.IsNullOrEmpty(hex) && ColorUtility.TryParseHtmlString(hex, out Color c))
+                    {
+                        img.color = c;
+                    }
                 }
             }
             go.GetComponent<Button>().onClick.AddListener(() => OpenSet(set.setName));
