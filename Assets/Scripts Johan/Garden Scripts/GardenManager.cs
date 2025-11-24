@@ -39,7 +39,21 @@ public class GardenManager : MonoBehaviour
     private string currentGroupId;
     private DatabaseReference db;
     private bool isInitialized = false;
-    
+
+    public static GardenManager Instance;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         db = FirebaseDatabase.DefaultInstance.RootReference;

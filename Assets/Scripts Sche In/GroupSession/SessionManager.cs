@@ -10,7 +10,7 @@ public class SessionManager : MonoBehaviour
 {
     public static SessionManager Instance;
     public SessionPanelController panelController;
-
+    //public GardenManager gardenManager;
     [Header("Session State")]
     //public string currentUserId;
     public string currentSessionId;
@@ -263,9 +263,10 @@ public class SessionManager : MonoBehaviour
 
         double finalTime = elapsedSeconds;
 
+        GardenManager.Instance.AddProgressPoints((int)finalTime);
         // Define rewards
         int expReward = 50;
-        int coinReward = 20 * (int)(finalTime/1800);
+        int coinReward = (int)finalTime;
 
         var updates = new Dictionary<string, object>()
     {

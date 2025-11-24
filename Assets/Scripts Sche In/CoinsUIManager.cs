@@ -19,7 +19,6 @@ public class CoinsUIManager : MonoBehaviour
 
     public void updateUI()
     {
-        Debug.Log("you should have" + UserManager.Instance.coins);
         coinsText.text = UserManager.Instance.coins + "";
     } 
 }
