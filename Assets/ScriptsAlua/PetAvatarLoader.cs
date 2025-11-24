@@ -5,15 +5,16 @@ using Firebase.Extensions; // Required for ContinueWithOnMainThread
 public class PetAvatarLoader : MonoBehaviour
 {
     private SpriteRenderer myRenderer;
-
+    public static string avatarName;
     void Start()
     {
         // 1. Get the SpriteRenderer component attached to this specific object (PetSprite)
         myRenderer = GetComponent<SpriteRenderer>();
-
+       
         // 2. Start loading the avatar
         LoadAvatar();
     }
+    
 
     void LoadAvatar()
     {
@@ -39,7 +40,7 @@ public class PetAvatarLoader : MonoBehaviour
 
                 if (snapshot.Exists && snapshot.Value != null)
                 {
-                    string avatarName = snapshot.Value.ToString(); // e.g., "owl" or "leopard"
+                    avatarName = snapshot.Value.ToString(); // e.g., "owl" or "leopard"
                     
                     // 4. Ask your AvatarManager for the actual picture
                     // (Make sure AvatarManager is in the scene!)

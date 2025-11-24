@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
 public class CoinsUIManager : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class CoinsUIManager : MonoBehaviour
     public TMP_Text coinsText;
     void Start()
     {
-       
+        
     }
 
     // Update is called once per frame

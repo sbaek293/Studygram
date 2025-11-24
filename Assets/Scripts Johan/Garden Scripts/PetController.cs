@@ -5,7 +5,8 @@ using UnityEngine;
 /// Controls pet movement in the garden
 /// Supports: Click-to-move, Keyboard (WASD/Arrows), and can add joystick later
 /// </summary>
-public class PetController : MonoBehaviour
+public class PetController : MonoBehaviour, IPunObservable
+
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 3f;
@@ -26,8 +27,8 @@ public class PetController : MonoBehaviour
 
     private PhotonView PV;
 
-    private Vector3 networkPos;
-    private Vector2 networkVelocity;
+    private Vector3 networkTargetPos;
+
     private bool networkFlip;
 
     void Start()
@@ -36,13 +37,15 @@ public class PetController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         targetPosition = transform.position;
         PV = GetComponent<PhotonView>();
+        networkTargetPos = transform.position;
+
         // Setup rigidbody for smooth movement
         if (rb != null)
         {
             rb.gravityScale = 0; // No gravity for top-down
             rb.freezeRotation = true;
         }
-        
+       
     }
     
     void Update()
@@ -53,9 +56,10 @@ public class PetController : MonoBehaviour
         }
         else
         {
-            // Smooth remote movement
-            transform.position = Vector3.Lerp(transform.position, networkPos, Time.deltaTime * 10f);
-            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, networkVelocity, Time.deltaTime * 10f);
+            // Remote player moves toward networked target
+            Vector2 newPos = Vector2.MoveTowards(transform.position, networkTargetPos, moveSpeed * Time.deltaTime);
+            rb.MovePosition(newPos);
+
             spriteRenderer.flipX = networkFlip;
         }
 
@@ -175,14 +179,14 @@ public class PetController : MonoBehaviour
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(transform.position);
-            stream.SendNext(rb.linearVelocity);
+            stream.SendNext(targetPosition);
+            
             stream.SendNext(spriteRenderer.flipX);
         }
         else
         {
-            networkPos = (Vector3)stream.ReceiveNext();
-            networkVelocity = (Vector2)stream.ReceiveNext();
+            networkTargetPos = (Vector3)stream.ReceiveNext();
+            
             networkFlip = (bool)stream.ReceiveNext();
         }
     }

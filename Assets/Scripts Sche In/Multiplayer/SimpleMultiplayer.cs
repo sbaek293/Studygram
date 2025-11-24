@@ -1,16 +1,19 @@
-using UnityEngine;
+using Firebase.Database;
+using Firebase.Extensions;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SimpleMultiplayer : MonoBehaviourPunCallbacks
 {
     public string roomName = "MainRoom";   // All players go here
-    public string playerPrefab = "Player"; // Must be in Resources folder
+    public string playerPrefab; // Must be in Resources folder
 
     void Start()
     {
-        Debug.Log("Connecting to Photon...");
+        playerPrefab = PetAvatarLoader.avatarName;
+        Debug.Log("Connecting to Photon..."+ playerPrefab);
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -30,6 +33,8 @@ public class SimpleMultiplayer : MonoBehaviourPunCallbacks
         );
     }
 
+    
+
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined Room: " + roomName);
@@ -47,6 +52,10 @@ public class SimpleMultiplayer : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
+    public void disconnectFromPhoton()
+    {
+        PhotonNetwork.Disconnect();
+    }
     public override void OnLeftRoom()
     {
         Debug.Log("Left room!");
