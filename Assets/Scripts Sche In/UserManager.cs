@@ -55,7 +55,8 @@ public class UserManager : MonoBehaviour
                 { "xp", 0 },
                 { "score", 0 },
                 {"isGrouped", false},
-                { "activeGroup", "" }
+                { "activeGroup", "" },
+                {"avatarId", ""}
             };
 
                 db.Child("users").Child(uid).SetValueAsync(data);
