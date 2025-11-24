@@ -25,7 +25,11 @@ public class PetController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private PhotonView PV;
-    Vector2 _smoothMovementVector;
+
+    private Vector3 networkPos;
+    private Vector2 networkVelocity;
+    private bool networkFlip;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -38,13 +42,23 @@ public class PetController : MonoBehaviour
             rb.gravityScale = 0; // No gravity for top-down
             rb.freezeRotation = true;
         }
+        
     }
     
     void Update()
     {
-        if (!PV.IsMine) return;
-        HandleInput();
-        
+        if (PV.IsMine)
+        {
+            HandleInput();
+        }
+        else
+        {
+            // Smooth remote movement
+            transform.position = Vector3.Lerp(transform.position, networkPos, Time.deltaTime * 10f);
+            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, networkVelocity, Time.deltaTime * 10f);
+            spriteRenderer.flipX = networkFlip;
+        }
+
         // Update animation if animator exists
         if (animator != null)
         {
@@ -55,7 +69,7 @@ public class PetController : MonoBehaviour
     
     void FixedUpdate()
     {
-        if (!PV.IsMine) SmoothMovement();
+        if (!PV.IsMine) return;
 
         if (isMovingToTarget)
         {
@@ -63,12 +77,8 @@ public class PetController : MonoBehaviour
         }
     }
 
-    void SmoothMovement()
-    {
-        rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, _smoothMovementVector, 0.1f);
-
-
-    }
+    
+    
     void HandleInput()
     {
         // Click-to-move (mobile friendly)
@@ -165,15 +175,16 @@ public class PetController : MonoBehaviour
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(transform.position);
             stream.SendNext(rb.linearVelocity);
-            //stream.SendNext(Health);
+            stream.SendNext(spriteRenderer.flipX);
         }
-        else if (stream.IsReading)
+        else
         {
-            _smoothMovementVector = (Vector2)stream.ReceiveNext();
-            //Health = (float)stream.ReceiveNext();
+            networkPos = (Vector3)stream.ReceiveNext();
+            networkVelocity = (Vector2)stream.ReceiveNext();
+            networkFlip = (bool)stream.ReceiveNext();
         }
     }
-
 
 }

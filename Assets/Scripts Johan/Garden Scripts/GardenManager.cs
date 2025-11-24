@@ -42,17 +42,13 @@ public class GardenManager : MonoBehaviour
 
     public static GardenManager Instance;
     private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+{
+    // Just set the static reference so other scripts can find it
+    Instance = this;
+    
+    // REMOVED: DontDestroyOnLoad(gameObject); 
+    // We WANT this to be destroyed when we leave the scene so a fresh one can load next time.
+}
 
     void Start()
     {
