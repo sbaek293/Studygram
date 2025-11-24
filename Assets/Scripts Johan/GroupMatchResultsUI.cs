@@ -4,7 +4,6 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System;
-using UnityEngine.SceneManagement;
 using Firebase.Database;
 
 public class GroupMatchResultsUI : MonoBehaviour
@@ -26,96 +25,132 @@ public class GroupMatchResultsUI : MonoBehaviour
         public List<string> matchReasons;
     }
     
-  public void ShowGroupMatches(List<GroupMatchData> groups)
-{
-    Debug.Log($"=== Showing {groups.Count} groups ===");
-    
-    // Clear previous
-    foreach (Transform child in groupListContainer)
+    public void ShowGroupMatches(List<GroupMatchData> groups)
     {
-        Destroy(child.gameObject);
-    }
-    
-    // Create cards
-    foreach (var group in groups)
-    {
-        GameObject item = Instantiate(groupItemPrefab, groupListContainer);
-        Debug.Log($"Spawned: {group.groupName} at Y: {item.transform.localPosition.y}");
+        Debug.Log($"=== ShowGroupMatches called with {groups.Count} groups ===");
         
-        // Find components in the prefab
-        TextMeshProUGUI nameText = item.transform.Find("GroupNameText")?.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI sizeText = item.transform.Find("SizeText")?.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI scoreText = item.transform.Find("ScoreText")?.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI badgeText = item.transform.Find("BadgeText")?.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI membersText = item.transform.Find("MembersText")?.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI reasonsText = item.transform.Find("ReasonsText")?.GetComponent<TextMeshProUGUI>();
-        Button joinButton = item.transform.Find("JoinButton")?.GetComponent<Button>();
-        
-        // Fill data
-        if (nameText != null) nameText.text = group.groupName;
-        if (sizeText != null) sizeText.text = $"{group.memberCount}/{group.maxMembers} members";
-        if (scoreText != null) scoreText.text = $"{group.compatibilityScore:F0}% Match";
-        if (badgeText != null) badgeText.text = StudentMatcher.GetCompatibilityDescription(group.compatibilityScore);
-        if (membersText != null) membersText.text = "Members: " + string.Join(", ", group.memberNames);
-        if (reasonsText != null) reasonsText.text = string.Join("\n", group.matchReasons);
-        
-        // Connect join button
-        if (joinButton != null)
+        // Clear previous items
+        foreach (Transform child in groupListContainer)
         {
-            string groupId = group.groupId;
-            joinButton.onClick.AddListener(() => JoinGroup(groupId));
+            Destroy(child.gameObject);
+        }
+        
+        // Create cards
+        foreach (var group in groups)
+        {
+            GameObject item = Instantiate(groupItemPrefab, groupListContainer);
+            Debug.Log($"Spawned Card for: {group.groupName}");
+            
+            // --- FIX START: Use Recursive Search to find components ---
+            // This finds the object even if it is nested inside other Panels/Layouts
+            
+            var nameText = FindComponentDeep<TextMeshProUGUI>(item.transform, "GroupNameText");
+            var sizeText = FindComponentDeep<TextMeshProUGUI>(item.transform, "SizeText");
+            var scoreText = FindComponentDeep<TextMeshProUGUI>(item.transform, "ScoreText");
+            var badgeText = FindComponentDeep<TextMeshProUGUI>(item.transform, "BadgeText");
+            var membersText = FindComponentDeep<TextMeshProUGUI>(item.transform, "MembersText");
+            var reasonsText = FindComponentDeep<TextMeshProUGUI>(item.transform, "ReasonsText");
+            var joinButton = FindComponentDeep<Button>(item.transform, "JoinButton");
+            
+            // Debugging to help you identify naming mismatches
+            if (nameText == null) Debug.LogError("❌ Could not find 'GroupNameText' in prefab!");
+            if (scoreText == null) Debug.LogError("❌ Could not find 'ScoreText' in prefab!");
+            if (joinButton == null) Debug.LogError("❌ Could not find 'JoinButton' in prefab!");
+
+            // Fill data
+            if (nameText != null) nameText.text = group.groupName;
+            if (sizeText != null) sizeText.text = $"{group.memberCount}/{group.maxMembers} members";
+            if (scoreText != null) scoreText.text = $"{group.compatibilityScore:F0}% Match";
+            
+            // Handle static helper check safely
+            string badgeDesc = "Good Match";
+            // Check if StudentMatcher exists, otherwise fallback
+            // (Assumes StudentMatcher is in the project)
+            try { badgeDesc = StudentMatcher.GetCompatibilityDescription(group.compatibilityScore); } catch { }
+            if (badgeText != null) badgeText.text = badgeDesc;
+
+            if (membersText != null && group.memberNames != null) 
+                membersText.text = "Members: " + string.Join(", ", group.memberNames);
+            
+            if (reasonsText != null && group.matchReasons != null) 
+                reasonsText.text = string.Join("\n", group.matchReasons);
+            
+            // Connect join button
+            if (joinButton != null)
+            {
+                // Remove existing listeners to be safe
+                joinButton.onClick.RemoveAllListeners();
+                string groupId = group.groupId;
+                joinButton.onClick.AddListener(() => JoinGroup(groupId));
+            }
+            // --- FIX END ---
+        }
+        
+        // FORCE LAYOUT REBUILD to fix spacing issues
+        LayoutRebuilder.ForceRebuildLayoutImmediate(groupListContainer.GetComponent<RectTransform>());
+        
+        if (resultsPanel != null)
+        {
+            resultsPanel.SetActive(true);
         }
     }
     
-    // FORCE LAYOUT REBUILD
-    LayoutRebuilder.ForceRebuildLayoutImmediate(groupListContainer.GetComponent<RectTransform>());
-    
-    if (resultsPanel != null)
+    // Helper function to find components in nested children
+    private T FindComponentDeep<T>(Transform parent, string name) where T : Component
     {
-        resultsPanel.SetActive(true);
-    }
-}
-    
-    async void JoinGroup(string groupId)
-{
-    Debug.Log($"Joining group: {groupId}");
-    
-    // FIX 1: Use the Real User ID (from PlayerPrefs), not "user123"
-    string userId = PlayerPrefs.GetString("LocalUserId", "");
-    if (string.IsNullOrEmpty(userId))
-    {
-        Debug.LogError("No LocalUserId found! Cannot join group.");
-        return;
+        // 1. Check direct children first
+        Transform result = parent.Find(name);
+        if (result != null) return result.GetComponent<T>();
+
+        // 2. Check all children recursively
+        foreach (Transform child in parent)
+        {
+            T found = FindComponentDeep<T>(child, name);
+            if (found != null) return found;
+        }
+
+        return null;
     }
 
-    try
+    async void JoinGroup(string groupId)
     {
-        var db = FirebaseDatabase.DefaultInstance.RootReference;
+        Debug.Log($"Joining group: {groupId}");
         
-        // Add user to group list
-        await db.Child("groups").Child(groupId).Child("users").Child(userId).SetValueAsync(true);
-        
-        // Increment group size
-        var sizeSnapshot = await db.Child("groups").Child(groupId).Child("size").GetValueAsync();
-        int currentSize = sizeSnapshot.Exists ? Convert.ToInt32(sizeSnapshot.Value) : 0;
-        await db.Child("groups").Child(groupId).Child("size").SetValueAsync(currentSize + 1);
-        
-        // FIX 2: Save as "activeGroup" (What GardenManager looks for), not "groupId"
-        await db.Child("users").Child(userId).Child("activeGroup").SetValueAsync(groupId);
-        await db.Child("users").Child(userId).Child("isGrouped").SetValueAsync(true); // Optional helpful flag
-        
-        Debug.Log("Successfully joined group!");
-        
-        // Save to PlayerPrefs
-        PlayerPrefs.SetString("SelectedGroup", groupId);
-        PlayerPrefs.Save();
-        
-        // Load garden scene
-        SceneManager.LoadScene("Garden"); 
+        string userId = PlayerPrefs.GetString("LocalUserId", "");
+        if (string.IsNullOrEmpty(userId))
+        {
+            Debug.LogError("No LocalUserId found! Cannot join group.");
+            return;
+        }
+
+        try
+        {
+            var db = FirebaseDatabase.DefaultInstance.RootReference;
+            
+            // Add user to group list
+            await db.Child("groups").Child(groupId).Child("users").Child(userId).SetValueAsync(true);
+            
+            // Update group size logic
+            var sizeSnapshot = await db.Child("groups").Child(groupId).Child("size").GetValueAsync();
+            int currentSize = sizeSnapshot.Exists ? Convert.ToInt32(sizeSnapshot.Value) : 0;
+            await db.Child("groups").Child(groupId).Child("size").SetValueAsync(currentSize + 1);
+            
+            // Save as active group for the user
+            await db.Child("users").Child(userId).Child("activeGroup").SetValueAsync(groupId);
+            await db.Child("users").Child(userId).Child("isGrouped").SetValueAsync(true); 
+            
+            Debug.Log("Successfully joined group!");
+            
+            // Save to PlayerPrefs
+            PlayerPrefs.SetString("SelectedGroup", groupId);
+            PlayerPrefs.Save();
+            
+            // Load garden scene
+            SceneManager.LoadScene("Garden"); 
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error joining group: {e.Message}");
+        }
     }
-    catch (Exception e)
-    {
-        Debug.LogError($"Error joining group: {e.Message}");
-    }
-}
 }

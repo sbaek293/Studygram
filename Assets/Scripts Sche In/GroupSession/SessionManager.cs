@@ -182,7 +182,7 @@ public class SessionManager : MonoBehaviour
 
                     UserManager.Instance.AddXP(exp);
                     UserManager.Instance.AddCoins(coins);
-                    GardenManager.Instance.AddProgressPoints((int)finalTime);
+                    //GardenManager.Instance.AddProgressPoints((int)finalTime);
                     // Show popup
                     EndPopUpUI.Instance.Show(finalTime, exp, coins);
 

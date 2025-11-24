@@ -2,23 +2,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using Firebase.Database;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
-using UnityEngine.SceneManagement; // ADD THIS LINE
-using System; // Also add this if not there
-using Firebase.Database;  // ADD THIS
-using Firebase.Extensions;
-using Firebase.Auth;
+using UnityEngine.SceneManagement;
 using Firebase.Database;
 using Firebase.Extensions;
+
 public class QuizManager : MonoBehaviour
 {
     [Header("Quiz Questions")]
+    public List<QuizQuestion> allQuestions = new List<QuizQuestion>();
+
     [Header("Group Matching")]
     public GroupMatchResultsUI groupResultsUI;
-    public List<QuizQuestion> allQuestions = new List<QuizQuestion>();
     
     [Header("UI References")]
     public TextMeshProUGUI questionText;
@@ -57,7 +54,6 @@ public class QuizManager : MonoBehaviour
         if (shuffleQuestions && quizQuestions.Count > 0)
         {
             quizQuestions = quizQuestions.OrderBy(x => UnityEngine.Random.value).ToList();
-
         }
         
         // Reset
@@ -131,8 +127,6 @@ public class QuizManager : MonoBehaviour
         {
             nextButton.gameObject.SetActive(true);
         }
-        
-        // Highlight selected answer (AnswerButton will handle its own highlight)
     }
     
     void OnNextButtonClicked()
@@ -177,220 +171,249 @@ public class QuizManager : MonoBehaviour
     }
     
     void ShowResults()
-{
-    // Normalize the profile by dividing by total weight
-    if (totalWeight > 0)
     {
-        userProfile.morningPerson = Mathf.RoundToInt((float)userProfile.morningPerson / totalWeight);
-        userProfile.groupStudy = Mathf.RoundToInt((float)userProfile.groupStudy / totalWeight);
-        userProfile.seriousness = Mathf.RoundToInt((float)userProfile.seriousness / totalWeight);
-        userProfile.talkative = Mathf.RoundToInt((float)userProfile.talkative / totalWeight);
-        userProfile.visual = Mathf.RoundToInt((float)userProfile.visual / totalWeight);
-        userProfile.practical = Mathf.RoundToInt((float)userProfile.practical / totalWeight);
-        userProfile.theoretical = Mathf.RoundToInt((float)userProfile.theoretical / totalWeight);
-    }
-    
-    SaveUserProfile();
-    
-    // NEW: Find and display best groups
-    FindBestGroup();
-
-
-    
-    if (quizPanel != null) quizPanel.SetActive(false);
-    if (resultsPanel != null) resultsPanel.SetActive(true);
-    }
-    
-   async void FindBestGroup()
-{
-    // Find QuizEnd component
-    QuizEnd quizEnd = FindObjectOfType<QuizEnd>();
-    
-    if (quizEnd == null)
-    {
-        Debug.LogError("QuizEnd not found! Add it to the scene.");
-        ShowMockDataFallback();
-        return;
-    }
-    
-    try
-    {
-        // Use QuizEnd to handle everything!
-        await quizEnd.OnQuizFinished_SaveProfileAndMatch(userProfile);
-        
-        Debug.Log("Quiz completed and group matched!");
-        
-        // Now fetch and display the group
-        await DisplayUserGroup();
-    }
-    catch (Exception e)
-    {
-        Debug.LogError($"Error: {e.Message}");
-        ShowMockDataFallback();
-    }
-}
-
-async Task DisplayUserGroup()
-{
-    string userId = PlayerPrefs.GetString("LocalUserId", "");
-    
-    if (string.IsNullOrEmpty(userId))
-    {
-        Debug.LogError("No local user ID found");
-        ShowMockDataFallback();
-        return;
-    }
-    
-    var db = Firebase.Database.FirebaseDatabase.DefaultInstance.RootReference;
-    
-    try
-    {
-        var userSnapshot = await db.Child("users").Child(userId).GetValueAsync();
-        
-        if (!userSnapshot.Child("activeGroup").Exists)
+        // Normalize the profile by dividing by total weight
+        if (totalWeight > 0)
         {
-            Debug.Log("User has no active group yet");
+            userProfile.morningPerson = Mathf.RoundToInt((float)userProfile.morningPerson / totalWeight);
+            userProfile.groupStudy = Mathf.RoundToInt((float)userProfile.groupStudy / totalWeight);
+            userProfile.seriousness = Mathf.RoundToInt((float)userProfile.seriousness / totalWeight);
+            userProfile.talkative = Mathf.RoundToInt((float)userProfile.talkative / totalWeight);
+            userProfile.visual = Mathf.RoundToInt((float)userProfile.visual / totalWeight);
+            userProfile.practical = Mathf.RoundToInt((float)userProfile.practical / totalWeight);
+            userProfile.theoretical = Mathf.RoundToInt((float)userProfile.theoretical / totalWeight);
+        }
+        
+        SaveUserProfile();
+        
+        // Find and display best groups
+        FindBestGroup();
+
+        if (quizPanel != null) quizPanel.SetActive(false);
+        if (resultsPanel != null) resultsPanel.SetActive(true);
+    }
+    
+    async void FindBestGroup()
+    {
+        QuizEnd quizEnd = FindObjectOfType<QuizEnd>();
+        
+        if (quizEnd == null)
+        {
+            Debug.LogError("QuizEnd not found! Add it to the scene.");
             ShowMockDataFallback();
             return;
         }
         
-        string groupId = userSnapshot.Child("activeGroup").Value.ToString();
-        var groupSnapshot = await db.Child("groups").Child(groupId).GetValueAsync();
-        
-        if (!groupSnapshot.Exists)
+        try
         {
-            Debug.LogError("Group not found");
-            ShowMockDataFallback();
-            return;
-        }
-        
-        int size = groupSnapshot.Child("size").Exists ? System.Convert.ToInt32(groupSnapshot.Child("size").Value) : 1;
-        int avgScore = groupSnapshot.Child("averageScore").Exists ? System.Convert.ToInt32(groupSnapshot.Child("averageScore").Value) : 50;
-        
-        List<string> memberNames = new List<string>();
-        var usersNode = groupSnapshot.Child("users");
-        
-        foreach (var memberSnapshot in usersNode.Children)
-        {
-            string memberId = memberSnapshot.Key;
-            var memberDataSnapshot = await db.Child("users").Child(memberId).GetValueAsync();
+            // Get the group ID directly!
+            string groupId = await quizEnd.OnQuizFinished_SaveProfileAndMatch(userProfile);
             
-            string memberName = memberDataSnapshot.Child("name").Exists ? 
-                memberDataSnapshot.Child("name").Value.ToString() : "Player";
-            memberNames.Add(memberName);
+            if (string.IsNullOrEmpty(groupId))
+            {
+                Debug.LogError("Failed to create/join group!");
+                ShowMockDataFallback();
+                return;
+            }
+            
+            Debug.Log($"Quiz completed! Group: {groupId}");
+            
+            // Display the group using the ID we already have
+            await DisplayUserGroup(groupId);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error: {e.Message}\n{e.StackTrace}");
+            ShowMockDataFallback();
+        }
+    }
+
+    async Task DisplayUserGroup(string groupId)
+    {
+        Debug.Log($"=== DisplayUserGroup called with groupId: {groupId} ===");
+        
+        string userId = PlayerPrefs.GetString("LocalUserId", "");
+        
+        if (string.IsNullOrEmpty(userId))
+        {
+            Debug.LogError("No local user ID found");
+            ShowMockDataFallback();
+            return;
         }
         
-        List<GroupMatchResultsUI.GroupMatchData> groups = new List<GroupMatchResultsUI.GroupMatchData>
+        Debug.Log($"UserId: {userId}");
+        
+        var db = FirebaseDatabase.DefaultInstance.RootReference;
+        
+        try
+        {
+            Debug.Log($"Fetching group from Firebase: {groupId}");
+            var groupSnapshot = await db.Child("groups").Child(groupId).GetValueAsync();
+            
+            Debug.Log($"Group exists: {groupSnapshot.Exists}");
+            
+            if (!groupSnapshot.Exists)
+            {
+                Debug.LogError($"Group {groupId} not found in Firebase!");
+                ShowMockDataFallback();
+                return;
+            }
+            
+            int size = groupSnapshot.Child("size").Exists ? System.Convert.ToInt32(groupSnapshot.Child("size").Value) : 1;
+            int avgScore = groupSnapshot.Child("averageScore").Exists ? System.Convert.ToInt32(groupSnapshot.Child("averageScore").Value) : 50;
+            
+            Debug.Log($"Group size: {size}, avgScore: {avgScore}");
+            
+            List<string> memberNames = new List<string>();
+            var usersNode = groupSnapshot.Child("users");
+            
+            Debug.Log($"Users node exists: {usersNode.Exists}, Children count: {usersNode.ChildrenCount}");
+            
+            foreach (var memberSnapshot in usersNode.Children)
+            {
+                string memberId = memberSnapshot.Key;
+                Debug.Log($"Processing member: {memberId}");
+                
+                var memberDataSnapshot = await db.Child("users").Child(memberId).GetValueAsync();
+                
+                string memberName = memberDataSnapshot.Child("name").Exists ? 
+                    memberDataSnapshot.Child("name").Value.ToString() : "Player";
+                
+                Debug.Log($"Member name: {memberName}");
+                memberNames.Add(memberName);
+            }
+            
+            string displayName = size == 1 ? "Your New Group" : "Your Matched Group";
+            Debug.Log($"Display name: {displayName}");
+            Debug.Log($"Member names: {string.Join(", ", memberNames)}");
+
+            // ---------------------------------------------------------
+            // FIX START: Construct the 'groups' list needed for the UI
+            // ---------------------------------------------------------
+            
+            // Create the single group data object from the Firebase results
+            var matchData = new GroupMatchResultsUI.GroupMatchData
+            {
+                groupId = groupId,
+                groupName = displayName,
+                memberCount = size,
+                maxMembers = 4, // Default max size
+                compatibilityScore = (float)avgScore, 
+                memberNames = memberNames,
+                matchReasons = new List<string> { "Matched based on study compatibility" } // Generic reason
+            };
+
+            // Create the list expected by ShowGroupMatches
+            List<GroupMatchResultsUI.GroupMatchData> groups = new List<GroupMatchResultsUI.GroupMatchData>();
+            groups.Add(matchData);
+
+            // ---------------------------------------------------------
+            // FIX END
+            // ---------------------------------------------------------
+            
+            Debug.Log($"About to show UI. groupResultsUI null? {groupResultsUI == null}");
+
+            if (groupResultsUI != null)
+            {
+                Debug.Log("Calling ShowGroupMatches...");
+                // Now 'groups' exists and is populated
+                groupResultsUI.ShowGroupMatches(groups); 
+                Debug.Log("ShowGroupMatches completed");
+            }
+            else
+            {
+                Debug.LogError("❌ groupResultsUI is NULL! Cannot display results!");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error displaying group: {e.Message}\n{e.StackTrace}");
+            ShowMockDataFallback();
+        }
+    }
+
+    // Fallback to mock data if Firebase fails
+    void ShowMockDataFallback()
+    {
+        Debug.Log("Showing mock data as fallback");
+        
+        List<GroupMatchResultsUI.GroupMatchData> mockGroups = new List<GroupMatchResultsUI.GroupMatchData>
         {
             new GroupMatchResultsUI.GroupMatchData
             {
-                groupId = groupId,
-                groupName = size == 1 ? "Your New Group" : "Your Matched Group",
-                memberCount = size,
+                groupId = "group1",
+                groupName = "Social Computing",
+                memberCount = 3,
                 maxMembers = 4,
-                compatibilityScore = avgScore,
-                memberNames = memberNames,
-                matchReasons = size == 1 ? 
-                    new List<string> { "- You created this group!", "- Waiting for members..." } :
-                    new List<string> { "- Matched based on your profile", "- Compatible study preferences" }
+                compatibilityScore = 87f,
+                memberNames = new List<string> { "Alice", "Bob", "Carol" },
+                matchReasons = new List<string> { "- Similar study schedules", "- Compatible goals", "- Morning study preference" }
+            },
+            new GroupMatchResultsUI.GroupMatchData
+            {
+                groupId = "group2",
+                groupName = "CS Study Squad",
+                memberCount = 2,
+                maxMembers = 4,
+                compatibilityScore = 72f,
+                memberNames = new List<string> { "David", "Emma" },
+                matchReasons = new List<string> { "- Compatible communication style", "- Similar intensity" }
             }
         };
         
         if (groupResultsUI != null)
         {
-            groupResultsUI.ShowGroupMatches(groups);
+            groupResultsUI.ShowGroupMatches(mockGroups);
         }
     }
-    catch (System.Exception e)
+
+    string GenerateGroupName(MatchingProfile profile)
     {
-        Debug.LogError($"Error displaying group: {e.Message}");
-        ShowMockDataFallback();
+        string[] prefixes = { "Study", "Focus", "Learn", "Academic" };
+        string[] suffixes = { "Squad", "Crew", "Team", "Group", "Circle" };
+        
+        // Add time preference to name based on morningPerson score
+        string timePreference = "";
+        if (profile.morningPerson >= 7)
+            timePreference = "Morning ";
+        else if (profile.morningPerson <= 4)
+            timePreference = "Night ";
+        
+        string prefix = prefixes[UnityEngine.Random.Range(0, prefixes.Length)];
+        string suffix = suffixes[UnityEngine.Random.Range(0, suffixes.Length)];
+        
+        return $"{timePreference}{prefix} {suffix}";
     }
-}
-// Fallback to mock data if Firebase fails
-void ShowMockDataFallback()
-{
-    Debug.Log("Showing mock data as fallback");
-    
-    List<GroupMatchResultsUI.GroupMatchData> mockGroups = new List<GroupMatchResultsUI.GroupMatchData>
-    {
-        new GroupMatchResultsUI.GroupMatchData
-        {
-            groupId = "group1",
-            groupName = "Social Computing",
-            memberCount = 3,
-            maxMembers = 4,
-            compatibilityScore = 87f,
-            memberNames = new List<string> { "Alice", "Bob", "Carol" },
-            matchReasons = new List<string> { "- Similar study schedules", "- Compatible goals", "- Morning study preference" }
-        },
-        new GroupMatchResultsUI.GroupMatchData
-        {
-            groupId = "group2",
-            groupName = "CS Study Squad",
-            memberCount = 2,
-            maxMembers = 4,
-            compatibilityScore = 72f,
-            memberNames = new List<string> { "David", "Emma" },
-            matchReasons = new List<string> { "- Compatible communication style", "- Similar intensity" }
-        }
-    };
-    
-    if (groupResultsUI != null)
-    {
-        groupResultsUI.ShowGroupMatches(mockGroups);
-    }
-}
-
-
-string GenerateGroupName(MatchingProfile profile)
-{
-    string[] prefixes = { "Study", "Focus", "Learn", "Academic" };
-    string[] suffixes = { "Squad", "Crew", "Team", "Group", "Circle" };
-    
-    // Add time preference to name based on morningPerson score
-    string timePreference = "";
-    if (profile.morningPerson >= 7)
-        timePreference = "Morning ";
-    else if (profile.morningPerson <= 4)
-        timePreference = "Night ";
-    
-    string prefix = prefixes[UnityEngine.Random.Range(0, prefixes.Length)];
-    string suffix = suffixes[UnityEngine.Random.Range(0, suffixes.Length)];
-    
-    return $"{timePreference}{prefix} {suffix}";
-}
-
 
     void SaveUserProfile()
-{
-    PlayerPrefs.SetInt("Profile_MorningPerson", userProfile.morningPerson);
-    PlayerPrefs.SetInt("Profile_GroupStudy", userProfile.groupStudy);
-    PlayerPrefs.SetInt("Profile_Seriousness", userProfile.seriousness);
-    PlayerPrefs.SetInt("Profile_Talkative", userProfile.talkative);
-    PlayerPrefs.SetInt("Profile_Visual", userProfile.visual);
-    PlayerPrefs.SetInt("Profile_Practical", userProfile.practical);
-    PlayerPrefs.SetInt("Profile_Theoretical", userProfile.theoretical);
-    
-    PlayerPrefs.SetInt("ProfileCompleted", 1); // ADD THIS
-    
-    PlayerPrefs.Save();
-}
+    {
+        PlayerPrefs.SetInt("Profile_MorningPerson", userProfile.morningPerson);
+        PlayerPrefs.SetInt("Profile_GroupStudy", userProfile.groupStudy);
+        PlayerPrefs.SetInt("Profile_Seriousness", userProfile.seriousness);
+        PlayerPrefs.SetInt("Profile_Talkative", userProfile.talkative);
+        PlayerPrefs.SetInt("Profile_Visual", userProfile.visual);
+        PlayerPrefs.SetInt("Profile_Practical", userProfile.practical);
+        PlayerPrefs.SetInt("Profile_Theoretical", userProfile.theoretical);
+        
+        PlayerPrefs.SetInt("ProfileCompleted", 1);
+        
+        PlayerPrefs.Save();
+    }
     
     public MatchingProfile GetUserProfile()
     {
         return userProfile;
     }
     
-    // Call this to restart the quiz
     public void RestartQuiz()
     {
         InitializeQuiz();
     }
+
     public void GoToGarden()
-{
-    SceneManager.LoadScene("Garden"); // Change to your exact garden scene name
-}
+    {
+        SceneManager.LoadScene("Garden"); 
+    }
 }
 
 [System.Serializable]
