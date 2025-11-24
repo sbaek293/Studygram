@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using Firebase.Database;
 using Firebase.Extensions;
+using System;
+
 
 public class SessionLobbyController : MonoBehaviour
 {
@@ -49,13 +51,20 @@ public class SessionLobbyController : MonoBehaviour
 
             foreach (var snap in t.Result.Children)
             {
+                bool ended = snap.Child("ended").Exists && (bool)snap.Child("ended").Value;
+                Debug.LogError(snap.Key);
+                if (ended)
+                    continue;
                 GameObject item = Instantiate(sessionItemPrefab, sessionListParent);
                 SessionItemUI itemUI = item.GetComponent<SessionItemUI>();
+                
+                index++;   
+                Debug.LogError(ended);  
                 // itemUI.Init(snap.Key, snap.Key); // or some display name
-                string displayName = $"Session {index}/{totalSessions}";
-                itemUI.Init(snap.Key, displayName);
-                index++;
+                string displayName = $"Session {index}";
+                itemUI.Init(snap.Key, displayName); 
             }
+            
         });
     }
 
