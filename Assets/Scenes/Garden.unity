@@ -473,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57dd1a3d3f74a8a4abb20bfb3ce0e397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinsText: {fileID: 610778766}
+  coinsText: {fileID: 912932755}
 --- !u!4 &180920107
 Transform:
   m_ObjectHideFlags: 0
@@ -1575,7 +1575,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &943336033
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2247,12 +2247,9 @@ RectTransform:
   - {fileID: 1581498348}
   - {fileID: 1059377188}
   - {fileID: 724356423}
-<<<<<<< Updated upstream
   - {fileID: 1593928094}
   - {fileID: 463758390}
-=======
   - {fileID: 943336033}
->>>>>>> Stashed changes
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
