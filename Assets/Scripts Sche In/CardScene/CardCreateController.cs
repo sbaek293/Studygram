@@ -20,7 +20,6 @@ public class CardCreateController : MonoBehaviour
     public Button colorButton;
     public Image colorPreview;
     public Button saveButton;
-    public Image windowBackground;
     public Button backButton; 
 
     [Header("Error Popup")]
@@ -67,9 +66,6 @@ public class CardCreateController : MonoBehaviour
         Color c;
         ColorUtility.TryParseHtmlString("#E6ACBA", out c);
         colorPreview.color = c;
-
-        ColorUtility.TryParseHtmlString("#519FBE", out c);
-        //windowBackground.color = c;
 
         addChoiceButton.gameObject.SetActive(false);
 

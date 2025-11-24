@@ -154,6 +154,11 @@ public class OnlineCardManager : MonoBehaviour
                         //  IMPORTANT: update local purchased list instantly
                         purchasedSetIds.Add(setId);
 
+                        if (controller != null)
+                        {
+                            controller.PopulateSets();
+                        }
+
                         //  Now allow clicking the set
                         UIManager.Instance.HideBuyPopup();
 
