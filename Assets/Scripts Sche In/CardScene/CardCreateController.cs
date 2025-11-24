@@ -324,6 +324,13 @@ public class CardCreateController : MonoBehaviour
 
         PlayerPrefs.SetString("TempCard", JsonUtility.ToJson(newCard));
         UIManager.Instance.ShowSetSelector();
+
+        if (UserManager.Instance != null)
+        {
+            UserManager.Instance.AddCoins(10);
+        }
+
+        UIManager.Instance.ShowSetSelector();
     }
 
     //error popup during card creation (when count of MCQ options <=2 for instance)
