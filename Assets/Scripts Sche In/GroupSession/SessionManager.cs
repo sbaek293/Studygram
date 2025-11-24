@@ -304,34 +304,31 @@ public class SessionManager : MonoBehaviour
         });
     }
 
-    public void LeaveSession()
+    private void OnApplicationQuit()
     {
-        // Host: end the session for everyone
-        if (isHost)
+        TryEndIfHost();
+    }
+
+    private void OnDestroy()
+    {
+        TryEndIfHost();
+    }
+
+    private void TryEndIfHost()
+    {
+        if (isHost && !string.IsNullOrEmpty(currentSessionId) && dbRoot != null)
         {
-            EndSession();
-        }
-        else
-        {
-            // Guest: just remove yourself from participants
-            if (!string.IsNullOrEmpty(currentSessionId))
+            // Fire-and-forget: mark ended and inactive
+            var updates = new Dictionary<string, object>()
             {
-                dbRoot.Child("sessions")
-                    .Child(currentSessionId)
-                    .Child("participants")
-                    .Child(AppContext.UserId)
-                    .RemoveValueAsync();
-            }
+                { "active", false },
+                { "ended", true }
+            };
 
-            StopListening();
-        }
-
-        // Go back to lobby UI if you want
-        if (panelController != null)
-        {
-            panelController.ShowLobby();
+            dbRoot.Child("sessions").Child(currentSessionId).UpdateChildrenAsync(updates);
         }
     }
+
 
 
     private IEnumerator DeleteSessionAfterDelay()
@@ -344,7 +341,4 @@ public class SessionManager : MonoBehaviour
                 Debug.Log("Session deleted.");
             });
     }
-
-
-
 }
