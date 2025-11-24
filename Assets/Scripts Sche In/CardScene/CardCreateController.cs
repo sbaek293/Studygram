@@ -43,7 +43,7 @@ public class CardCreateController : MonoBehaviour
         backButton.onClick.AddListener(() =>
         {
             // Go back without saving – same place SaveCard goes after save
-            UIManager.Instance.ShowSetSelector();
+            UIManager.Instance.ShowMainMenu();
         });
 
         typeDropdown.value = 1;
