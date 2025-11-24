@@ -44,6 +44,13 @@ public class OnlineCardManager : MonoBehaviour
           });
     }
 
+    private int CalculatePrice(CardSet set)
+    {
+        int basePrice = set.cards.Count * 10;
+        return Mathf.Clamp(basePrice, 10, 50);
+    }
+
+
     // ------------------------
     // Upload a new card set
     // ------------------------
@@ -75,8 +82,9 @@ public class OnlineCardManager : MonoBehaviour
         {
             set.setId = setId;
         }
+        int price = CalculatePrice(set);
 
-        UploadSet(set, 10, setId); // price irrelevant for creator
+        UploadSet(set, price, setId); // price irrelevant for creator
     }
     public void GetSetPrice(string setId, Action<int> callback)
     {
