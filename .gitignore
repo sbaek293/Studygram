@@ -104,10 +104,8 @@ InitTestScene*.unity*
 /[Aa]ssets/ExternalDependencyManager
 /[Aa]ssets/Firebase
 
-# TextMesh Pro auto-generated files (don't commit these)
-Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF*.asset
-Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF*.asset.meta
-Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
-Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
-Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
-Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+# TextMesh Pro auto-generated font assets (regeneratable - don't commit)
+**/TextMesh Pro/Resources/Fonts & Materials/*SDF*.asset
+**/TextMesh Pro/Resources/Fonts & Materials/*SDF*.asset.meta
+**/*SDF.asset
+**/*SDF.asset.meta
