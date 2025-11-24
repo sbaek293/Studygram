@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 /// <summary>
@@ -22,13 +23,15 @@ public class PetController : MonoBehaviour
     private bool isMovingToTarget = false;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
-    
+
+    private PhotonView PV;
+    Vector2 _smoothMovementVector;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         targetPosition = transform.position;
-        
+        PV = GetComponent<PhotonView>();
         // Setup rigidbody for smooth movement
         if (rb != null)
         {
@@ -39,6 +42,7 @@ public class PetController : MonoBehaviour
     
     void Update()
     {
+        if (!PV.IsMine) return;
         HandleInput();
         
         // Update animation if animator exists
@@ -51,12 +55,20 @@ public class PetController : MonoBehaviour
     
     void FixedUpdate()
     {
+        if (!PV.IsMine) SmoothMovement();
+
         if (isMovingToTarget)
         {
             MoveToTarget();
         }
     }
-    
+
+    void SmoothMovement()
+    {
+        rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, _smoothMovementVector, 0.1f);
+
+
+    }
     void HandleInput()
     {
         // Click-to-move (mobile friendly)
@@ -148,4 +160,20 @@ public class PetController : MonoBehaviour
     {
         return rb.linearVelocity.magnitude > 0.1f;
     }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(rb.linearVelocity);
+            //stream.SendNext(Health);
+        }
+        else if (stream.IsReading)
+        {
+            _smoothMovementVector = (Vector2)stream.ReceiveNext();
+            //Health = (float)stream.ReceiveNext();
+        }
+    }
+
+
 }
