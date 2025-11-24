@@ -136,7 +136,7 @@ public class CardCreateController : MonoBehaviour
         colorHex = $"#{ColorUtility.ToHtmlStringRGB(currentPreview)}";
 
         // 2) Define a small palette of hex colors
-        string[] previewPalette = { "#acc8e5", "#E6ACBA", "#cbace6", "#B0E6AC", "#F7E1A0", "#58CCB5" };
+        string[] previewPalette = { "#acc8e5", "#E6ACBA", "#cbace6", "#EB9A57", "#F7E1A0", "#58CCB5" };
 
         // 3) Advance index and wrap around
         previewColorIndex = (previewColorIndex + 1) % previewPalette.Length;

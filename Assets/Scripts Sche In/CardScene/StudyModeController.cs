@@ -17,6 +17,8 @@ public class StudyModeController : MonoBehaviour
 
     private CardSet currentSet;
     private int currentIndex = 0;
+    //for uncoloring the unselected mcq option
+    private int selectedOptionIndex = -1; 
 
     // Called when the StudyMode panel becomes active
     void OnEnable()
@@ -62,6 +64,8 @@ public class StudyModeController : MonoBehaviour
         // Hide/clear MCQ options
         foreach (Transform child in mcqParent)
             Destroy(child.gameObject);
+        
+        selectedOptionIndex = -1; 
         mcqParent.gameObject.SetActive(false);
         Debug.Log(card.type);
         // For multiple-choice cards, populate options
@@ -74,6 +78,11 @@ public class StudyModeController : MonoBehaviour
                 var go = Instantiate(mcqOptionPrefab, mcqParent);
                 go.GetComponentInChildren<TMP_Text>().text = card.choices[i];
                 go.GetComponent<Button>().onClick.AddListener(() => SelectAnswer(index));
+
+                // Color c;
+                var img = go.GetComponent<Image>(); // make sure mcqOptionPrefab has an Image
+                ColorUtility.TryParseHtmlString(card.colorHex, out Color c1);
+                img.color = c1;
             }
         }
 
@@ -82,6 +91,10 @@ public class StudyModeController : MonoBehaviour
             // questionText.color = c; // or apply to background element if desired
             // flipButton.colors.normalColor = c;
             flipButton.GetComponent<Image>().color = c;
+
+        //hide prev for 1st and next for last
+        prevButton.gameObject.SetActive(currentIndex > 0);
+        nextButton.gameObject.SetActive(currentIndex < currentSet.cards.Count - 1);
     }
 
     // Flip card (for Definition type)
@@ -99,15 +112,47 @@ public class StudyModeController : MonoBehaviour
     void SelectAnswer(int index)
     {
         var card = currentSet.cards[currentIndex];
+
+        if (selectedOptionIndex >= 0 &&
+            selectedOptionIndex < mcqParent.childCount)
+        {
+            var prevChild = mcqParent.GetChild(selectedOptionIndex);
+            var prevImg = prevChild.GetComponent<Image>();
+            if (prevImg != null)
+            {
+                Color normalColor;
+                if (ColorUtility.TryParseHtmlString(card.colorHex, out normalColor))
+                    prevImg.color = normalColor;
+            }
+        }
+
+        selectedOptionIndex = index;
         bool correct = (index == card.correctChoiceIndex);
         string correctText = card.choices[card.correctChoiceIndex];
 
-        if (correct)
+        if (correct) {
             feedbackText.text = "Correct!";
+            // feedbackText.color = Color.green;
+        }
         else
             feedbackText.text = $"Incorrect!\nCorrect answer: {correctText}";
 
         feedbackText.gameObject.SetActive(true);
+        
+        //highlight the newly selected option
+        if (index >= 0 && index < mcqParent.childCount)
+        {
+            var newChild = mcqParent.GetChild(index);
+            var newImg = newChild.GetComponent<Image>();
+            if (newImg != null)
+            {
+                string highlightHex = correct ? "#B0E6AC" : "#FF6161";
+
+                Color selectedColor;
+                if (ColorUtility.TryParseHtmlString(highlightHex, out selectedColor))
+                    newImg.color = selectedColor;
+                    }
+        }
     }
 
     // Move between cards
