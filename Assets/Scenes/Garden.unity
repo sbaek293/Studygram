@@ -255,6 +255,59 @@ RectTransform:
   m_AnchoredPosition: {x: -21.999989, y: 953.99994}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &57738088
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 57738090}
+  - component: {fileID: 57738089}
+  m_Layer: 0
+  m_Name: AvatarManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &57738089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57738088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b90ad1b227248689f549d7372557d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatarList:
+  - id: bunny
+    sprite: {fileID: -5090552773181623103, guid: 8dc63fd9282ea41309466c8a82d4acff, type: 3}
+  - id: owl
+    sprite: {fileID: -5856091752611152156, guid: a797de22786124f14b0ab2cdf37256a6, type: 3}
+  - id: leopard
+    sprite: {fileID: 5251734906795025119, guid: 40e1a40ad59fd402d80edb8faa1a7a9e, type: 3}
+  - id: squirrel
+    sprite: {fileID: -8293752062133822747, guid: e8dfaa5fe30c9479e9cb6f9adc379fe7, type: 3}
+--- !u!4 &57738090
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57738088}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 540, y: 1140, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &168528367
 GameObject:
   m_ObjectHideFlags: 0
@@ -2784,3 +2837,4 @@ SceneRoots:
   - {fileID: 1796940463}
   - {fileID: 1295996790}
   - {fileID: 570361591}
+  - {fileID: 57738090}

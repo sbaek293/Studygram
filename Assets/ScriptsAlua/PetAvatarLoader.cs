@@ -19,7 +19,7 @@ public class PetAvatarLoader : MonoBehaviour
     {
         // REPLACE THIS with your actual User ID logic (e.g., FirebaseAuth.DefaultInstance.CurrentUser.UserId)
         // For testing, you can hardcode a user ID that you know exists in your database
-        string currentUserId = "CURRENT_USER_ID_HERE"; 
+        string currentUserId = AppContext.UserId; 
 
         DatabaseReference dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 

@@ -829,6 +829,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 472301014}
   m_CullTransparentMesh: 1
+--- !u!1 &555224979
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 555224981}
+  - component: {fileID: 555224980}
+  m_Layer: 0
+  m_Name: AvatarManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &555224980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555224979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b90ad1b227248689f549d7372557d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatarList:
+  - id: bunny
+    sprite: {fileID: -5090552773181623103, guid: 8dc63fd9282ea41309466c8a82d4acff, type: 3}
+  - id: owl
+    sprite: {fileID: -5856091752611152156, guid: a797de22786124f14b0ab2cdf37256a6, type: 3}
+  - id: leopard
+    sprite: {fileID: 5251734906795025119, guid: 40e1a40ad59fd402d80edb8faa1a7a9e, type: 3}
+  - id: squirrel
+    sprite: {fileID: -8293752062133822747, guid: e8dfaa5fe30c9479e9cb6f9adc379fe7, type: 3}
+--- !u!4 &555224981
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555224979}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 540, y: 1140, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &663549597
 GameObject:
   m_ObjectHideFlags: 0
@@ -2946,6 +2999,7 @@ GameObject:
   - component: {fileID: 1879310972}
   - component: {fileID: 1879310971}
   - component: {fileID: 1879310969}
+  - component: {fileID: 1879310973}
   m_Layer: 0
   m_Name: PetSprite
   m_TagString: Untagged
@@ -3066,7 +3120,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: -2749261331969839478, guid: 4a4ba865a9f8a264ba856d78df79c7e6, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3074,9 +3128,21 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1879310973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879310967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d67b4c0d9b3d46aeb7e3a9206e8a487, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1892621964
 GameObject:
   m_ObjectHideFlags: 0
@@ -3847,3 +3913,4 @@ SceneRoots:
   - {fileID: 821583839}
   - {fileID: 1148308037}
   - {fileID: 2142503888}
+  - {fileID: 555224981}
