@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CoinsUIManager : MonoBehaviour
 {
@@ -7,15 +8,13 @@ public class CoinsUIManager : MonoBehaviour
     public TMP_Text coinsText;
     void Start()
     {
-        UserManager.Instance.OnUserDataLoaded += updateUI;
-        Debug.Log("update Coins UI");
-        updateUI();
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        updateUI();
     }
 
     public void updateUI()

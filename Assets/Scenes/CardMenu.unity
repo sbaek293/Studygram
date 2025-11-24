@@ -173,7 +173,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &46786904
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5813,7 +5813,6 @@ MonoBehaviour:
   colorButton: {fileID: 1081178699}
   colorPreview: {fileID: 1442631442}
   saveButton: {fileID: 1267837789}
-  windowBackground: {fileID: 1232335365}
   backButton: {fileID: 801294394}
   errorPanel: {fileID: 1875830381}
   errorText: {fileID: 123842317}

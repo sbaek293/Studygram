@@ -182,7 +182,7 @@ public class SessionManager : MonoBehaviour
                     // Show popup
                     EndPopUpUI.Instance.Show(finalTime, exp, coins);
 
-                    LeaderboardManager.Instance.SetScore(score);
+                    //LeaderboardManager.Instance.SetScore(score);
 
                     return; // stop processing anything else
                 }
@@ -265,7 +265,7 @@ public class SessionManager : MonoBehaviour
 
         // Define rewards
         int expReward = 50;
-        int coinReward = 10;
+        int coinReward = 20 * (int)(finalTime/1800);
 
         var updates = new Dictionary<string, object>()
     {
