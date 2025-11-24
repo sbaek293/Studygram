@@ -79,7 +79,7 @@ public class GardenManager : MonoBehaviour
         UpdateGardenVisuals();
         
         // Load personal coins from local storage
-        currentCoins = PlayerPrefs.GetInt("Coins", 0);
+        currentCoins = UserManager.Instance.coins;
     }
     
     // --- PROGRESS LOGIC (SHARED VIA FIREBASE) ---

@@ -11,7 +11,7 @@ public class OnlineCardManager : MonoBehaviour
     private DatabaseReference db;
     public CardMenuController controller;
     public HashSet<string> purchasedSetIds = new HashSet<string>();
-
+    public CoinsUIManager coinsUIManager;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -145,7 +145,7 @@ public class OnlineCardManager : MonoBehaviour
             {
                 Debug.Log("bought");
                 UserManager.Instance.AddCoins(-price);
-
+                coinsUIManager.updateUI();
                 // Save in DB
                 db.Child("users").Child(userId).Child("purchasedSets").Child(setId)
                     .SetValueAsync(true)

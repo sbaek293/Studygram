@@ -8,6 +8,8 @@ public class UserManager : MonoBehaviour
 {
     public static UserManager Instance;
     private DatabaseReference db;
+    public event Action OnUserDataLoaded;
+
 
     public int coins = 0;
     public int xp = 0;
@@ -68,6 +70,7 @@ public class UserManager : MonoBehaviour
     public void LoadUserFromFirebase()
     {
         string uid = AppContext.UserId;
+        Debug.Log(uid);
         if (string.IsNullOrEmpty(uid)) return;
 
         db.Child("users").Child(uid).GetValueAsync().ContinueWithOnMainThread(t =>
@@ -78,8 +81,10 @@ public class UserManager : MonoBehaviour
 
             coins = snap.Child("coins").Exists ? Convert.ToInt32(snap.Child("coins").Value) : 0;
             Debug.Log("updatedCoins");
+            Debug.Log(coins);
             xp = snap.Child("xp").Exists ? Convert.ToInt32(snap.Child("xp").Value) : 0;
             score = snap.Child("score").Exists ? Convert.ToInt32(snap.Child("score").Value) : 0;
+            OnUserDataLoaded?.Invoke();
         });
     }
 
