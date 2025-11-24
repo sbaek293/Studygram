@@ -44,6 +44,8 @@ public class SessionLobbyController : MonoBehaviour
             }
 
             statusText.text = "";
+            int totalSessions = (int)t.Result.ChildrenCount;
+            int index = 1;
 
             foreach (var snap in t.Result.Children)
             {
