@@ -58,8 +58,8 @@ public class SessionUI : MonoBehaviour
         resumeButton.gameObject.SetActive(false);
         endButton.gameObject.SetActive(false);
 
-        if (backButton != null)
-            backButton.gameObject.SetActive(true);   // waiting room
+        // if (backButton != null)
+        //     backButton.gameObject.SetActive(true);   // waiting room
     }
 
     // ----------- EVENTS ------------
