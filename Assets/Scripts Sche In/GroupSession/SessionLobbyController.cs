@@ -45,24 +45,36 @@ public class SessionLobbyController : MonoBehaviour
                 return;
             }
 
-            statusText.text = "";
-            int totalSessions = (int)t.Result.ChildrenCount;
+            int shownCount = 0;   // how many sessions we actually show
             int index = 1;
 
             foreach (var snap in t.Result.Children)
             {
+                // Skip ended sessions
                 bool ended = snap.Child("ended").Exists && (bool)snap.Child("ended").Value;
-                Debug.LogError(snap.Key);
+                Debug.LogError($"Session key: {snap.Key}, ended: {ended}");
                 if (ended)
                     continue;
+
+                // Instantiate UI item
                 GameObject item = Instantiate(sessionItemPrefab, sessionListParent);
                 SessionItemUI itemUI = item.GetComponent<SessionItemUI>();
-                
-                index++;   
-                Debug.LogError(ended);  
-                // itemUI.Init(snap.Key, snap.Key); // or some display name
+
                 string displayName = $"Session {index}";
-                itemUI.Init(snap.Key, displayName); 
+                itemUI.Init(snap.Key, displayName);
+
+                index++;
+                shownCount++;
+            }
+
+            // If we had a /sessions node but all sessions were filtered out
+            if (shownCount == 0)
+            {
+                statusText.text = "No sessions yet.";
+            }
+            else
+            {
+                statusText.text = "";
             }
             
         });

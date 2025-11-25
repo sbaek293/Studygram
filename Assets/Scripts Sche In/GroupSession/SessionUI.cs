@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Firebase.Database;
+using Firebase.Extensions;
+
 
 public class SessionUI : MonoBehaviour
 {
@@ -79,10 +82,34 @@ public class SessionUI : MonoBehaviour
         foreach (Transform t in participantParent)
             Destroy(t.gameObject);
 
+        DatabaseReference db = FirebaseDatabase.DefaultInstance.RootReference;
+
         foreach (var kv in p)
         {
+            // var obj = Instantiate(participantItemPrefab, participantParent);
+            // obj.GetComponentInChildren<TMP_Text>().text = kv.Key;
+
+            string userId = kv.Key;
+
             var obj = Instantiate(participantItemPrefab, participantParent);
-            obj.GetComponentInChildren<TMP_Text>().text = kv.Key;
+            TMP_Text label = obj.GetComponentInChildren<TMP_Text>();
+
+            // default: show userId while we load (or if username missing)
+            label.text = userId;
+
+            // async load username from /users/{userId}/username
+            db.Child("users").Child(userId).Child("username")
+            .GetValueAsync().ContinueWithOnMainThread(t =>
+            {
+                if (t.IsFaulted || !t.Result.Exists)
+                {
+                    // keep userId if we can't get a username
+                    return;
+                }
+
+                string username = t.Result.Value.ToString();
+                label.text = username;
+            });
         }
     }
 
