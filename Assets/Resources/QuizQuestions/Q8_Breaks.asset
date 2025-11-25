@@ -25,7 +25,7 @@ MonoBehaviour:
       visual: 5
       practical: 7
       theoretical: 5
-  - answerText: "Pomodoro technique (25 min work, 5 min break) \u23F1"
+  - answerText: Pomodoro technique (25 min work, 5 min break)
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5

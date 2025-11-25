@@ -362,8 +362,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 27, y: 1169}
-  m_SizeDelta: {x: 1500, y: 200}
+  m_AnchoredPosition: {x: 30, y: 1118}
+  m_SizeDelta: {x: 1700, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &135230585
 MonoBehaviour:
@@ -582,7 +582,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.2289371, y: -61.86035}
+  m_AnchoredPosition: {x: 1, y: 20}
   m_SizeDelta: {x: 710.9075, y: 110.0583}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &204246570
@@ -670,7 +670,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0.00009727478}
+  m_margin: {x: 4.7050476, y: 0, z: 10.978699, w: 0.00009727478}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3012,7 +3012,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc2d9ed3c53b74241b4e9153e7118c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groupResultsUI: {fileID: 886026407}
   allQuestions:
   - {fileID: 11400000, guid: 1dc8bac6988679d41a45b8c74de1e231, type: 2}
   - {fileID: 11400000, guid: c44146fa91a12b74098c79dfb253b5a0, type: 2}
@@ -3022,6 +3021,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: efa0fbe27d97a8b48a67aa8701ca6c02, type: 2}
   - {fileID: 11400000, guid: 487515bf5cbf88844b8d9afa3cdfe0b1, type: 2}
   - {fileID: 11400000, guid: 79646521f37806b4c934976a91545770, type: 2}
+  groupResultsUI: {fileID: 886026407}
   questionText: {fileID: 204246570}
   answersContainer: {fileID: 301350293}
   answerButtonPrefab: {fileID: 8547913811993800744, guid: 724d8b0ea19f4204ebdb2a185c43c1d2, type: 3}

@@ -15,7 +15,7 @@ MonoBehaviour:
   questionText: How do you prefer to study?
   questionType: 1
   answers:
-  - answerText: "Always with a study group \U0001F465"
+  - answerText: Always with a study group
     answerIcon: {fileID: 0}
     profile:
       morningPerson: 5
