@@ -7,6 +7,7 @@ public class CoinsUIManager : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public TMP_Text coinsText;
+    public GameObject settings;
     void Start()
     {
         
@@ -21,5 +22,31 @@ public class CoinsUIManager : MonoBehaviour
     public void updateUI()
     {
         coinsText.text = UserManager.Instance.coins + "";
-    } 
+    }
+
+    public void quitApplication()
+    {
+        Application.Quit();
+    }
+
+    public void resetPlayerprefs()
+    {
+        PlayerPrefs.DeleteAll();
+    }
+
+    public void openSettings()
+    {
+        if (settings != null)
+        {
+            settings.SetActive(true);
+        }
+    }
+
+    public void closeSettings()
+    {
+        if (settings != null)
+        {
+            settings.SetActive(false);
+        }
+    }
 }
