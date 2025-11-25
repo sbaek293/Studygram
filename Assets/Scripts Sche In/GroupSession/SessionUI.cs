@@ -22,6 +22,7 @@ public class SessionUI : MonoBehaviour
     public Button pauseButton;
     public Button resumeButton;
     public Button endButton;
+    // public Button backButton;
 
     public GameObject endPopup;
     public TMP_Text endTimeText;
@@ -36,6 +37,15 @@ public class SessionUI : MonoBehaviour
         manager.OnParticipantsChanged += UpdateParticipants;
 
         InitUI();
+
+        // if (backButton != null)
+        // {
+        //     backButton.onClick.RemoveAllListeners();
+        //     backButton.onClick.AddListener(() =>
+        //     {
+        //         manager.LeaveSession();   
+        //     });
+        // }
     }
 
     private void InitUI()
@@ -47,6 +57,9 @@ public class SessionUI : MonoBehaviour
         pauseButton.gameObject.SetActive(false);
         resumeButton.gameObject.SetActive(false);
         endButton.gameObject.SetActive(false);
+
+        if (backButton != null)
+            backButton.gameObject.SetActive(true);   // waiting room
     }
 
     // ----------- EVENTS ------------
@@ -65,6 +78,10 @@ public class SessionUI : MonoBehaviour
             resumeButton.gameObject.SetActive(active && manager.paused);
             endButton.gameObject.SetActive(active);
         }
+
+        // Back button visible only before session starts
+        // if (backButton != null)
+        //     backButton.gameObject.SetActive(!active);
 
         // statusText.text = active ? "Running" : "Waiting";
         if (!active)
