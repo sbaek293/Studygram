@@ -66,7 +66,13 @@ public class SessionUI : MonoBehaviour
             endButton.gameObject.SetActive(active);
         }
 
-        statusText.text = active ? "Running" : "Waiting";
+        // statusText.text = active ? "Running" : "Waiting";
+        if (!active)
+            statusText.text = "Waiting";
+        else if (manager.paused)
+            statusText.text = "Paused";
+        else
+            statusText.text = "Running";
     }
 
     private void UpdatePausedState(bool paused)
@@ -75,6 +81,13 @@ public class SessionUI : MonoBehaviour
 
         pauseButton.gameObject.SetActive(!paused);
         resumeButton.gameObject.SetActive(paused);
+
+        if (!manager.active)
+            statusText.text = "Waiting";
+        else if (paused)
+            statusText.text = "Paused";
+        else
+            statusText.text = "Running";
     }
 
     private void UpdateParticipants(Dictionary<string, bool> p)
