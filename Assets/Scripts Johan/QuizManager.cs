@@ -276,11 +276,11 @@ public class QuizManager : MonoBehaviour
                 
                 var memberDataSnapshot = await db.Child("users").Child(memberId).GetValueAsync();
                 
-                string memberName = memberDataSnapshot.Child("name").Exists ? 
-                    memberDataSnapshot.Child("name").Value.ToString() : "Player";
-                
-                Debug.Log($"Member name: {memberName}");
-                memberNames.Add(memberName);
+                string memberName = memberDataSnapshot.Child("username").Exists ? 
+        memberDataSnapshot.Child("username").Value.ToString() : memberId;
+    
+    Debug.Log($"Member name: {memberName}");
+    memberNames.Add(memberName);
             }
             
             string displayName = size == 1 ? "Your New Group" : "Your Matched Group";
