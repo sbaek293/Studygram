@@ -201,7 +201,7 @@ public class SessionManager : MonoBehaviour
 
                     UserManager.Instance.AddXP(exp);
                     UserManager.Instance.AddCoins(coins);
-                    //GardenManager.Instance.AddProgressPoints((int)finalTime);
+                    GardenManager.Instance.AddProgressPoints(exp);
                     // Show popup
                     EndPopUpUI.Instance.Show(finalTime, exp, coins);
 
@@ -287,9 +287,9 @@ public class SessionManager : MonoBehaviour
 
         double finalTime = elapsedSeconds;
 
-        GardenManager.Instance.AddProgressPoints((int)finalTime);
+        GardenManager.Instance.AddProgressPoints((int)finalTime * 10);
         // Define rewards
-        int expReward = 50;
+        int expReward = (int)finalTime * 10;
         int coinReward = (int)finalTime;
 
         var updates = new Dictionary<string, object>()
