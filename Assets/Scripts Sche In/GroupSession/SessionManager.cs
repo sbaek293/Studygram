@@ -24,6 +24,7 @@ public class SessionManager : MonoBehaviour
     private float hostUpdateCounter = 0f;
     private const float hostUpdateInterval = 0.5f;
     private int participantCount = 0; 
+    private Dictionary<string, bool> lastParticipants = new Dictionary<string, bool>();
 
     private DatabaseReference dbRoot;
 
@@ -144,8 +145,26 @@ public class SessionManager : MonoBehaviour
                     dict[child.Key] = true;
 
                 participantCount = dict.Count; 
+                bool changed = dict.Count != lastParticipants.Count;
 
-                OnParticipantsChanged?.Invoke(dict);
+                if (!changed)
+                {
+                    foreach (var kv in dict)
+                    {
+                        if (!lastParticipants.ContainsKey(kv.Key))
+                        {
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (changed)
+                {
+                    lastParticipants = dict;
+                    OnParticipantsChanged?.Invoke(dict);
+                }
+                // OnParticipantsChanged?.Invoke(dict);
             }
 
             // Timer
