@@ -5,7 +5,7 @@ University students study alone instead of meeting new people to study together.
 
 ### Instruction
 **First Steps**
-1. Enter your username at Welcome Screen
+1. Enter your username at Welcome Screen. (We do not have passwords since the app is used for social studying and the worst malicious users could do would be study while pretending to be someone else and copy studying resources of others.)
 1. You will be moved to the "Room Scene". From there you can access "Social Garden" and your "Profile" stats. You can also see your coins (earned by studying together) and progress (which is group progress so it will remain 0 unless you join a group).
 1. When entering the Garden for the first time, you will be redirected to the Study Type Quiz.
 1. The quiz consists of 8 Multiple Choice Questions. After finishing it you will be invited to join a group of at most three other people based on the compatibility of your studying preferences.
@@ -24,8 +24,26 @@ University students study alone instead of meeting new people to study together.
 **Flashcard Creation**
 1. Navigate to Flashcards main screen from Garden scene.
 1. Flashcards main screen is the Card Menu. From there you can both study with cards and create new ones.
+1. You can click "Refresh" button (refresh icon) to make sure the sets were updated if others modified them.
 1. In order to create a new card, press "+" at the bottom of your screen.
+1. In the Card Creation menu, by default youw ill be creating a Multiple Choice Question card, but you can click the dropdown menu and switch to the Defition card.
+1. For the Definition type, you need to enter a term and its definition (front and back of the card respectively). 
+1. For MCQ, you need to enter the question and two to four answer choices. You also need to mark one of them as correct.
+1. In both cases, the app will not let you save the card if any fields are left empty.
+1. Pressing "Change Color" button will change the colour of the flashcard you're working on to the one displayed on the button. 
+1. Once you finish, press "Save".
+1. You will be asked which set to add your card to. Since the sets are shared within the group, you can add it to a set you do not own.
+1. You can also chose to add it to a New Set. In that case you will be asked to enter the set name which should be different from already existing one.
+1. Once you complete the card creation, you will be awarded ten coins and redirected back to the Card Menu screen.
 
+
+**Flashcard Study Mode**
+1. The card sets you purchased/created are shown in their colour and the ones you do not have access to are displayed in grey. You can click on them, see the price and proceed with the purchase or cancel. It is the only way to spend earned coins and this design choice is to prevent people from accessing others' resources without contributing. Contribution is just being an active member of the community, so both flashcard creation and group study session participation are contributions in that sense.
+1. Click on a set to practice with it. You will have "Left Arrow" and "Right Arrow" buttons to navigate between cards of the set if there is more than one. 
+1. "Definition" cards flip as the usual flashcards. For "MCQ", you can click on answer choices to find out if they are correct. Once you are done practicing, press "Back" (arrow) button at the top of your screen to return to the Card Menu.
+
+**Other Features**
+1. At this point you might be wondering what were the level and progress bar for.
 
 
 
