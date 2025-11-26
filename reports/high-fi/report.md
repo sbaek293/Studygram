@@ -10,8 +10,7 @@ University students study alone instead of meeting new people to study together.
 1. When entering the Garden for the first time, you will be redirected to the Study Type Quiz.
 1. The quiz consists of 8 Multiple Choice Questions. After finishing it you will be invited to join a group of at most three other people based on the compatibility of your studying preferences.
 1. Finishing the quiz will give you a virtual avatar based on your type. From now on, it will be present on your Room and Garden screens. In the social Garden, you will also be able to see others' avatars to feel their presence. You can move around with WASD keys to spot your teammates if they are also currently online.
-<img src="images/Welcome Page.png" alt="Welcome Page" width="200"/>
-<img src="images/Quiz.png" alt="Quiz" width="200"/>
+<img src="images/Welcome Page.png" alt="Welcome Page" width="200"/><img src="images/Quiz.png" alt="Quiz" width="200"/>
 
 **Group Session**
 1. From the Garden, you can click "Home" to go back to the Room. You can also click "Menu" (three horizontal lines) which is the menu of your social studying tfrom which you can navigate to group session window or flashcards window.
@@ -22,8 +21,7 @@ University students study alone instead of meeting new people to study together.
 1. You can pause and resume the session.
 1. Once you end the session, it will end for everyone. On each participant's screen a pop-up will appear stating the experiece points and coins learned.
 1. You can exit the Group Session window and go back to the social Garden by pressing the arrow in the top left of the screen.
-<img src="images/Group Session.png" alt="Group Session" width="200"/>
-<img src="images/Session Reward.png" alt="Session Reward" width="200"/>
+<img src="images/Group Session.png" alt="Group Session" width="200"/><img src="images/Session Reward.png" alt="Session Reward" width="200"/>
 
 **Flashcard Creation**
 1. Navigate to Flashcards main screen from Garden scene.
@@ -45,7 +43,7 @@ University students study alone instead of meeting new people to study together.
 1. The card sets you purchased/created are shown in their colour and the ones you do not have access to are displayed in grey. You can click on them, see the price and proceed with the purchase or cancel. It is the only way to spend earned coins and this design choice is to prevent people from accessing others' resources without contributing. Contribution is just being an active member of the community, so both flashcard creation and group study session participation are contributions in that sense.
 1. Click on a set to practice with it. You will have "Left Arrow" and "Right Arrow" buttons to navigate between cards of the set if there is more than one. 
 1. "Definition" cards flip as the usual flashcards. For "MCQ", you can click on answer choices to find out if they are correct. Once you are done practicing, press "Back" (arrow) button at the top of your screen to return to the Card Menu.
-
+ 
 <img src="images/Study Mode.png" alt="Study Mode" width="200"/>
 
 **Other Features**
