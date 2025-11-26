@@ -75,10 +75,10 @@ Example of running it on a Macbook:
 
 Several pictures of the subjectively most confusing parts:
 
-<img src="images/1 SDK Tools.png" alt="Community Garden" width="300"/>
-<img src="images/2 Device Manager.png" alt="Community Garden" width="300"/>
-<img src="images/3 Device Configuration.png" alt="Community Garden" width="300"/>
-<img src="images/4 Phone.png" alt="Community Garden" width="300"/>
+<img src="images/1 SDK Tools.png" alt="Community Garden" width="600"/>
+<img src="images/2 Device Manager.png" alt="Community Garden" width="600"/>
+<img src="images/3 Device Configuration.png" alt="Community Garden" width="600"/>
+<img src="images/4 Phone.png" alt="Community Garden" width="600"/>
 <img src="images/5 Main Screen.png" alt="Community Garden" width="200"/>
 
 
