@@ -56,9 +56,30 @@ University students study alone instead of meeting new people to study together.
 
 <img src="images/Community Garden.png" alt="Community Garden" width="200"/>
 
-
 ## Prototype
 ### URL of the Prototype
+You can download our .apk prototype through the following [link](https://drive.google.com/drive/folders/1zstCLRff8KRO9V8c2D1-REH6bdeF2kmM). If you're not using ndroid, you will need to install an Android emulator to run it.
+Example of running it on a Macbook:
+- Download [Android Studio](https://developer.android.com/studio)
+- Open Settings -> Language & Frameworks -> Android SDK -> SDK Tools
+- Click on and install Android SDK Command-line Tools and Android Emulator
+- Exit Settings and create an empty project (Empty Activity one)
+- Go to View -> Tool Windows -> Device Manager
+- Creat Virtual Device
+- Choose Pixel 7 or a similar device with ARM 64 System Image
+- Wait for the SDK Component Installation
+- Drag and drop Studygram.apk on the simulated phone's screen
+- Exit to the Main Screen of the phone
+- Click on Studygram (the app with the Unity icon)
+- Enjoy!
+
+Several pictures of the subjectively most confusing parts:
+<img src="images/1 SDK Tools.png" alt="Community Garden" width="200"/>
+<img src="images/2 Device Manager.png" alt="Community Garden" width="200"/>
+<img src="images/3 Device Configuration.png" alt="Community Garden" width="200"/>
+<img src="images/4 Phone.png" alt="Community Garden" width="200"/>
+<img src="images/5 Main Screen.png" alt="Community Garden" width="200"/>
+
 
 ### URL of Git Repo
 [Our Git Repository](https://github.com/sbaek293/Studygram/)
@@ -76,23 +97,22 @@ University students study alone instead of meeting new people to study together.
 - ChatGPT, Gemini (coding support)
 - GitHub Repository (project hosting)
 
-
-
 ### Individual Reflections
 #### Alua
-I was collaborating with Sche-In in creating and researching the backend server (Firebase) and connecting it to the app. In the code itself, I contributed mostly to the quiz scene, specifically, initializing the database, creating and assigning groups (with Johan), avatar display and assignment, and polishing the UI to resemble the lo-fi prototype.
-This was my first experience with a shared Git, so in the beginning, I had a lot of difficulties trying to push and pull changes. There were some problems getting used to the Unity interface, C#, and Firebase, since it was my first time using them. But the biggest challenge in coding was making group assignments properly connect to the database and match users correctly, since it was the basis of every aspect of our app, so implementing it wrong would crash the whole functionality. Since Johan and I were working separately on the same thing (back-front), there was some trouble understanding each other’s code. The code worked only after many different iterations. 
+I was collaborating with Sche-In in creating and researching the backend server (Firebase) and connecting it to the app. In the code itself, I contributed mostly to the quiz scene, specifically, initializing the database, creating and assigning groups (with Johan), avatar display and assignment, and polishing the UI to resemble the lo-fi prototype.\
+This was my first experience with a shared Git, so in the beginning, I had a lot of difficulties trying to push and pull changes. There were some problems getting used to the Unity interface, C#, and Firebase, since it was my first time using them. But the biggest challenge in coding was making group assignments properly connect to the database and match users correctly, since it was the basis of every aspect of our app, so implementing it wrong would crash the whole functionality. Since Johan and I were working separately on the same thing (back-front), there was some trouble understanding each other’s code. The code worked only after many different iterations.\
 One useful skill I have learned through this project is handling Git merge conflicts and working with shared repositories in general. 
 
 #### Sche In
-First, I guided other team members without experience in Unity and Git to help them get used to the system. My main tasks included the authentication system, the multiplayer system where members could see each other moving around, the settings menu, and the functionality of the card set and group session systems. I implemented the backend for these features and also designed the UI for them. Afterwards, Olesia helped me polish the card set and group session systems. Additionally, I connected the Firebase database system throughout the entire game. I also managed and planned the overall structure of our project. Lastly, I handled the building and deployment of the application.
-The most difficult part was integrating the Firebase Database into Unity because it was my first time working with it. Maintaining data consistency between users and adding new features without breaking existing code was also challenging throughout the project. Furthermore, because Unity is not primarily designed for UI-based applications, implementing UI design in the game engine was difficult. It was also my first time actively using AI for programming, which introduced additional challenges when debugging AI-generated code and integrating it into Unity.
+First, I guided other team members without experience in Unity and Git to help them get used to the system. My main tasks included the authentication system, the multiplayer system where members could see each other moving around, the settings menu, and the functionality of the card set and group session systems. I implemented the backend for these features and also designed the UI for them.\
+Afterwards, Olesia helped me polish the card set and group session systems. Additionally, I connected the Firebase database system throughout the entire game. I also managed and planned the overall structure of our project. Lastly, I handled the building and deployment of the application.
+The most difficult part was integrating the Firebase Database into Unity because it was my first time working with it. Maintaining data consistency between users and adding new features without breaking existing code was also challenging throughout the project. Furthermore, because Unity is not primarily designed for UI-based applications, implementing UI design in the game engine was difficult. It was also my first time actively using AI for programming, which introduced additional challenges when debugging AI-generated code and integrating it into Unity.\
 Through this experience, I was able to learn a lot about using databases and saving data with JSON in Unity. Additionally, due to the asynchronous nature of social interactions, it was my first time working with event handling, including listening and notifying.
 
 #### Johan
-My primary contribution to the project encompassed both the aesthetic environment and core system mechanics. Visually, I established the game’s atmosphere by leveraging AI tools to generate cohesive sprites for the environment, icons, and background elements. I integrated these assets into Unity, specifically building the UI for the Garden, Quiz, and Single User scenes to ensure a consistent user experience.
-On the technical side, I implemented the core "Study Buddy" matching logic. This involved coding the profiling quiz and the backend system that groups students based on compatibility. I also developed the Daily Streak system to encourage user retention and created the Pet Controller to add interactivity within the garden. Furthermore, I programmed the dynamic visual progression for the garden, ensuring the environment evolves as the group levels up. Finally, I tied these distinct features together by building the main navigation system that connects all game scenes seamlessly.
-One significant challenge was mastering Unity's UI system, particularly creating dynamic, scrollable content (like the Group Matching list). Coming from a web development background, transitioning from CSS logic to Unity’s component based architecture, managing RectTransforms, Layout Groups, and Content Size Fitters was complex. I had to learn how to manipulate anchors and pivots precisely to ensure the interface scaled correctly on different screen sizes.
+My primary contribution to the project encompassed both the aesthetic environment and core system mechanics. Visually, I established the game’s atmosphere by leveraging AI tools to generate cohesive sprites for the environment, icons, and background elements. I integrated these assets into Unity, specifically building the UI for the Garden, Quiz, and Single User scenes to ensure a consistent user experience.\
+On the technical side, I implemented the core "Study Buddy" matching logic. This involved coding the profiling quiz and the backend system that groups students based on compatibility. I also developed the Daily Streak system to encourage user retention and created the Pet Controller to add interactivity within the garden. Furthermore, I programmed the dynamic visual progression for the garden, ensuring the environment evolves as the group levels up. Finally, I tied these distinct features together by building the main navigation system that connects all game scenes seamlessly.\
+One significant challenge was mastering Unity's UI system, particularly creating dynamic, scrollable content (like the Group Matching list). Coming from a web development background, transitioning from CSS logic to Unity’s component based architecture, managing RectTransforms, Layout Groups, and Content Size Fitters was complex. I had to learn how to manipulate anchors and pivots precisely to ensure the interface scaled correctly on different screen sizes.\
 I learned Asynchronous Programming (async/await) in C#. This was used for fetching group data and user profiles from the cloud without freezing the game.
 
 #### Olesia
