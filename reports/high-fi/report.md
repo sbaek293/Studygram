@@ -1,7 +1,7 @@
 # Studygram DPM 4 Report
 Gamify Labs: Alua Kaliazhdarova, Johan Ronnquist, Sche In Baek, Olesia Bilyk
 ## Project Summary
-University students study alone instead of meeting new people to study together. Our app gamifies the process and matches students to work on the coursework together, making the process of studying less isolated and more efficient. Our approach emphasizes long-term teamwork through matching within class based on learning type of students, smoothened group study sessions, and shared resources that all group members contribute to by collaborating on shared flashcard sets, which results in imprved learning habits and efficiency through collaboration.
+University students study alone instead of meeting new people to study together. Our app gamifies the process and matches students to work on the coursework together, making the process of studying less isolated and thus more efficient. Our approach emphasizes long-term teamwork through **matching** within class based on learning type of students, smoothened one-click **group study sessions**, and shared resources that all group members contribute to by collaborating on **shared flashcard sets**, which results in imprved learning habits and efficiency through collaboration.
 
 ### Instruction
 **First Steps**
@@ -43,12 +43,13 @@ University students study alone instead of meeting new people to study together.
 1. "Definition" cards flip as the usual flashcards. For "MCQ", you can click on answer choices to find out if they are correct. Once you are done practicing, press "Back" (arrow) button at the top of your screen to return to the Card Menu.
 
 **Other Features**
-1. At this point you might be wondering what were the level and progress bar for.
+1. At this point you might be wondering what were the level and progress bar for. It accounts for the experience users gained together through the study sessions. Once the team levels up, their community Garden design upgrades. This is to reward users for their shared progress. As mentioned above, the coin system is to ensure everybody's contribution to the shared progress.
+1. We have automatic log in from the device thatw as used for the app before. It is done in order to lower the number of menial tasks to do before getting to the studying itself.
+1. Gamified design serves the purpose of studying appearing more relaxing, closer to hanging out with friends rather than "wasting one's youth away reading textbooks late at night". We hope this design choice prompts no association with the pressure and stressful deadlines which official university apps do.
 
 
 
-<img src="images/group session.png" alt="Quiz Result 1" width="200"/>\
-Above: [Study session log with a button to start a new session]
+<img src="images/group session.png" alt="Quiz Result 1" width="200"/>
 
 
 
@@ -60,11 +61,25 @@ Above: [Study session log with a button to start a new session]
 [Our Git Repository](https://github.com/sbaek293/Studygram/)
 
 ### Libraries and Frameworks
-bla-bla-bla
+**Libraries**
+- Unity Game Engine (core platform)
+- Photon PUN 2 Library (multiplayer)
+- Firebase Unity SDK (Firebase Realtime Database)
+- TextMeshPro (text rendering)
+
+**Other Tools**
+- Unity Hub & Editor 
+- VS Code (C# IDE)
+- ChatGPT, Gemini (coding support)
+- GitHub Repository (project hosting)
+
 
 
 ### Individual Reflections
 #### Alua
+I was collaborating with Sche-In in creating and researching the backend server (Firebase) and connecting it to the app. In the code itself, I contributed mostly to the quiz scene, specifically, initializing the database, creating and assigning groups (with Johan), avatar display and assignment, and polishing the UI to resemble the lo-fi prototype.
+This was my first experience with a shared Git, so in the beginning, I had a lot of difficulties trying to push and pull changes. There were some problems getting used to the Unity interface, C#, and Firebase, since it was my first time using them. But the biggest challenge in coding was making group assignments properly connect to the database and match users correctly, since it was the basis of every aspect of our app, so implementing it wrong would crash the whole functionality. Since Johan and I were working separately on the same thing (back-front), there was some trouble understanding each other’s code. The code worked only after many different iterations. 
+One useful skill I have learned through this project is handling Git merge conflicts and working with shared repositories in general. 
 
 #### Sche In
 
