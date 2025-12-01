@@ -22,7 +22,7 @@ public class SessionUI : MonoBehaviour
     public Button pauseButton;
     public Button resumeButton;
     public Button endButton;
-    // public Button backButton;
+    public Button backButton;
 
     public GameObject endPopup;
     public TMP_Text endTimeText;
@@ -84,8 +84,8 @@ public class SessionUI : MonoBehaviour
         }
 
         // Back button visible only before session starts
-        // if (backButton != null)
-        //     backButton.gameObject.SetActive(!active);
+        if (backButton != null)
+             backButton.gameObject.SetActive(!active);
 
         // statusText.text = active ? "Running" : "Waiting";
         if (!active)

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: bbedfa59d4bc009429ac1cb1a8340737
+guid: 4776c38e50e67a743b05a11496330ed9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5788519431283288729
-    second: UI_Flat_IconCheck01a_0
+      213: -98873073885613948
+    second: image-removebg-preview 8_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_Flat_IconCheck01a_0
+      name: image-removebg-preview 8_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 17
-        height: 14
+        x: 32
+        y: 14
+        width: 110
+        height: 116
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 765d9e20f3c0bafa0800000000000000
-      internalID: -5788519431283288729
+      spriteID: 4807231967bb0aef0800000000000000
+      internalID: -98873073885613948
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      UI_Flat_IconCheck01a_0: -5788519431283288729
+      image-removebg-preview 8_0: -98873073885613948
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
