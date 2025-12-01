@@ -27,6 +27,8 @@ public class SessionUI : MonoBehaviour
     public GameObject endPopup;
     public TMP_Text endTimeText;
     public TMP_Text rewardText;
+
+    private bool started = false;
     private void Start()
     {
         if (manager == null) manager = SessionManager.Instance;
@@ -71,9 +73,11 @@ public class SessionUI : MonoBehaviour
 
     private void UpdateActiveState(bool active)
     {
+        started = active;
         if (manager.isHost)
         {
             startButton.gameObject.SetActive(!active);
+            Debug.Log("button " + active);
             pauseButton.gameObject.SetActive(active && !manager.paused);
             resumeButton.gameObject.SetActive(active && manager.paused);
             endButton.gameObject.SetActive(active);
@@ -96,8 +100,8 @@ public class SessionUI : MonoBehaviour
     {
         if (!manager.isHost) return;
 
-        pauseButton.gameObject.SetActive(!paused);
-        resumeButton.gameObject.SetActive(paused);
+        pauseButton.gameObject.SetActive(started && !paused);
+        resumeButton.gameObject.SetActive(started && paused);
 
         if (!manager.active)
             statusText.text = "Waiting";
