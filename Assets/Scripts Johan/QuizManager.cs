@@ -232,7 +232,7 @@ public class QuizManager : MonoBehaviour
     {
         Debug.Log($"=== DisplayUserGroup called with groupId: {groupId} ===");
         
-        string userId = PlayerPrefs.GetString("LocalUserId", "");
+        string userId = AppContext.UserId;
         
         if (string.IsNullOrEmpty(userId))
         {
