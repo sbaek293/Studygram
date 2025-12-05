@@ -117,6 +117,7 @@ public class StudentMatcher : MonoBehaviour
         
         return reasons;
     }
+
      public async Task<string> FindBestGroupForStudent(string userId, MatchingProfile userProfile, int maxGroupSize = 4)
     {
         var db = FirebaseDatabase.DefaultInstance.RootReference;
@@ -184,10 +185,19 @@ public class StudentMatcher : MonoBehaviour
                 bestGroupId = group.Key;
             }
         }
+        
+        // ⭐ NEW LOGIC START ⭐
+        // If we found ANY group with score > -1 (which is all of them), return it.
+        // We do NOT check for a threshold (like > 50) anymore.
+        // This ensures the user is matched if there is space available.
+        if (bestGroupId != null)
+        {
+            Debug.Log($"Found best match: {bestGroupId} with score: {bestGroupScore}");
+            return bestGroupId;
+        }
+        // ⭐ NEW LOGIC END ⭐
 
-        // if bestGroupScore is very low, you might prefer to return null to force new group creation.
-        // e.g. if (bestGroupScore < 30) return null;
-        return bestGroupId;
+        // If no groups were found (or all were full), return null to create a new one.
+        return null;
     }
 }
-

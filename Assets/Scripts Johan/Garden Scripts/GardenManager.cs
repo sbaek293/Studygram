@@ -59,7 +59,7 @@ public class GardenManager : MonoBehaviour
     async void InitializeGarden()
     {
         // Get user's group ID
-        string userId = PlayerPrefs.GetString("LocalUserId", "");
+        string userId = AppContext.UserId;
         
         if (string.IsNullOrEmpty(userId))
         {

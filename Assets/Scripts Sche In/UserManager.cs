@@ -10,10 +10,14 @@ public class UserManager : MonoBehaviour
     private DatabaseReference db;
     public event Action OnUserDataLoaded;
 
-
+    // --- 1. GAME STATS (The Gamer) ---
     public int coins = 0;
     public int xp = 0;
     public int score = 0;
+
+    // --- 2. IDENTITY (The Student) ---
+    // ⭐ This is the fix! The profile is now part of the main user.
+    public MatchingProfile matchingProfile; 
 
     private void Awake()
     {
@@ -37,7 +41,7 @@ public class UserManager : MonoBehaviour
             LoadUserFromFirebase();
     }
 
-    // ⭐ NEW — creates the Firebase user (used after login)
+    // ⭐ Creates the User in Firebase if they don't exist
     public void CreateUserInFirebase(string username, string userClass)
     {
         string uid = AppContext.UserId;
@@ -46,31 +50,32 @@ public class UserManager : MonoBehaviour
         {
             if (t.IsFaulted) return;
 
-            // Only create if user does NOT exist
             if (!t.Result.Exists)
             {
                 var data = new Dictionary<string, object>
-            {
-                { "username", username },
-                { "class", userClass },
-                { "coins", 0 },
-                { "xp", 0 },
-                { "score", 0 },
-                {"isGrouped", false},
-                { "activeGroup", "" },
-                {"avatarId", ""}
-            };
+                {
+                    { "username", username },
+                    { "class", userClass },
+                    { "coins", 0 },
+                    { "xp", 0 },
+                    { "score", 0 },
+                    { "isGrouped", false },
+                    { "activeGroup", "" },
+                    { "avatarId", "" }
+                };
 
+                // Note: We don't save a profile here yet because they haven't taken the quiz
                 db.Child("users").Child(uid).SetValueAsync(data);
             }
         });
     }
 
-
+    // ⭐ Loads BOTH Stats and Profile at the same time
     public void LoadUserFromFirebase()
     {
         string uid = AppContext.UserId;
-        Debug.Log(uid);
+        Debug.Log("Loading User: " + uid);
+        
         if (string.IsNullOrEmpty(uid)) return;
 
         db.Child("users").Child(uid).GetValueAsync().ContinueWithOnMainThread(t =>
@@ -79,14 +84,28 @@ public class UserManager : MonoBehaviour
 
             var snap = t.Result;
 
+            // 1. Load Game Stats
             coins = snap.Child("coins").Exists ? Convert.ToInt32(snap.Child("coins").Value) : 0;
-            Debug.Log("updatedCoins");
-            Debug.Log(coins);
             xp = snap.Child("xp").Exists ? Convert.ToInt32(snap.Child("xp").Value) : 0;
             score = snap.Child("score").Exists ? Convert.ToInt32(snap.Child("score").Value) : 0;
+
+            // 2. Load Student Profile (The "Clone" is now merged here)
+            if (snap.Child("profile").Exists)
+            {
+                string json = snap.Child("profile").GetRawJsonValue();
+                matchingProfile = JsonUtility.FromJson<MatchingProfile>(json);
+            }
+            else
+            {
+                matchingProfile = new MatchingProfile(); // Default empty profile
+            }
+
+            Debug.Log($"User Loaded. Coins: {coins}, Profile Morning Score: {matchingProfile.morningPerson}");
             OnUserDataLoaded?.Invoke();
         });
     }
+
+    // --- Helper Methods ---
 
     public void AddCoins(int amount)
     {
@@ -98,11 +117,5 @@ public class UserManager : MonoBehaviour
     {
         xp += amount;
         db.Child("users").Child(AppContext.UserId).Child("xp").SetValueAsync(xp);
-    }
-
-    public void UpdateScore(int newScore)
-    {
-        score = newScore;
-        db.Child("users").Child(AppContext.UserId).Child("score").SetValueAsync(score);
     }
 }
