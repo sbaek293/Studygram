@@ -68,6 +68,7 @@ Example of running it on a Macbook:
 - Creat Virtual Device
 - Choose Pixel 7 or a similar device with ARM 64 System Image
 - Wait for the SDK Component Installation
+- Run the phone simulation
 - Drag and drop Studygram.apk on the simulated phone's screen
 - Exit to the Main Screen of the phone
 - Click on Studygram (the app with the Unity icon)
