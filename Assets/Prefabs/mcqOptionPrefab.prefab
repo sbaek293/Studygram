@@ -155,8 +155,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.014297485, y: 1.5511}
-  m_SizeDelta: {x: -25.1331, y: -16.006}
+  m_AnchoredPosition: {x: 0.19999695, y: -0.16270065}
+  m_SizeDelta: {x: -14.4217, y: -8.2938}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8841510973075266244
 CanvasRenderer:
@@ -186,7 +186,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: Couple the forum to an existing large platform (e.g., shared sign-in, cross-posting)
+    to borrow audience and seed interactions."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 17141a29764b8fc4c8cbdef8edbdf7bb, type: 2}
   m_sharedMaterial: {fileID: -6876096626539758502, guid: 17141a29764b8fc4c8cbdef8edbdf7bb, type: 2}
@@ -213,13 +214,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 7
-  m_fontSizeBase: 7
+  m_fontSize: 4.6
+  m_fontSizeBase: 4.6
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
