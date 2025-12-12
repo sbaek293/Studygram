@@ -10,7 +10,7 @@ After being matched to a group, users gain access to Social Garden that upgrades
 Users can see each other's avatars in the garden and thus find out if there are available buddies to start a study session with. After navigating to group study screen from the social menu, users can start a timed session together. They are not required to actually meet, and what app aims to achieve is the feeling of presence of others (similarly to how people study better at cafes and other coworking places). \
 <img src="images/session_menu.png" width="200"/><img src="images/session.png" width="200"/>
 
-Another social feature is flashcard sets that are shared across the entire class. Users can add cards they created to existing sets or create new ones. Having both Multiple Choice Question and Term/Definition options, flashcards are the simplest form of shared learning resources that could be useful for most of classes and is easy to contribute to.
+Another social feature is flashcard sets that are shared across the entire class. Users can add cards they created to existing sets or create new ones. Having both Multiple Choice Question and Term/Definition options, flashcards are the simplest form of shared learning resources that could be useful for most of classes and is easy to contribute to. \
 <img src="images/card_database.png" width="200"/><img src="images/study_mode.png" width="200"/>
 
 Both creating flashcards and partaking in group study sessions earns users coins that allow them to buy sets created by others, thus requiring everyone in the class to contribute in order to get benefits from using the app. \
@@ -33,19 +33,22 @@ Users agreed that Studygram reduces the initiation awkwardness (poll options ran
 
 
 ## Discussion
-When we designed Studygram, we thought deeply about several social computing concepts to solve the problem of student isolation. We wanted to understand what actually motivates people to work together.
+When designing Studygram, we wanted to understand what actually motivates people to work together and incorporate that into our solution to isolation during studying.
 
 ### Incentives for Participation
+We used a mix of rewards to keep users engaged. We realised that just giving people points, which is an extrinsic reward, often leads to burnout. It creates short-term activity but not long-term commitment. That is why we designed the Social Garden. It combines intrinsic motivation and social pressure in a positive way. Since the garden only grows when the whole team studies, it changes the motivation to a community-based one. Users start participating because they want to help their group thrive rather than just to get a high score for themselves.
 
-We used a mix of rewards to keep users engaged. We realized that just giving people points, which is an extrinsic reward, often leads to burnout. It creates short-term activity but not long-term commitment. That is why we designed the Social Garden. It taps into intrinsic motivation and social pressure in a positive way. Since the garden only grows when the whole team studies, it changes the motivation. Users start participating because they want to help their group thrive rather than just to get a high score for themselves.
 ### Supporting Social Interaction
-A key lesson we learned is that being social does not always require active talking. Many existing tools fail because they force shy students to chat or turn on their video. We focused on the idea of passive presence. By allowing avatars to move around a shared virtual room, we recreated the feeling of a quiet library. You feel the comfort of being around others without the stress of forcing a conversation. This lowers the barrier for introverted students to feel connected. It proves that just being present is a powerful form of social interaction.
+A key lesson we learned is that being social does not always require active talking. Many existing tools fail because they force shy students to chat or turn on their video. We focused on the idea of passive presence. By allowing avatars to move around a shared virtual room, we recreated the feeling of a quiet library. One can feel the comfort of being around others without the stress of forcing a conversation. This lowers the barrier for introverted students to feel connected instead of aiming for incomplete and thus less stressful option of virtual presence.
+
+### Concern of Gamification
+We chose to automatically save login info on the device and not require passwords. Since the app in the intended form did not have any direct communication, the only possible drawback of somebody using another person's credentials (just the username) would be the malicious user getting access to shared resources for free, which seemed undesired but nonetheless acceptable. This could possibly be proven wrong in an extended user testing, but we thought it could have a positive impact on community building based on mutual trust.
+
 ### Matching and Homophily
 Our matching system addresses the challenge of forming a good team. Randomly assigned groups often fail because the members have different expectations. We used the concept of homophily, which is the idea that people get along better with those who are similar to them. By grouping students based on their Learning Types, such as Visual Learner or Grinder, we ensure that teams start with compatible study styles. This similarity reduces the friction when the group first meets and helps them trust each other faster.
+
 ### Privacy and Ethics
-Finally, we treated privacy as a bridge rather than a barrier. We intentionally do not require real names at the start to reduce the fear of judgment. This anonymity allows users to interact based solely on their study habits without social anxiety. However, we recognize that the ultimate goal is connection. By using the app as a safe buffer to build trust first, users can eventually choose to take their study group into the real world. The system lowers the initial risk of approaching a stranger, making that optional transition to offline meeting much safer and more comfortable.
-
-
+Finally, we treated privacy as a bridge rather than a barrier. We intentionally do not require real names at the start to reduce the fear of judgment. This anonymity allows users to interact based solely on their study habits without social anxiety. However, we recognise that the ultimate goal is connection. By using the app as a safe buffer to build trust first, users can eventually choose to take their study group into the real world. The system lowers the initial risk of approaching a stranger, making that optional transition to an offline meeting much safer and more comfortable.
 
 
 ### URLs
