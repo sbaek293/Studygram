@@ -16,6 +16,17 @@ University students study alone instead of meeting new people to study together.
 <img src="images/Community Garden.png" alt="Community Garden" width="200"/>
 
 ## Deployment Summary
+Our deployment included 5 KAIST undergraduates testing the app over a week-long period (it included people of three genders and from three countries; there was no point in diversifying the age since our target group is college students). They were assigned to two groups, with a member of our team in each for assistance. Instead of introducing our goal and core tasks to the users, we said that it's an app for social studying to see how intuitive the features and rules are.
+
+<img src="images/intuitive.png" alt="Community Garden" width="200"/>
+<img src="images/visual.png" alt="Community Garden" width="200"/>
+
+The users found the app intuitive to use, but suggested that "introducing tooltips once the game starts might be useful". All of the users enjoyed the gamification design, both ones who appreciated the social aspect of Studygram (suggesting future improvement of "could be enhanced further whether friends could send each other support words") and ones who did not ("Why do i need to buy flashcards😭😭😭 I just wanna study" whereas the flashcard purchase was implemented so that students need to first get money by contributing to the group with session participation or card creation in order to get access to the shared resources), which suggests that studying-related apps in general could benefit from gamification.
+
+<img src="images/awkwardness.png" alt="Community Garden" width="200"/>
+<img src="images/would_use.png" alt="Community Garden" width="200"/>
+
+Users agreed that Studygram reduces the initiation awkwardness (poll options ranging from 1 - "Not at all" to 5 - "Very much so"), and the majority would like to use the app for their real coursework. The experience could be improved if the users "were able to communicate with each other somehow", could "have a companion website to upload questions on to", or could preview flashcards before purchase ("can't really see them before buying"), among other things. The general consensus of the users was that the app does achieve its goal and is "really needed among super introverted KAIST students".
 
 
 ## Discussion
@@ -38,20 +49,3 @@ Finally, we treated privacy as a bridge rather than a barrier. We intentionally 
 You can download our renewed .apk prototype through the following [link](https://drive.google.com/file/d/14_wDQM7ZANa9IOcMF33LQf6yoTR1DyJP/). Please refer to the previous report for the emulator usage if needed.\
 [Our Git Repository](https://github.com/sbaek293/Studygram/)
 
-### Individual Reflections
-#### Alua
-
-
-#### Sche In
-
-
-#### Johan
-1. **Implementation Contribution**\
-My contributions focused on the visual environment and the core system mechanics. Visually, I used Generative AI to create cohesive assets (sprites, icons, and backgrounds) and built the UI for the "Room," "Garden," and "Quiz" scenes to ensure a consistent aesthetic. Technically, I implemented the "Study Buddy" matching logic using Firebase, which required coding the profiling quiz and connecting the results to the database to group users based on compatibility. I also built the main navigation system that seamlessly connects these scenes and the specific logic for the Quiz interactions.
-1. **Teamwork Reflection**\
-Our team generally collaborated well, but we faced challenges due to varying experience levels with full-stack development. Initially, we adopted a "siloed" approach, developing front-end and back-end separately and hoping they would integrate without issues. This led to some friction when connecting the components. We overcame this by shifting from working in isolation to actively helping and teaching each other during the integration process. The key lesson I learned is that successful teamwork isn't just about dividing tasks; it requires constant communication and a willingness to learn from one another to bridge skill gaps and ensure the system works as a whole.
-1. Through this project, I gained significant experience with the Unity UI system, specifically learning how to manage dynamic layouts and navigation stacks. Crucially, I learned how to integrate Firebase with Unity, understanding the technical pipeline required to connect a game engine to a cloud database for real-time data synchronization. Additionally, I refined my workflow for using Generative AI as a production tool, learning how to prompt and edit AI-generated assets to fit a specific game style rapidly.
-
-
-
-#### Olesia
