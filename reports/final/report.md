@@ -18,13 +18,13 @@ University students study alone instead of meeting new people to study together.
 ## Deployment Summary
 Our deployment included 5 KAIST undergraduates testing the app over a week-long period (it included people of three genders and from three countries; there was no point in diversifying the age since our target group is college students). They were assigned to two groups, with a member of our team in each for assistance. Instead of introducing our goal and core tasks to the users, we said that it's an app for social studying to see how intuitive the features and rules are.
 
-<img src="images/intuitive.png" alt="Community Garden" width="200"/>
-<img src="images/visual.png" alt="Community Garden" width="200"/>
+<img src="images/intuitive.png" alt="Community Garden" width="400"/>
+<img src="images/visual.png" alt="Community Garden" width="400"/>
 
 The users found the app intuitive to use, but suggested that "introducing tooltips once the game starts might be useful". All of the users enjoyed the gamification design, both ones who appreciated the social aspect of Studygram (suggesting future improvement of "could be enhanced further whether friends could send each other support words") and ones who did not ("Why do i need to buy flashcards😭😭😭 I just wanna study" whereas the flashcard purchase was implemented so that students need to first get money by contributing to the group with session participation or card creation in order to get access to the shared resources), which suggests that studying-related apps in general could benefit from gamification.
 
-<img src="images/awkwardness.png" alt="Community Garden" width="200"/>
-<img src="images/would_use.png" alt="Community Garden" width="200"/>
+<img src="images/awkwardness.png" alt="Community Garden" width="400"/>
+<img src="images/would_use.png" alt="Community Garden" width="400"/>
 
 Users agreed that Studygram reduces the initiation awkwardness (poll options ranging from 1 - "Not at all" to 5 - "Very much so"), and the majority would like to use the app for their real coursework. The experience could be improved if the users "were able to communicate with each other somehow", could "have a companion website to upload questions on to", or could preview flashcards before purchase ("can't really see them before buying"), among other things. The general consensus of the users was that the app does achieve its goal and is "really needed among super introverted KAIST students".
 
